@@ -8,3 +8,5 @@ gradle-app.setting
 /.settings/
 /ducky-mod_Client.launch
 /ducky-mod_Server.launch
+/bin/
+/run/

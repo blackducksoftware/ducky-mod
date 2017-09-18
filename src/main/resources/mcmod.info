@@ -1,0 +1,15 @@
+[
+{
+  "modid": "duckymod",
+  "name": "Ducky Mod",
+  "description": "Black Duck Ducky mod for minecraft",
+  "version": "0.0.1",
+  "mcversion": "1.10.2",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["BDS Integrations"],
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
