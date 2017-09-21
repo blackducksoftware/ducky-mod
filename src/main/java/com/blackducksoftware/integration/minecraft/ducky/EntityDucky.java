@@ -13,7 +13,9 @@ package com.blackducksoftware.integration.minecraft.ducky;
 
 import javax.annotation.Nullable;
 
-import com.blackducksoftware.integration.minecraft.ducky.ai.EntityAIWatchTarget;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckySwimming;
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
@@ -21,19 +23,12 @@ import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAILeapAtTarget;
-import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -52,12 +47,12 @@ public class EntityDucky extends EntityMob {
 
     public EntityDucky(final World worldIn) {
         super(worldIn);
-        this.setSize(1F, 1.75F);
+        this.setSize(0.4F, 0.7F);
     }
 
     @Override
     protected void initEntityAI() {
-        final Predicate predicate = new Predicate<EntityLiving>() {
+        final Predicate<EntityLiving> predicate = new Predicate<EntityLiving>() {
             @Override
             public boolean apply(@Nullable final EntityLiving p_apply_1_) {
                 if (p_apply_1_ != null) {
@@ -67,21 +62,21 @@ public class EntityDucky extends EntityMob {
                 return false;
             }
         };
-
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(3, new EntityAILeapAtTarget(this, 0.4F));
-        this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(5, new EntityAIMoveTowardsTarget(this, 0.9D, 32.0F));
-        this.tasks.addTask(2, new EntityAIWatchTarget(this, predicate, 32.0F, 5));
-        this.targetTasks.addTask(6, new EntityAIHurtByTarget(this, true));
-        this.targetTasks.addTask(8, new EntityAINearestAttackableTarget(this, EntityLiving.class, 1, true, false, predicate));
+        // this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(0, new DuckySwimming(this));
+        // this.tasks.addTask(1, new EntityAIWander(this, 1.0D));
+        // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
+        this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 0.9D, 32.0F));
+        this.tasks.addTask(4, new DuckyAIFlyTowardsTargetAndAttack(this, 0.9D, 32.0F, 32));
+        this.tasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityLiving.class, 1, true, false, predicate));
+        this.tasks.addTask(6, new EntityAIHurtByTarget(this, true));
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(128.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.75D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.60D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(30.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
     }
@@ -104,50 +99,14 @@ public class EntityDucky extends EntityMob {
         this.oFlapSpeed = this.destPos;
         this.destPos = (float) (this.destPos + (this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp_float(this.destPos, 0.0F, 1.0F);
-
         if (!this.onGround && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
-
         this.wingRotDelta = (float) (this.wingRotDelta * 0.9D);
-
         this.wingRotation += this.wingRotDelta * 2.0F;
-
-        final EntityLivingBase target = this.getAttackTarget();
-        if (needToFly(target)) {
-            final double d0 = target.posX + 0.5D - this.posX;
-            final double d1 = target.posY + 0.1D - this.posY;
-            final double d2 = target.posZ + 0.5D - this.posZ;
-            this.motionX += (Math.signum(d0) * 0.5D - this.motionX) * 0.10000000149011612D;
-            this.motionY = Math.signum(d1) * 0.2D;
-            this.motionZ += (Math.signum(d2) * 0.5D - this.motionZ) * 0.10000000149011612D;
-            final float f = (float) (MathHelper.atan2(this.motionZ, this.motionX) * (180D / Math.PI)) - 90.0F;
-            final float f1 = MathHelper.wrapDegrees(f - this.rotationYaw);
-            this.moveForward = 0.5F;
-            this.rotationYaw += f1;
-        } else if (!this.onGround && this.motionY < 0.0D) {
+        if (!this.onGround && this.motionY < 0.0D) {
             this.motionY = -0.3D;
         }
-    }
-
-    private boolean needToFly(final EntityLivingBase target) {
-        if (target == null || !canEntityBeSeen(target) || target.isInWater() || target.isInLava()) {
-            return false;
-        }
-
-        final PathNavigate navigator = getNavigator();
-        final Path path = navigator.getPathToEntityLiving(target);
-
-        if (path != null) {
-            final PathPoint pathpoint = path.getFinalPathPoint();
-            if (pathpoint == null) {
-                return true;
-            } else {
-                final int i = pathpoint.yCoord - MathHelper.floor_double(target.posY);
-                return !target.onGround || (i > 1.25D);
-            }
-        }
-        return false;
     }
 
     @Override
@@ -195,5 +154,4 @@ public class EntityDucky extends EntityMob {
     public boolean getCanSpawnHere() {
         return false;
     }
-
 }

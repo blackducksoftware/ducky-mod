@@ -24,7 +24,7 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class EntityAIWatchTarget extends EntityAIBase {
+public class DuckyAIWatchTarget extends EntityAIBase {
 
     protected EntityLiving theWatcher;
     /** The closest entity which is being watched by this one. */
@@ -33,15 +33,15 @@ public class EntityAIWatchTarget extends EntityAIBase {
     protected float maxDistance;
     private int lookTime;
     private final float chance;
-    protected Predicate<? super Entity> watchedClassSelector;
+    protected Predicate<EntityLiving> watchedClassSelector;
 
     protected EntityAINearestAttackableTarget.Sorter theNearestAttackableTargetSorter;
 
-    public EntityAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<? super Entity> watchedClassSelector, final float maxDistance, final int lookTime) {
+    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLiving> watchedClassSelector, final float maxDistance, final int lookTime) {
         this(theWatcher, watchedClassSelector, maxDistance, lookTime, 0.02F);
     }
 
-    public EntityAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<? super Entity> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
+    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLiving> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
         this.theWatcher = theWatcher;
         this.watchedClassSelector = watchedClassSelector;
         this.maxDistance = maxDistance;
@@ -63,7 +63,7 @@ public class EntityAIWatchTarget extends EntityAIBase {
                 this.closestEntity = this.theWatcher.getAttackTarget();
             }
 
-            final List<Entity> list = theWatcher.worldObj.<Entity> getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
+            final List<EntityLiving> list = theWatcher.worldObj.<EntityLiving> getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
 
             if (list.isEmpty()) {
                 return false;

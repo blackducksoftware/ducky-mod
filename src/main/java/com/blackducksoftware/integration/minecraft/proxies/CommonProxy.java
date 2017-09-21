@@ -16,10 +16,10 @@ import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDuckySpawnEgg;
 import com.blackducksoftware.integration.minecraft.ducky.ItemDuckySpawnEgg;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class CommonProxy {
-
     protected static int entityCount;
 
     public void preInitRenders() {
@@ -37,6 +37,7 @@ public class CommonProxy {
 
     /** registers the entity **/
     protected static void register(final Class entityClass, final String name) {
-        EntityRegistry.registerModEntity(entityClass, name, ++entityCount, DuckyMod.instance, 16 * 4, 3, true);
+
+        EntityRegistry.registerModEntity(new ResourceLocation(DuckyMod.MODID), entityClass, name, ++entityCount, DuckyMod.instance, 16 * 4, 3, true);
     }
 }
