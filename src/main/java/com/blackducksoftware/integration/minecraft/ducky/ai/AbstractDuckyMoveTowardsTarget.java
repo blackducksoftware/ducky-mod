@@ -54,7 +54,7 @@ public abstract class AbstractDuckyMoveTowardsTarget extends EntityAIBase {
     }
 
     protected double getAttackReachSqr(final EntityLivingBase target) {
-        return ducky.width * 2.0F * ducky.width * 2.0F + target.width;
+        return ducky.width * 2.0F * ducky.width * 2.0F;
     }
 
     protected void checkAndPerformAttack(final EntityLivingBase target, final double distance) {
