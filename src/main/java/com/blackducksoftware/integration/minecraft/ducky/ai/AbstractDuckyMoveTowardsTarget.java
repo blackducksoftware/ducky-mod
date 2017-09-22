@@ -39,6 +39,7 @@ public abstract class AbstractDuckyMoveTowardsTarget extends EntityAIBase {
             return false;
         }
         final PathNavigate navigator = ducky.getNavigator();
+        navigator.tryMoveToEntityLiving(target, 1.0D);
         final Path path = navigator.getPath();
         if (path != null) {
             final PathPoint pathpoint = path.getFinalPathPoint();

@@ -17,15 +17,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsTarget {
-    private final double speed;
     /** If the distance to the target entity is further than this, this AI task will not run. */
     private final float maxTargetDistance;
 
     private EntityLivingBase target;
 
-    public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final double speedIn, final float targetMaxDistance) {
+    public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
         super(creature);
-        this.speed = speedIn;
         this.maxTargetDistance = targetMaxDistance;
         this.setMutexBits(1);
     }
@@ -76,8 +74,6 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsT
         if (!target.isEntityAlive()) {
             return;
         }
-        getDucky().getNavigator().tryMoveToEntityLiving(target, this.speed);
-
         final float f = (float) (MathHelper.atan2(getDucky().motionZ, getDucky().motionX) * (180D / Math.PI)) - 90.0F;
         final float f1 = MathHelper.wrapDegrees(f - getDucky().rotationYaw);
         getDucky().rotationYaw += f1;

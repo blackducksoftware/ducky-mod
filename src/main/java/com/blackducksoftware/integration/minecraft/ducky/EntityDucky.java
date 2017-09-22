@@ -75,8 +75,8 @@ public class EntityDucky extends EntityMob {
         this.tasks.addTask(0, new EntityAISwimming(this));
         // this.tasks.addTask(1, new EntityAIWander(this, 1.0D));
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
-        this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 0.9D, 32.0F));
-        this.tasks.addTask(4, new DuckyAIFlyTowardsTargetAndAttack(this, 0.9D, 32.0F, 32));
+        this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
+        this.tasks.addTask(4, new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityLiving.class, 1, true, false, predicate));
         this.tasks.addTask(6, new EntityAIHurtByTarget(this, true));
     }
