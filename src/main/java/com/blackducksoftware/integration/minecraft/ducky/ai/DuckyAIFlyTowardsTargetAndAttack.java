@@ -11,7 +11,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import net.minecraft.entity.EntityCreature;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
@@ -24,7 +25,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveTowardsTa
 
     private EntityLivingBase target;
 
-    public DuckyAIFlyTowardsTargetAndAttack(final EntityCreature creature, final double speedIn, final float targetMaxDistance, final long memoryLength) {
+    public DuckyAIFlyTowardsTargetAndAttack(final EntityDucky creature, final double speedIn, final float targetMaxDistance, final long memoryLength) {
         super(creature);
         this.speed = speedIn;
         this.maxTargetDistance = targetMaxDistance;
@@ -46,9 +47,9 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveTowardsTa
         checkAndPerformAttack(target, distance);
         if (!needToFly(target) || distance < attackReach || distance > this.maxTargetDistance * this.maxTargetDistance) {
             return false;
-        } else {
-            return true;
         }
+        getDucky().setFlying(true);
+        return true;
     }
 
     /**
@@ -57,6 +58,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveTowardsTa
     @Override
     public boolean continueExecuting() {
         if (!target.isEntityAlive() || !needToFly(target)) {
+            getDucky().setFlying(false);
             return false;
         }
         final double distance = getDucky().getDistanceSqToEntity(target);
@@ -64,9 +66,9 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveTowardsTa
         checkAndPerformAttack(target, distance);
         if (distance > attackReach && targetLastSeen < memoryLength && distance < this.maxTargetDistance * this.maxTargetDistance) {
             return true;
-        } else {
-            return false;
         }
+        getDucky().setFlying(false);
+        return false;
     }
 
     /**

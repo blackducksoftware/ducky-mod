@@ -15,7 +15,6 @@ import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
-import com.blackducksoftware.integration.minecraft.ducky.ai.DuckySwimming;
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
@@ -25,6 +24,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,9 +45,19 @@ public class EntityDucky extends EntityMob {
     public float oFlap;
     public float wingRotDelta = 1.0F;
 
+    private boolean isFlying;
+
     public EntityDucky(final World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F);
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    public void setFlying(final boolean isFlying) {
+        this.isFlying = isFlying;
     }
 
     @Override
@@ -62,8 +72,7 @@ public class EntityDucky extends EntityMob {
                 return false;
             }
         };
-        // this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(0, new DuckySwimming(this));
+        this.tasks.addTask(0, new EntityAISwimming(this));
         // this.tasks.addTask(1, new EntityAIWander(this, 1.0D));
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 0.9D, 32.0F));
@@ -104,8 +113,8 @@ public class EntityDucky extends EntityMob {
         }
         this.wingRotDelta = (float) (this.wingRotDelta * 0.9D);
         this.wingRotation += this.wingRotDelta * 2.0F;
-        if (!this.onGround && this.motionY < 0.0D) {
-            this.motionY = -0.3D;
+        if (!this.onGround && this.motionY < 0.0D && !isFlying()) { // && !this.isInWater() && !this.isInLava()) {
+            this.motionY *= 0.6D;
         }
     }
 

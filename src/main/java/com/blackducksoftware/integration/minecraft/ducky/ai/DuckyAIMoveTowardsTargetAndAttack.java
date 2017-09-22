@@ -11,7 +11,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import net.minecraft.entity.EntityCreature;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
@@ -22,7 +23,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsT
 
     private EntityLivingBase target;
 
-    public DuckyAIMoveTowardsTargetAndAttack(final EntityCreature creature, final double speedIn, final float targetMaxDistance) {
+    public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final double speedIn, final float targetMaxDistance) {
         super(creature);
         this.speed = speedIn;
         this.maxTargetDistance = targetMaxDistance;

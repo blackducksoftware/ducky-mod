@@ -11,7 +11,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import net.minecraft.entity.EntityCreature;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.Path;
@@ -21,15 +22,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class AbstractDuckyMoveTowardsTarget extends EntityAIBase {
-    private final EntityCreature ducky;
+    private final EntityDucky ducky;
     protected int attackTick;
     protected final int attackInterval = 20;
 
-    public AbstractDuckyMoveTowardsTarget(final EntityCreature ducky) {
+    public AbstractDuckyMoveTowardsTarget(final EntityDucky ducky) {
         this.ducky = ducky;
     }
 
-    public EntityCreature getDucky() {
+    public EntityDucky getDucky() {
         return ducky;
     }
 
