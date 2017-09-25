@@ -14,6 +14,8 @@ package com.blackducksoftware.integration.minecraft.ducky;
 import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
 
 import net.minecraft.block.Block;
@@ -21,11 +23,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIFollowOwner;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIOwnerHurtByTarget;
 import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
+import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMob;
@@ -76,6 +78,7 @@ public class EntityDucky extends EntityTameable {
 
     @Override
     protected void initEntityAI() {
+        this.aiSit = new EntityAISit(this);
         this.tasks.addTask(0, new EntityAISwimming(this));
         // this.tasks.addTask(1, new EntityAIWander(this, 1.0D));
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
@@ -85,7 +88,8 @@ public class EntityDucky extends EntityTameable {
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityShulker.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityGhast.class, true, false));
         this.tasks.addTask(6, new EntityAIHurtByTarget(this, true));
-        this.tasks.addTask(7, new EntityAIFollowOwner(this, 1.0D, 10.0F, 2.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 5.0F, 10.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 5.0F, 10.0F));
         this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, true, new Class[0]));
@@ -95,7 +99,7 @@ public class EntityDucky extends EntityTameable {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(BASE_HEALTH);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.60D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
     }
@@ -151,33 +155,32 @@ public class EntityDucky extends EntityTameable {
         }
     }
 
+    /**
+     * Return true if you want to skip processing the other hand
+     */
     @Override
     public boolean processInteract(final EntityPlayer player, final EnumHand hand) {
         final ItemStack itemstack = player.getHeldItem(hand);
-        if (isBreedingItem(itemstack)) {
-            return false;
-        }
         if (this.isTamed()) {
-            if (!itemstack.func_190926_b()) {
-                if (itemstack.getItem() instanceof ItemFood) {
-                    final ItemFood itemfood = (ItemFood) itemstack.getItem();
-                    if (itemfood.isWolfsFavoriteMeat() && (this.getHealth() < TAMED_HEALTH)) {
-                        if (!player.capabilities.isCreativeMode) {
-                            itemstack.func_190918_g(1);
-                        }
-                        System.out.println("Healing from : " + this.getHealth());
-                        this.heal(itemfood.getHealAmount(itemstack));
-                        System.out.println("Healedto : " + this.getHealth());
-                        return true;
+            if (isBreedingItem(itemstack)) {
+                final ItemFood itemfood = (ItemFood) itemstack.getItem();
+                if (this.getHealth() < TAMED_HEALTH) {
+                    if (!player.capabilities.isCreativeMode) {
+                        itemstack.func_190918_g(1);
                     }
+                    this.heal(itemfood.getHealAmount(itemstack));
                 }
+                return true;
+            } else {
+                if (this.isOwner(player) && !this.worldObj.isRemote) {
+                    setSitting(!this.isSitting());
+                    this.isJumping = false;
+                    this.navigator.clearPathEntity();
+                    this.setAttackTarget((EntityLivingBase) null);
+                }
+                return true;
             }
-            if (this.isOwner(player) && !this.worldObj.isRemote && !this.isBreedingItem(itemstack)) {
-                this.isJumping = false;
-                this.navigator.clearPathEntity();
-                this.setAttackTarget((EntityLivingBase) null);
-            }
-        } else {
+        } else if (isBreedingItem(itemstack)) {
             if (!player.capabilities.isCreativeMode) {
                 itemstack.func_190918_g(1);
             }
@@ -196,7 +199,22 @@ public class EntityDucky extends EntityTameable {
             }
             return true;
         }
-        return super.processInteract(player, hand);
+        return false;
+    }
+
+    /**
+     * Called when the entity is attacked.
+     */
+    @Override
+    public boolean attackEntityFrom(final DamageSource source, final float amount) {
+        if (this.isEntityInvulnerable(source)) {
+            return false;
+        } else {
+            if (this.aiSit != null) {
+                setSitting(false);
+            }
+            return super.attackEntityFrom(source, amount);
+        }
     }
 
     /**
@@ -204,7 +222,7 @@ public class EntityDucky extends EntityTameable {
      */
     @Override
     public boolean isBreedingItem(final ItemStack stack) {
-        return stack.getItem() == Items.FISH;
+        return stack.getItem() == Items.BREAD;
     }
 
     @Override
@@ -242,12 +260,30 @@ public class EntityDucky extends EntityTameable {
         return null;
     }
 
+    @Override
+    public boolean isSitting() {
+        final byte tamedByte = this.dataManager.get(TAMED).byteValue();
+        final boolean sitting = (tamedByte & 1) != 0;
+        return sitting;
+    }
+
+    @Override
+    public void setSitting(final boolean sitting) {
+        this.aiSit.setSitting(sitting);
+        final byte tamedByte = this.dataManager.get(TAMED).byteValue();
+        if (sitting) {
+            this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte | 1)));
+        } else {
+            this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte & -2)));
+        }
+    }
+
     /**
      * Get the experience points the entity currently has.
      */
     @Override
     protected int getExperiencePoints(final EntityPlayer player) {
-        return 1000;
+        return 200;
     }
 
     /**

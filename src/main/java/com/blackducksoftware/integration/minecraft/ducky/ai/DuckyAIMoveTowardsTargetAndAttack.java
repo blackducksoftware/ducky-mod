@@ -13,14 +13,11 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.entity.Entity;
 
-public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsTarget {
+public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     /** If the distance to the target entity is further than this, this AI task will not run. */
     private final float maxTargetDistance;
-
-    private EntityLivingBase target;
 
     public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
         super(creature);
@@ -33,16 +30,17 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsT
      */
     @Override
     public boolean shouldExecute() {
-        target = getDucky().getAttackTarget();
-        if (target == null) {
+        final Entity target = getDucky().getAttackTarget();
+        if (target == null || getDucky().isSitting()) {
             return false;
         }
-        final double distance = target.getDistanceSqToEntity(getDucky());
-        final double attackReach = getAttackReachSqr(target);
-        checkAndPerformAttack(target, distance);
+        setTargetToFollow(target);
+        distanceToTarget = getDucky().getDistanceSqToEntity(target);
+        attackReach = getAttackReachSqr(target);
+        checkAndPerformAttack(target, distanceToTarget);
         if (needToFly(target)) {
             return false;
-        } else if (distance < this.maxTargetDistance * this.maxTargetDistance && distance > attackReach) {
+        } else if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance) {
             return true;
         }
         return false;
@@ -53,13 +51,12 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsT
      */
     @Override
     public boolean continueExecuting() {
-        if (!target.isEntityAlive() || needToFly(target) || getDucky().getNavigator().noPath()) {
+        if (!getTargetToFollow().isEntityAlive() || needToFly(getTargetToFollow())) {
             return false;
         }
-        final double distance = getDucky().getDistanceSqToEntity(target);
-        final double attackReach = getAttackReachSqr(target);
-        checkAndPerformAttack(target, distance);
-        if (distance < this.maxTargetDistance * this.maxTargetDistance && distance > attackReach) {
+        distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
+        checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
+        if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance) {
             return true;
         }
         return false;
@@ -70,24 +67,12 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveTowardsT
      */
     @Override
     public void updateTask() {
-        super.updateTask();
-        if (!target.isEntityAlive()) {
+        if (!updateCalc(distanceToTarget, false)) {
             return;
         }
-        final float f = (float) (MathHelper.atan2(getDucky().motionZ, getDucky().motionX) * (180D / Math.PI)) - 90.0F;
-        final float f1 = MathHelper.wrapDegrees(f - getDucky().rotationYaw);
-        getDucky().rotationYaw += f1;
-
-        getDucky().getLookHelper().setLookPosition(target.posX, target.posY + target.getEyeHeight(), target.posZ, getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-    }
-
-    /**
-     * Resets the task
-     */
-    @Override
-    public void resetTask() {
-        target = null;
-        getDucky().getNavigator().clearPathEntity();
+        getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
     }
 
 }
