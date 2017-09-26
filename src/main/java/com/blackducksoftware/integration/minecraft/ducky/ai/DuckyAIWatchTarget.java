@@ -20,6 +20,7 @@ import com.google.common.base.Predicate;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,15 +34,15 @@ public class DuckyAIWatchTarget extends EntityAIBase {
     protected float maxDistance;
     private int lookTime;
     private final float chance;
-    protected Predicate<EntityLiving> watchedClassSelector;
+    protected Predicate<EntityLivingBase> watchedClassSelector;
 
     protected EntityAINearestAttackableTarget.Sorter theNearestAttackableTargetSorter;
 
-    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLiving> watchedClassSelector, final float maxDistance, final int lookTime) {
+    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLivingBase> watchedClassSelector, final float maxDistance, final int lookTime) {
         this(theWatcher, watchedClassSelector, maxDistance, lookTime, 0.02F);
     }
 
-    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLiving> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
+    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLivingBase> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
         this.theWatcher = theWatcher;
         this.watchedClassSelector = watchedClassSelector;
         this.maxDistance = maxDistance;

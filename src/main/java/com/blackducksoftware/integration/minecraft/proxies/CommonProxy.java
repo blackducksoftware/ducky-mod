@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.minecraft.proxies;
 import com.blackducksoftware.integration.minecraft.DuckyMod;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDuckySpawnEgg;
+import com.blackducksoftware.integration.minecraft.ducky.EntityTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ItemDuckySpawnEgg;
 
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +32,7 @@ public class CommonProxy {
 
     public void registerEntities() {
         entityCount = 0;
+        register(EntityTamedDucky.class, EntityTamedDucky.TAMED_DUCKY_NAME);
         register(EntityDucky.class, EntityDucky.DUCKY_NAME);
         register(EntityDuckySpawnEgg.class, ItemDuckySpawnEgg.DUCKY_EGG_NAME);
     }

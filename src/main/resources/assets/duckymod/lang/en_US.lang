@@ -1,3 +1,4 @@
 item.ducky_spawn_egg.name=Spawn Ducky
 item.bd_ducky.name=Ducky
 entity.bd_ducky.name=Ducky
+entity.tamed_bd_ducky.name=Tamed Ducky

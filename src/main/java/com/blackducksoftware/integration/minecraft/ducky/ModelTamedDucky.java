@@ -20,42 +20,62 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelDucky extends ModelBase {
-
+public class ModelTamedDucky extends ModelBase {
     public ModelRenderer head;
+    public ModelRenderer billBase;
+    public ModelRenderer billFront;
+
     public ModelRenderer body;
+
     public ModelRenderer rightLeg;
     public ModelRenderer leftLeg;
+
     public ModelRenderer rightWing;
     public ModelRenderer leftWing;
-    public ModelRenderer bill;
-    public ModelRenderer tail;
 
-    public ModelDucky() {
+    public ModelRenderer tailBase;
+    public ModelRenderer tailTop;
+
+    public ModelTamedDucky() {
         this.head = new ModelRenderer(this, 0, 0);
-        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3);
-        this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
-        this.bill = new ModelRenderer(this, 14, 0);
-        this.bill.addBox(-2.0F, -4.0F, -4.0F, 4, 2, 2);
-        this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-        this.tail = new ModelRenderer(this, 14, 4);
-        this.tail.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 2);
-        this.tail.setRotationPoint(0.0F, 12.0F, 5.5F);
+        this.head.addBox(0.0F, 0.0F, 0.0F, 10, 10, 10);
+        this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
+
+        this.billBase = new ModelRenderer(this, 14, 0);
+        this.billBase.addBox(0.0F, 0.0F, 0.0F, 6, 4, 13);
+        this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
+
+        this.billFront = new ModelRenderer(this, 14, 0);
+        this.billFront.addBox(0.0F, 0.0F, 0.0F, 6, 3, 13);
+        this.billFront.setRotationPoint(-3.0F, 3.0F, -22.0F);
+
         this.body = new ModelRenderer(this, 0, 9);
-        this.body.addBox(-3.0F, -4.0F, -3.0F, 6, 8, 6);
-        this.body.setRotationPoint(0.0F, 16.0F, 0.0F);
+        this.body.addBox(0.0F, 0.0F, 0.0F, 16, 27, 11);
+        this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
+
         this.rightLeg = new ModelRenderer(this, 26, 0);
-        this.rightLeg.addBox(-1.0F, 0.0F, -3.0F, 3, 5, 3);
-        this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
+        this.rightLeg.addBox(0.0F, 0.0F, 0.0F, 5, 9, 6);
+        this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
+
         this.leftLeg = new ModelRenderer(this, 26, 0);
-        this.leftLeg.addBox(-1.0F, 0.0F, -3.0F, 3, 5, 3);
-        this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
+        this.leftLeg.addBox(0.0F, 0.0F, 0.0F, 5, 9, 6);
+        this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
+
         this.rightWing = new ModelRenderer(this, 24, 13);
-        this.rightWing.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6);
-        this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
+        this.rightWing.addBox(0.0F, 0.0F, 0.0F, 2, 8, 20);
+        this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
+
         this.leftWing = new ModelRenderer(this, 24, 13);
-        this.leftWing.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6);
-        this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
+        this.leftWing.addBox(0.0F, 0.0F, 0.0F, 2, 8, 20);
+        this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
+
+        this.tailBase = new ModelRenderer(this, 14, 4);
+        this.tailBase.addBox(0.0F, 0.0F, 0.0F, 8, 5, 3);
+        this.tailBase.setRotationPoint(-4.0F, 7.0F, 13.0F);
+
+        this.tailTop = new ModelRenderer(this, 14, 4);
+        this.tailTop.addBox(0.0F, 0.0F, 0.0F, 4, 3, 2);
+        this.tailTop.setRotationPoint(-2.0F, 4.0F, 15.0F);
     }
 
     /**
@@ -66,9 +86,11 @@ public class ModelDucky extends ModelBase {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         this.head.render(scale);
-        this.bill.render(scale);
+        this.billBase.render(scale);
+        this.billFront.render(scale);
         this.body.render(scale);
-        this.tail.render(scale);
+        this.tailBase.render(scale);
+        this.tailTop.render(scale);
         this.rightLeg.render(scale);
         this.leftLeg.render(scale);
         this.rightWing.render(scale);
@@ -83,25 +105,33 @@ public class ModelDucky extends ModelBase {
         final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
 
         if (entityDucky.isSitting()) {
-            this.head.setRotationPoint(0.0F, 20.0F, -4.0F);
-            this.bill.setRotationPoint(0.0F, 20.0F, -4.0F);
-            this.tail.setRotationPoint(0.0F, 17.0F, 5.5F);
-            this.body.setRotationPoint(0.0F, 21.0F, 0.0F);
-            this.rightWing.setRotationPoint(-4.0F, 18.0F, 0.0F);
-            this.leftWing.setRotationPoint(4.0F, 18.0F, 0.0F);
+            this.head.setRotationPoint(-5.0F, 5.0F, -16.0F);
+            this.billBase.setRotationPoint(-3.0F, 9.0F, -19.0F);
+            this.billFront.setRotationPoint(-3.0F, 10.0F, -22.0F);
+            this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
 
-            this.rightLeg.setRotationPoint(-2.0F, 18.9F, 1.0F);
-            this.leftLeg.setRotationPoint(1.0F, 18.9F, 1.0F);
+            this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
+            this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
+
+            this.rightWing.setRotationPoint(-10.0F, 14.0F, -9.0F);
+            this.leftWing.setRotationPoint(8.0F, 14.0F, -9.0F);
+
+            this.tailBase.setRotationPoint(-4.0F, 16.0F, 13.0F);
+            this.tailTop.setRotationPoint(-2.0F, 13.0F, 15.0F);
         } else {
-            this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
-            this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-            this.tail.setRotationPoint(0.0F, 12.0F, 5.5F);
-            this.body.setRotationPoint(0.0F, 16.0F, 0.0F);
-            this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
-            this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
+            this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
+            this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
+            this.billFront.setRotationPoint(-3.0F, 3.0F, -22.0F);
+            this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
-            this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
-            this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
+            this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
+            this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
+
+            this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
+            this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
+
+            this.tailBase.setRotationPoint(-4.0F, 7.0F, 13.0F);
+            this.tailTop.setRotationPoint(-2.0F, 4.0F, 15.0F);
         }
     }
 
@@ -113,13 +143,16 @@ public class ModelDucky extends ModelBase {
     public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
-        this.bill.rotateAngleX = this.head.rotateAngleX;
-        this.bill.rotateAngleY = this.head.rotateAngleY;
+        this.billBase.rotateAngleX = this.head.rotateAngleX;
+        this.billFront.rotateAngleY = this.head.rotateAngleY;
+
         this.body.rotateAngleX = ((float) Math.PI / 2F);
-        this.tail.rotateAngleX = ((float) Math.PI / 2F);
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.rightWing.rotateAngleZ = ageInTicks;
         this.leftWing.rotateAngleZ = -ageInTicks;
+
+        this.tailBase.rotateAngleX = ((float) Math.PI / 2F);
+        this.tailTop.rotateAngleX = ((float) Math.PI / 2F);
     }
 }

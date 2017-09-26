@@ -15,19 +15,16 @@ import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.DuckyModSounds;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
-import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
-import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAIOwnerHurtByTarget;
-import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
 import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.EntityGhast;
@@ -38,7 +35,6 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
@@ -49,8 +45,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityDucky extends EntityTameable {
-    public static final double TAMED_HEALTH = 64.0D;
-    public static final double TAMED_DAMAGE = 30.0D;
     public static final double BASE_HEALTH = 15.0D;
     public static final double BASE_DAMAGE = 6.0D;
 
@@ -89,10 +83,6 @@ public class EntityDucky extends EntityTameable {
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityShulker.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityGhast.class, true, false));
         this.tasks.addTask(6, new EntityAIHurtByTarget(this, true));
-        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 5.0F, 10.0F));
-        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 5.0F, 10.0F));
-        this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
-        this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, true, new Class[0]));
     }
 
@@ -110,7 +100,7 @@ public class EntityDucky extends EntityTameable {
      */
     @Override
     public boolean canAttackClass(final Class<? extends EntityLivingBase> cls) {
-        return cls != EntityPlayer.class && cls != EntityDucky.class && !cls.isAssignableFrom(EntityAgeable.class);
+        return cls != EntityPlayer.class && cls != EntityTamedDucky.class && cls != EntityDucky.class && !cls.isAssignableFrom(EntityAgeable.class);
     }
 
     /**
@@ -142,57 +132,29 @@ public class EntityDucky extends EntityTameable {
         return canAttackFrom;
     }
 
-    @Override
-    public void setTamed(final boolean tamed) {
-        super.setTamed(tamed);
-        if (tamed) {
-            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
-            this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
-            this.setHealth((float) TAMED_HEALTH);
-        } else {
-            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(BASE_HEALTH);
-            this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
-            this.setHealth((float) BASE_HEALTH);
-        }
-    }
-
     /**
      * Return true if you want to skip processing the other hand
      */
     @Override
     public boolean processInteract(final EntityPlayer player, final EnumHand hand) {
         final ItemStack itemstack = player.getHeldItem(hand);
-        if (this.isTamed()) {
-            if (isBreedingItem(itemstack)) {
-                final ItemFood itemfood = (ItemFood) itemstack.getItem();
-                if (this.getHealth() < TAMED_HEALTH) {
-                    if (!player.capabilities.isCreativeMode) {
-                        itemstack.func_190918_g(1);
-                    }
-                    this.heal(itemfood.getHealAmount(itemstack));
-                }
-                return true;
-            } else {
-                if (this.isOwner(player) && !this.worldObj.isRemote) {
-                    setSitting(!this.isSitting());
-                    this.isJumping = false;
-                    this.navigator.clearPathEntity();
-                    this.setAttackTarget((EntityLivingBase) null);
-                }
-                return true;
-            }
-        } else if (isBreedingItem(itemstack)) {
+        if (isBreedingItem(itemstack)) {
             if (!player.capabilities.isCreativeMode) {
                 itemstack.func_190918_g(1);
             }
             if (!this.worldObj.isRemote) {
-                if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player)) {
-                    this.setTamed(true);
-                    this.navigator.clearPathEntity();
-                    this.setAttackTarget((EntityLivingBase) null);
-                    this.setOwnerId(player.getUniqueID());
-                    this.playTameEffect(true);
-                    this.worldObj.setEntityState(this, (byte) 7);
+                final EntityTamedDucky tamedDucky = new EntityTamedDucky(this.worldObj);
+                if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(tamedDucky, player)) {
+                    tamedDucky.moveToBlockPosAndAngles(this.getPosition(), 0.0F, 0.0F);
+                    tamedDucky.setTamed(true);
+                    tamedDucky.navigator.clearPathEntity();
+                    tamedDucky.setAttackTarget((EntityLivingBase) null);
+                    tamedDucky.setOwnerId(player.getUniqueID());
+                    tamedDucky.playTameEffect(true);
+                    tamedDucky.worldObj.setEntityState(this, (byte) 7);
+                    tamedDucky.onInitialSpawn(tamedDucky.worldObj.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
+                    tamedDucky.worldObj.spawnEntityInWorld(tamedDucky);
+                    this.setDead();
                 } else {
                     this.playTameEffect(false);
                     this.worldObj.setEntityState(this, (byte) 6);

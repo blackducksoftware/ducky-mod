@@ -21,10 +21,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderDucky extends RenderLiving<EntityDucky> {
+public class RenderTamedDucky extends RenderLiving<EntityDucky> {
 
-    public RenderDucky(final RenderManager manager) {
-        super(manager, new ModelDucky(), 0.4F);
+    public RenderTamedDucky(final RenderManager manager) {
+        super(manager, new ModelTamedDucky(), 0.4F);
     }
 
     /**
@@ -32,7 +32,7 @@ public class RenderDucky extends RenderLiving<EntityDucky> {
      */
     @Override
     protected ResourceLocation getEntityTexture(final EntityDucky ducky) {
-        return new ResourceLocation(DuckyMod.MODID + ":" + "textures/entity/" + EntityDucky.DUCKY_NAME + ".png");
+        return new ResourceLocation(DuckyMod.MODID + ":" + "textures/entity/" + EntityTamedDucky.TAMED_DUCKY_NAME + ".png");
     }
 
     /**
