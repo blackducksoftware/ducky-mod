@@ -13,6 +13,7 @@ package com.blackducksoftware.integration.minecraft.ducky;
 
 import javax.annotation.Nullable;
 
+import com.blackducksoftware.integration.minecraft.DuckyModSounds;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
@@ -236,17 +237,17 @@ public class EntityDucky extends EntityTameable {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_CHICKEN_AMBIENT;
+        return DuckyModSounds.duckQuack;
     }
 
     @Override
     protected SoundEvent getHurtSound() {
-        return SoundEvents.ENTITY_CHICKEN_HURT;
+        return DuckyModSounds.duckHurt;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_CHICKEN_DEATH;
+        return DuckyModSounds.duckDeath;
     }
 
     @Override

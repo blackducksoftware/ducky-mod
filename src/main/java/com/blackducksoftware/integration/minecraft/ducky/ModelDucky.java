@@ -110,8 +110,8 @@ public class ModelDucky extends ModelBase {
             this.rightWing.setRotationPoint(-4.0F, 18.0F, 0.0F);
             this.leftWing.setRotationPoint(4.0F, 18.0F, 0.0F);
 
-            this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
-            this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
+            this.rightLeg.setRotationPoint(-2.0F, 18.9F, 1.0F);
+            this.leftLeg.setRotationPoint(1.0F, 18.9F, 1.0F);
         } else {
             this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
             this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);

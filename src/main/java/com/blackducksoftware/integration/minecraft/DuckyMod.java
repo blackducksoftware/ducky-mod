@@ -27,6 +27,7 @@ public class DuckyMod {
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event) {
         DuckyModItems.mainRegistry();
+        DuckyModSounds.mainRegistry();
         proxy.registerEntities();
         proxy.preInitRenders();
         proxy.initEvents();

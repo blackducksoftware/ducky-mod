@@ -1,0 +1,14 @@
+{
+  "duckdeath": {
+    "category": "neutral",
+    "sounds": [ "duckymod:duckdeath" ]
+  },
+  "duckhurt": {
+    "category": "neutral",
+    "sounds": [ "duckymod:duckhurt" ]
+  },
+  "duckquack": {
+    "category": "neutral",
+    "sounds": [ "duckymod:duckquack" ]
+  }
+}
