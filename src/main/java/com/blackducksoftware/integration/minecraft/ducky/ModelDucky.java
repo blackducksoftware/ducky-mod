@@ -15,6 +15,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -91,6 +92,36 @@ public class ModelDucky extends ModelBase {
             this.leftLeg.render(scale);
             this.rightWing.render(scale);
             this.leftWing.render(scale);
+        }
+    }
+
+    /**
+     * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
+     */
+    @Override
+    public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
+        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
+
+        if (entityDucky.isSitting()) {
+            this.head.setRotationPoint(0.0F, 20.0F, -4.0F);
+            this.bill.setRotationPoint(0.0F, 20.0F, -4.0F);
+            this.tail.setRotationPoint(0.0F, 17.0F, 5.5F);
+            this.body.setRotationPoint(0.0F, 21.0F, 0.0F);
+            this.rightWing.setRotationPoint(-4.0F, 18.0F, 0.0F);
+            this.leftWing.setRotationPoint(4.0F, 18.0F, 0.0F);
+
+            this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
+            this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
+        } else {
+            this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
+            this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
+            this.tail.setRotationPoint(0.0F, 12.0F, 5.5F);
+            this.body.setRotationPoint(0.0F, 16.0F, 0.0F);
+            this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
+            this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
+
+            this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
+            this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
         }
     }
 
