@@ -47,7 +47,7 @@ public class ModelTamedDucky extends ModelBase {
 
         this.billFront = new ModelRenderer(this, 0, 31).setTextureSize(256, 128);
         this.billFront.addBox(0.0F, 0.0F, 0.0F, 6, 3, 7);
-        this.billFront.setRotationPoint(-3.0F, 3.0F, -22.0F);
+        this.billFront.setRotationPoint(-3.0F, 3.0F, -21.0F);
 
         this.body = new ModelRenderer(this, 40, 0).setTextureSize(256, 128);
         this.body.addBox(0.0F, 0.0F, 0.0F, 16, 27, 11);
@@ -107,7 +107,7 @@ public class ModelTamedDucky extends ModelBase {
         if (entityDucky.isSitting()) {
             this.head.setRotationPoint(-5.0F, 5.0F, -16.0F);
             this.billBase.setRotationPoint(-3.0F, 9.0F, -19.0F);
-            this.billFront.setRotationPoint(-3.0F, 10.0F, -22.0F);
+            this.billFront.setRotationPoint(-3.0F, 10.0F, -21.0F);
             this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
@@ -120,8 +120,8 @@ public class ModelTamedDucky extends ModelBase {
             this.tailTop.setRotationPoint(-2.0F, 13.0F, 15.0F);
         } else {
             this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.billBase.setRotationPoint(-3.0F, 2.0F, -20.0F);
-            this.billFront.setRotationPoint(-3.0F, 3.0F, -22.0F);
+            this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
+            this.billFront.setRotationPoint(-3.0F, 3.0F, -21.0F);
             this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
@@ -144,6 +144,8 @@ public class ModelTamedDucky extends ModelBase {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
         this.billBase.rotateAngleX = this.head.rotateAngleX;
+        this.billBase.rotateAngleY = this.head.rotateAngleY;
+        this.billFront.rotateAngleX = this.head.rotateAngleX;
         this.billFront.rotateAngleY = this.head.rotateAngleY;
 
         this.body.rotateAngleX = ((float) Math.PI / 2F);
