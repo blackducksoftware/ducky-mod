@@ -61,6 +61,7 @@ public class EntityDucky extends EntityTameable {
     public EntityDucky(final World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F);
+        this.setScale(1.0F);
     }
 
     public boolean isFlying() {
@@ -260,5 +261,13 @@ public class EntityDucky extends EntityTameable {
     @Override
     public EntityAgeable createChild(final EntityAgeable ageable) {
         return null;
+    }
+
+    /**
+     * "Sets the scale for an ageable entity according to the boolean parameter, which says if it's a child."
+     */
+    @Override
+    public void setScaleForAge(final boolean child) {
+        this.setScale(1.0F);
     }
 }

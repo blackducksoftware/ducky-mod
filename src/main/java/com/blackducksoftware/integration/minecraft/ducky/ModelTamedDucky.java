@@ -37,43 +37,43 @@ public class ModelTamedDucky extends ModelBase {
     public ModelRenderer tailTop;
 
     public ModelTamedDucky() {
-        this.head = new ModelRenderer(this, 0, 0);
+        this.head = new ModelRenderer(this, 0, 0).setTextureSize(256, 128);
         this.head.addBox(0.0F, 0.0F, 0.0F, 10, 10, 10);
         this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
 
-        this.billBase = new ModelRenderer(this, 14, 0);
-        this.billBase.addBox(0.0F, 0.0F, 0.0F, 6, 4, 13);
+        this.billBase = new ModelRenderer(this, 0, 20).setTextureSize(256, 128);
+        this.billBase.addBox(0.0F, 0.0F, 0.0F, 6, 4, 7);
         this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
 
-        this.billFront = new ModelRenderer(this, 14, 0);
-        this.billFront.addBox(0.0F, 0.0F, 0.0F, 6, 3, 13);
+        this.billFront = new ModelRenderer(this, 0, 31).setTextureSize(256, 128);
+        this.billFront.addBox(0.0F, 0.0F, 0.0F, 6, 3, 7);
         this.billFront.setRotationPoint(-3.0F, 3.0F, -22.0F);
 
-        this.body = new ModelRenderer(this, 0, 9);
+        this.body = new ModelRenderer(this, 40, 0).setTextureSize(256, 128);
         this.body.addBox(0.0F, 0.0F, 0.0F, 16, 27, 11);
         this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
-        this.rightLeg = new ModelRenderer(this, 26, 0);
+        this.rightLeg = new ModelRenderer(this, 38, 39).setTextureSize(256, 128);
         this.rightLeg.addBox(0.0F, 0.0F, 0.0F, 5, 9, 6);
         this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
 
-        this.leftLeg = new ModelRenderer(this, 26, 0);
+        this.leftLeg = new ModelRenderer(this, 38, 39).setTextureSize(256, 128);
         this.leftLeg.addBox(0.0F, 0.0F, 0.0F, 5, 9, 6);
         this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
 
-        this.rightWing = new ModelRenderer(this, 24, 13);
+        this.rightWing = new ModelRenderer(this, 94, 0).setTextureSize(256, 128);
         this.rightWing.addBox(0.0F, 0.0F, 0.0F, 2, 8, 20);
         this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
 
-        this.leftWing = new ModelRenderer(this, 24, 13);
+        this.leftWing = new ModelRenderer(this, 94, 0).setTextureSize(256, 128);
         this.leftWing.addBox(0.0F, 0.0F, 0.0F, 2, 8, 20);
         this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
 
-        this.tailBase = new ModelRenderer(this, 14, 4);
+        this.tailBase = new ModelRenderer(this, 51, 0).setTextureSize(256, 128);
         this.tailBase.addBox(0.0F, 0.0F, 0.0F, 8, 5, 3);
         this.tailBase.setRotationPoint(-4.0F, 7.0F, 13.0F);
 
-        this.tailTop = new ModelRenderer(this, 14, 4);
+        this.tailTop = new ModelRenderer(this, 51, 0).setTextureSize(256, 128);
         this.tailTop.addBox(0.0F, 0.0F, 0.0F, 4, 3, 2);
         this.tailTop.setRotationPoint(-2.0F, 4.0F, 15.0F);
     }
@@ -120,15 +120,15 @@ public class ModelTamedDucky extends ModelBase {
             this.tailTop.setRotationPoint(-2.0F, 13.0F, 15.0F);
         } else {
             this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
+            this.billBase.setRotationPoint(-3.0F, 2.0F, -20.0F);
             this.billFront.setRotationPoint(-3.0F, 3.0F, -22.0F);
             this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
             this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
 
-            this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
             this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
+            this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
 
             this.tailBase.setRotationPoint(-4.0F, 7.0F, 13.0F);
             this.tailTop.setRotationPoint(-2.0F, 4.0F, 15.0F);
