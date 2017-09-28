@@ -9,8 +9,9 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.minecraft.ducky;
+package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
 
@@ -32,14 +33,15 @@ public class EntityTamedDucky extends EntityDucky {
 
     public EntityTamedDucky(final World worldIn) {
         super(worldIn);
-        this.setSize(1.3964844F, 1.6F);
+        this.setSize(0.4F, 0.7F);
+        this.setScale(1.0F);
     }
 
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 5.0F, 10.0F));
-        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 5.0F, 10.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 5.0F, 15.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 5.0F, 15.0F));
         this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
     }
@@ -75,6 +77,7 @@ public class EntityTamedDucky extends EntityDucky {
                         itemstack.func_190918_g(1);
                     }
                     this.heal(itemfood.getHealAmount(itemstack));
+                    this.playTameEffect(true);
                 }
                 return true;
             } else {

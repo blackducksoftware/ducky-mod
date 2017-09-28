@@ -24,7 +24,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.setMutexBits(1);
+        this.setMutexBits(3);
     }
 
     /**
@@ -33,7 +33,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
     @Override
     public boolean shouldExecute() {
         final EntityLivingBase owner = getDucky().getOwner();
-        if (owner == null || getDucky().isSitting()) {
+        if (owner == null || getDucky().isSitting() || getDucky().isAttacking()) {
             return false;
         } else if (owner instanceof EntityPlayer && ((EntityPlayer) owner).isSpectator()) {
             return false;
@@ -54,7 +54,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean continueExecuting() {
-        if (getDucky().isSitting() || !needToFly(getTargetToFollow())) {
+        if (getDucky().isSitting() || getDucky().isAttacking() || !needToFly(getTargetToFollow())) {
             return false;
         }
         distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
@@ -69,7 +69,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
      */
     @Override
     public void updateTask() {
-        if (!updateCalc(distanceToTarget, true)) {
+        if (!updateCalc(distanceToTarget)) {
             return;
         }
         final double xDifference = getTargetToFollow().posX - getDucky().posX;

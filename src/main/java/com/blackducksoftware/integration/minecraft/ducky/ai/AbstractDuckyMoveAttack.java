@@ -68,19 +68,12 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         getDucky().setPathPriority(PathNodeType.WATER, this.oldWaterCost);
     }
 
-    protected boolean updateCalc(final double distanceToTarget, final boolean isFlying) {
+    protected boolean updateCalc(final double distanceToTarget) {
         this.attackTick = Math.max(this.attackTick - 1, 0);
-        final boolean continueUpdate = getTargetToFollow().isEntityAlive();
-        if (continueUpdate) {
-            final double speedModifier = getSpeedModifier(distanceToTarget);
-            if (isFlying) {
-                getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
-            }
-        }
-        return continueUpdate;
+        return getTargetToFollow().isEntityAlive();
     }
 
-    private double getSpeedModifier(final double distanceToTarget) {
+    protected double getSpeedModifier(final double distanceToTarget) {
         double speedModifier = 1.0D;
         if (attackReach > 0 && distanceToTarget < attackReach * 4) {
             speedModifier = 0.75D;
@@ -101,7 +94,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         Path path = navigator.getPath();
 
         boolean shouldFly = false;
-        if (path != null) {
+        if (path == null) {
             final double speedModifier = getSpeedModifier(distanceToTarget);
             getDucky().getNavigator().tryMoveToEntityLiving(target, speedModifier);
             path = navigator.getPath();

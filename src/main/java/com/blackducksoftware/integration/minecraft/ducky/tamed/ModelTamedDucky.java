@@ -9,7 +9,9 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.minecraft.ducky;
+package com.blackducksoftware.integration.minecraft.ducky.tamed;
+
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -20,9 +22,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelDucky extends ModelBase {
-
+public class ModelTamedDucky extends ModelBase {
     public ModelRenderer head;
+    public ModelRenderer hatTop;
+    public ModelRenderer hatBottom;
     public ModelRenderer body;
     public ModelRenderer rightLeg;
     public ModelRenderer leftLeg;
@@ -31,8 +34,10 @@ public class ModelDucky extends ModelBase {
     public ModelRenderer bill;
     public ModelRenderer tail;
 
-    public ModelDucky() {
+    public ModelTamedDucky() {
         this.head = createNewModelRenderer(0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
+        this.hatTop = createNewModelRenderer(40, 0, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
+        this.hatBottom = createNewModelRenderer(39, 0, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
         this.bill = createNewModelRenderer(14, 0, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
 
         this.body = createNewModelRenderer(0, 9, -3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F, 16.0F, 0.0F);
@@ -60,6 +65,8 @@ public class ModelDucky extends ModelBase {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         this.head.render(scale);
+        this.hatTop.render(scale);
+        this.hatBottom.render(scale);
         this.bill.render(scale);
         this.body.render(scale);
         this.tail.render(scale);
@@ -78,6 +85,8 @@ public class ModelDucky extends ModelBase {
 
         if (entityDucky.isSitting()) {
             this.head.setRotationPoint(0.0F, 20.0F, -4.0F);
+            this.hatTop.setRotationPoint(0.0F, 20.0F, -4.0F);
+            this.hatBottom.setRotationPoint(0.0F, 20.0F, -4.0F);
             this.bill.setRotationPoint(0.0F, 20.0F, -4.0F);
             this.tail.setRotationPoint(0.0F, 21.0F, 0.0F);
             this.body.setRotationPoint(0.0F, 21.0F, 0.0F);
@@ -88,6 +97,8 @@ public class ModelDucky extends ModelBase {
             this.leftLeg.setRotationPoint(1.0F, 18.9F, 1.0F);
         } else {
             this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
+            this.hatTop.setRotationPoint(0.0F, 15.0F, -4.0F);
+            this.hatBottom.setRotationPoint(0.0F, 15.0F, -4.0F);
             this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
             this.tail.setRotationPoint(0.0F, 16.0F, 0.0F);
             this.body.setRotationPoint(0.0F, 16.0F, 0.0F);

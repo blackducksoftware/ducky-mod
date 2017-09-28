@@ -24,7 +24,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public DuckyAIFlyTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance, final long memoryLength) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexBits(1);
+        this.setMutexBits(3);
         this.memoryLength = memoryLength;
     }
 
@@ -45,6 +45,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
             return false;
         }
         getDucky().setFlying(true);
+        getDucky().setAttacking(true);
         return true;
     }
 
@@ -55,6 +56,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public boolean continueExecuting() {
         if (!getTargetToFollow().isEntityAlive() || !needToFly(getTargetToFollow()) || getDucky().isSitting()) {
             getDucky().setFlying(false);
+            getDucky().setAttacking(false);
             return false;
         }
         distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
@@ -63,6 +65,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
             return true;
         }
         getDucky().setFlying(false);
+        getDucky().setAttacking(false);
         return false;
     }
 
@@ -71,7 +74,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     @Override
     public void updateTask() {
-        if (!updateCalc(distanceToTarget, true)) {
+        if (!updateCalc(distanceToTarget)) {
             return;
         }
         if (!getDucky().canEntityBeSeen(getTargetToFollow())) {

@@ -35,7 +35,7 @@ public class DuckyMod {
 
     @EventHandler
     public void init(final FMLInitializationEvent event) {
-        GameRegistry.addRecipe(new ItemStack(DuckyModItems.egg), new Object[] { "FO", "OF", 'F', Items.FEATHER, 'O', Blocks.OBSIDIAN });
+        GameRegistry.addRecipe(new ItemStack(DuckyModItems.egg), new Object[] { "OF ", "O F", "OF ", 'F', Items.FEATHER, 'O', Blocks.OBSIDIAN });
 
     }
 

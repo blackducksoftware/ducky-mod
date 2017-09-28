@@ -22,7 +22,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexBits(1);
+        this.setMutexBits(3);
     }
 
     /**
@@ -41,6 +41,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         if (needToFly(target)) {
             return false;
         } else if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance) {
+            getDucky().setAttacking(true);
             return true;
         }
         return false;
@@ -52,6 +53,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     @Override
     public boolean continueExecuting() {
         if (!getTargetToFollow().isEntityAlive() || needToFly(getTargetToFollow())) {
+            getDucky().setAttacking(false);
             return false;
         }
         distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
@@ -59,6 +61,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance) {
             return true;
         }
+        getDucky().setAttacking(false);
         return false;
     }
 
@@ -67,9 +70,11 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     @Override
     public void updateTask() {
-        if (!updateCalc(distanceToTarget, false)) {
+        if (!updateCalc(distanceToTarget)) {
             return;
         }
+        final double speedModifier = getSpeedModifier(distanceToTarget);
+        getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         checkAndPerformAttack(getTargetToFollow(), distanceToTarget);

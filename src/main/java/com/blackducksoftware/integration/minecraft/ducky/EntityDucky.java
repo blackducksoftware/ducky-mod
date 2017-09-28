@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 import com.blackducksoftware.integration.minecraft.DuckyModSounds;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -27,6 +29,7 @@ import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityShulker;
@@ -36,6 +39,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -57,19 +62,12 @@ public class EntityDucky extends EntityTameable {
     public float wingRotDelta = 1.0F;
 
     private boolean isFlying;
+    private boolean isAttacking;
 
     public EntityDucky(final World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F);
         this.setScale(1.0F);
-    }
-
-    public boolean isFlying() {
-        return isFlying;
-    }
-
-    public void setFlying(final boolean isFlying) {
-        this.isFlying = isFlying;
     }
 
     @Override
@@ -83,7 +81,7 @@ public class EntityDucky extends EntityTameable {
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityMob.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityShulker.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityGhast.class, true, false));
-        this.tasks.addTask(6, new EntityAIHurtByTarget(this, true));
+        this.tasks.addTask(6, new EntityAIHurtByTarget(this, true, EntityMob.class, EntityShulker.class, EntityGhast.class));
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, true, new Class[0]));
     }
 
@@ -144,7 +142,15 @@ public class EntityDucky extends EntityTameable {
                 itemstack.func_190918_g(1);
             }
             if (!this.worldObj.isRemote) {
-                final EntityTamedDucky tamedDucky = new EntityTamedDucky(this.worldObj);
+                EntityTamedDucky tamedDucky = null;
+                if (this.rand.nextInt(9) == 0) {
+                    tamedDucky = new EntityGiantTamedDucky(this.worldObj);
+                    final ItemStack firework = createFirework();
+                    final EntityFireworkRocket rocket = new EntityFireworkRocket(worldObj, this.posX, this.posY, this.posZ, firework);
+                    worldObj.spawnEntityInWorld(rocket);
+                } else {
+                    tamedDucky = new EntityTamedDucky(this.worldObj);
+                }
                 if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(tamedDucky, player)) {
                     tamedDucky.moveToBlockPosAndAngles(this.getPosition(), 0.0F, 0.0F);
                     tamedDucky.setTamed(true);
@@ -164,6 +170,31 @@ public class EntityDucky extends EntityTameable {
             return true;
         }
         return false;
+    }
+
+    private ItemStack createFirework() {
+        final ItemStack firework = new ItemStack(Items.FIREWORKS, 3);
+
+        final NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+        final NBTTagCompound nbttagcompound2 = new NBTTagCompound();
+        // explosion
+        final NBTTagCompound explosionCompound = new NBTTagCompound();
+        final NBTTagCompound nbttagcompound3 = new NBTTagCompound();
+        final NBTTagList nbttaglist = new NBTTagList();
+
+        nbttagcompound2.setBoolean("Flicker", true);
+        nbttagcompound2.setBoolean("Trail", true);
+        nbttagcompound2.setByte("Type", (byte) 2);
+        explosionCompound.setTag("Explosion", nbttagcompound2);
+
+        nbttaglist.appendTag(explosionCompound);
+
+        nbttagcompound3.setTag("Explosions", nbttaglist);
+        nbttagcompound3.setByte("Flight", (byte) 1);
+        nbttagcompound1.setTag("Fireworks", nbttagcompound3);
+        firework.setTagCompound(nbttagcompound1);
+
+        return firework;
     }
 
     /**
@@ -269,5 +300,21 @@ public class EntityDucky extends EntityTameable {
     @Override
     public void setScaleForAge(final boolean child) {
         this.setScale(1.0F);
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    public void setFlying(final boolean isFlying) {
+        this.isFlying = isFlying;
+    }
+
+    public boolean isAttacking() {
+        return isAttacking;
+    }
+
+    public void setAttacking(final boolean isAttacking) {
+        this.isAttacking = isAttacking;
     }
 }

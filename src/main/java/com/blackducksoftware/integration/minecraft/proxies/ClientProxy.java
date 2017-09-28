@@ -14,10 +14,12 @@ package com.blackducksoftware.integration.minecraft.proxies;
 import com.blackducksoftware.integration.minecraft.DuckyModItems;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDuckySpawnEgg;
-import com.blackducksoftware.integration.minecraft.ducky.EntityTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.RenderDucky;
 import com.blackducksoftware.integration.minecraft.ducky.RenderDuckySpawnEgg;
-import com.blackducksoftware.integration.minecraft.ducky.RenderTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.RenderTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.RenderGiantTamedDucky;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
@@ -38,6 +40,13 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerEntities() {
         super.registerEntities();
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityGiantTamedDucky.class, new IRenderFactory<EntityGiantTamedDucky>() {
+            @Override
+            public Render<? super EntityGiantTamedDucky> createRenderFor(final RenderManager manager) {
+                return new RenderGiantTamedDucky(manager);
+            }
+        });
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTamedDucky.class, new IRenderFactory<EntityTamedDucky>() {
             @Override

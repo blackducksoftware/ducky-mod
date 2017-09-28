@@ -47,7 +47,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
         this.watchedClassSelector = watchedClassSelector;
         this.maxDistance = maxDistance;
         this.chance = chanceIn;
-        this.setMutexBits(2);
+        this.setMutexBits(5);
         this.lookTime = lookTime;
         this.theNearestAttackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(theWatcher);
     }
