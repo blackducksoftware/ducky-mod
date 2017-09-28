@@ -95,21 +95,15 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
 
         boolean shouldFly = false;
         if (path == null) {
-            final double speedModifier = getSpeedModifier(distanceToTarget);
-            getDucky().getNavigator().tryMoveToEntityLiving(target, speedModifier);
-            path = navigator.getPath();
+            path = getDucky().getNavigator().getPathToEntityLiving(target);
         }
         if (path != null) {
-            if (getDucky().getNavigator().noPath()) {
+            final PathPoint pathpoint = path.getFinalPathPoint();
+            if (pathpoint == null) {
                 shouldFly = true;
             } else {
-                final PathPoint pathpoint = path.getFinalPathPoint();
-                if (pathpoint == null) {
-                    shouldFly = true;
-                } else {
-                    final int i = MathHelper.floor_double(target.posY) - pathpoint.yCoord;
-                    shouldFly = !target.onGround || (i > 1.25D);
-                }
+                final int i = MathHelper.floor_double(target.posY) - pathpoint.yCoord;
+                shouldFly = !target.onGround || (i > 1.25D);
             }
         } else {
             shouldFly = true;

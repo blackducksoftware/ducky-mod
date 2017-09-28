@@ -40,8 +40,8 @@ public class EntityTamedDucky extends EntityDucky {
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 5.0F, 15.0F));
-        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 5.0F, 15.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 5.0F, 10.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 5.0F, 10.0F));
         this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
     }

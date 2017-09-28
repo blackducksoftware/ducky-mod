@@ -41,10 +41,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
             return false;
         }
         distanceToTarget = getDucky().getDistanceSqToEntity(owner);
-        if (needToFly(owner)) {
-            return false;
-        }
-        if (distanceToTarget > maxDistance * maxDistance) {
+        if (distanceToTarget > maxDistance * maxDistance && !needToFly(owner)) {
             setTargetToFollow(owner);
             return true;
         }
@@ -56,14 +53,15 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean continueExecuting() {
-        if (getDucky().isSitting() || getDucky().isAttacking() || getDucky().getNavigator().noPath() || needToFly(getTargetToFollow())) {
+        if (getDucky().isSitting() || getDucky().isAttacking() || getDucky().getNavigator().noPath()) {
+            getDucky().getNavigator().clearPathEntity();
             return false;
         }
-        distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
-        if (distanceToTarget < minDistance * minDistance) {
-            return false;
+        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) > minDistance * minDistance && !needToFly(getTargetToFollow())) {
+            return true;
         }
-        return true;
+        getDucky().getNavigator().clearPathEntity();
+        return false;
     }
 
     @Override

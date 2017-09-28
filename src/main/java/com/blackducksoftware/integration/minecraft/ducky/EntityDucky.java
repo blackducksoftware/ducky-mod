@@ -81,8 +81,7 @@ public class EntityDucky extends EntityTameable {
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityMob.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityShulker.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityGhast.class, true, false));
-        this.tasks.addTask(6, new EntityAIHurtByTarget(this, true, EntityMob.class, EntityShulker.class, EntityGhast.class));
-        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, true, new Class[0]));
+        this.targetTasks.addTask(6, new EntityAIHurtByTarget(this, true, EntityMob.class, EntityShulker.class, EntityGhast.class));
     }
 
     @Override
