@@ -30,6 +30,9 @@ public class ModelTamedDucky extends ModelBase {
     public ModelRenderer rightLeg;
     public ModelRenderer leftLeg;
 
+    public ModelRenderer rightFoot;
+    public ModelRenderer leftFoot;
+
     public ModelRenderer rightWing;
     public ModelRenderer leftWing;
 
@@ -37,29 +40,40 @@ public class ModelTamedDucky extends ModelBase {
     public ModelRenderer tailTop;
 
     public ModelTamedDucky() {
+        // For the parts attached to another body part, they must have the same rotation point for them to rotate correctly when that main body part turns
+        // Ex: the Head and the bill must have the same rotation point, and the bill should offset from that point to render correctly
+        // Ex: the body and the tail, legs and the feet
         this.head = new ModelRenderer(this, 0, 0).setTextureSize(256, 128);
         this.head.addBox(0.0F, 0.0F, 0.0F, 10, 10, 10);
         this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
 
         this.billBase = new ModelRenderer(this, 0, 20).setTextureSize(256, 128);
-        this.billBase.addBox(0.0F, 0.0F, 0.0F, 6, 4, 7);
-        this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
+        this.billBase.addBox(2.0F, 4.0F, -3.0F, 6, 4, 7);
+        this.billBase.setRotationPoint(-5.0F, -2.0F, -16.0F);
 
         this.billFront = new ModelRenderer(this, 0, 31).setTextureSize(256, 128);
-        this.billFront.addBox(0.0F, 0.0F, 0.0F, 6, 3, 7);
-        this.billFront.setRotationPoint(-3.0F, 3.0F, -21.0F);
+        this.billFront.addBox(2.0F, 5.0F, -5.0F, 6, 3, 7);
+        this.billFront.setRotationPoint(-3.0F, 3.0F, -16.0F);
 
         this.body = new ModelRenderer(this, 40, 0).setTextureSize(256, 128);
         this.body.addBox(0.0F, 0.0F, 0.0F, 16, 27, 11);
         this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
-        this.rightLeg = new ModelRenderer(this, 38, 39).setTextureSize(256, 128);
-        this.rightLeg.addBox(0.0F, 0.0F, 0.0F, 5, 9, 6);
+        this.rightLeg = new ModelRenderer(this, 64, 39).setTextureSize(256, 128);
+        this.rightLeg.addBox(0.0F, 0.0F, 0.0F, 3, 9, 3);
         this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
 
-        this.leftLeg = new ModelRenderer(this, 38, 39).setTextureSize(256, 128);
-        this.leftLeg.addBox(0.0F, 0.0F, 0.0F, 5, 9, 6);
-        this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
+        this.leftLeg = new ModelRenderer(this, 64, 39).setTextureSize(256, 128);
+        this.leftLeg.addBox(0.0F, 0.0F, 0.0F, 3, 9, 3);
+        this.leftLeg.setRotationPoint(2.0F, 15.0F, -3.0F);
+
+        this.rightFoot = new ModelRenderer(this, 41, 39).setTextureSize(256, 128);
+        this.rightFoot.addBox(-1.0F, 7.0F, -3.0F, 5, 2, 4);
+        this.rightFoot.setRotationPoint(-6.0F, 15.0F, -3.0F);
+
+        this.leftFoot = new ModelRenderer(this, 41, 39).setTextureSize(256, 128);
+        this.leftFoot.addBox(-1.0F, 7.0F, -3.0F, 5, 2, 4);
+        this.leftFoot.setRotationPoint(2.0F, 15.0F, -3.0F);
 
         this.rightWing = new ModelRenderer(this, 94, 0).setTextureSize(256, 128);
         this.rightWing.addBox(0.0F, 0.0F, 0.0F, 2, 8, 20);
@@ -70,12 +84,12 @@ public class ModelTamedDucky extends ModelBase {
         this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
 
         this.tailBase = new ModelRenderer(this, 51, 0).setTextureSize(256, 128);
-        this.tailBase.addBox(0.0F, 0.0F, 0.0F, 8, 5, 3);
-        this.tailBase.setRotationPoint(-4.0F, 7.0F, 13.0F);
+        this.tailBase.addBox(4.0F, 24.0F, 8.0F, 8, 5, 3);
+        this.tailBase.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
         this.tailTop = new ModelRenderer(this, 51, 0).setTextureSize(256, 128);
-        this.tailTop.addBox(0.0F, 0.0F, 0.0F, 4, 3, 2);
-        this.tailTop.setRotationPoint(-2.0F, 4.0F, 15.0F);
+        this.tailTop.addBox(6.0F, 26.0F, 11.0F, 4, 3, 2);
+        this.tailTop.setRotationPoint(-8.0F, 15.0F, -11.0F);
     }
 
     /**
@@ -93,6 +107,8 @@ public class ModelTamedDucky extends ModelBase {
         this.tailTop.render(scale);
         this.rightLeg.render(scale);
         this.leftLeg.render(scale);
+        this.rightFoot.render(scale);
+        this.leftFoot.render(scale);
         this.rightWing.render(scale);
         this.leftWing.render(scale);
     }
@@ -105,33 +121,43 @@ public class ModelTamedDucky extends ModelBase {
         final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
 
         if (entityDucky.isSitting()) {
+            // When Ducky sits we want his parts to move down but his legs should remain in place
+            // to move Ducky down, for some reason that is an increase in the Y rotation point
             this.head.setRotationPoint(-5.0F, 5.0F, -16.0F);
-            this.billBase.setRotationPoint(-3.0F, 9.0F, -19.0F);
-            this.billFront.setRotationPoint(-3.0F, 10.0F, -21.0F);
+            this.billBase.setRotationPoint(-5.0F, 5.0F, -16.0F);
+            this.billFront.setRotationPoint(-5.0F, 5.0F, -16.0F);
             this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
-            this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
+            this.leftLeg.setRotationPoint(2.0F, 15.0F, -3.0F);
+
+            this.leftFoot.setRotationPoint(2.0F, 15.0F, -3.0F);
+            this.rightFoot.setRotationPoint(-6.0F, 15.0F, -3.0F);
 
             this.rightWing.setRotationPoint(-10.0F, 14.0F, -9.0F);
             this.leftWing.setRotationPoint(8.0F, 14.0F, -9.0F);
 
-            this.tailBase.setRotationPoint(-4.0F, 16.0F, 13.0F);
-            this.tailTop.setRotationPoint(-2.0F, 13.0F, 15.0F);
+            this.tailBase.setRotationPoint(-8.0F, 24.0F, -11.0F);
+            this.tailTop.setRotationPoint(-8.0F, 24.0F, -11.0F);
         } else {
+            // When Ducky stands up we want his parts to move up again but his legs should remain in place
+            // to move Ducky up, for some reason that is an decrease in the Y rotation point
             this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.billBase.setRotationPoint(-3.0F, 2.0F, -19.0F);
-            this.billFront.setRotationPoint(-3.0F, 3.0F, -21.0F);
+            this.billBase.setRotationPoint(-5.0F, -2.0F, -16.0F);
+            this.billFront.setRotationPoint(-5.0F, -2.0F, -16.0F);
             this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
-            this.leftLeg.setRotationPoint(1.0F, 15.0F, -3.0F);
+            this.leftLeg.setRotationPoint(2.0F, 15.0F, -3.0F);
+
+            this.leftFoot.setRotationPoint(2.0F, 15.0F, -3.0F);
+            this.rightFoot.setRotationPoint(-6.0F, 15.0F, -3.0F);
 
             this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
             this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
 
-            this.tailBase.setRotationPoint(-4.0F, 7.0F, 13.0F);
-            this.tailTop.setRotationPoint(-2.0F, 4.0F, 15.0F);
+            this.tailBase.setRotationPoint(-8.0F, 15.0F, -11.0F);
+            this.tailTop.setRotationPoint(-8.0F, 15.0F, -11.0F);
         }
     }
 
@@ -143,18 +169,35 @@ public class ModelTamedDucky extends ModelBase {
     public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+        // we want the bill to rotate the same as the head
         this.billBase.rotateAngleX = this.head.rotateAngleX;
         this.billBase.rotateAngleY = this.head.rotateAngleY;
+        this.billBase.rotateAngleZ = this.head.rotateAngleZ;
         this.billFront.rotateAngleX = this.head.rotateAngleX;
         this.billFront.rotateAngleY = this.head.rotateAngleY;
+        this.billFront.rotateAngleZ = this.head.rotateAngleZ;
 
         this.body.rotateAngleX = ((float) Math.PI / 2F);
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+
+        // we want the feet to rotate the same as the legs
+        this.rightFoot.rotateAngleX = this.rightLeg.rotateAngleX;
+        this.rightFoot.rotateAngleY = this.rightLeg.rotateAngleY;
+        this.rightFoot.rotateAngleZ = this.rightLeg.rotateAngleZ;
+        this.leftFoot.rotateAngleX = this.leftLeg.rotateAngleX;
+        this.leftFoot.rotateAngleY = this.leftLeg.rotateAngleY;
+        this.leftFoot.rotateAngleZ = this.leftLeg.rotateAngleZ;
+
         this.rightWing.rotateAngleZ = ageInTicks;
         this.leftWing.rotateAngleZ = -ageInTicks;
 
-        this.tailBase.rotateAngleX = ((float) Math.PI / 2F);
-        this.tailTop.rotateAngleX = ((float) Math.PI / 2F);
+        // we want the tail to rotate the same as the legs
+        this.tailBase.rotateAngleX = this.body.rotateAngleX;
+        this.tailBase.rotateAngleY = this.body.rotateAngleY;
+        this.tailBase.rotateAngleZ = this.body.rotateAngleZ;
+        this.tailTop.rotateAngleX = this.body.rotateAngleX;
+        this.tailTop.rotateAngleY = this.body.rotateAngleY;
+        this.tailTop.rotateAngleZ = this.body.rotateAngleZ;
     }
 }

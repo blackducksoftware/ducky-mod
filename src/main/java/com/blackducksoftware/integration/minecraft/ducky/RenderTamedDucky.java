@@ -39,9 +39,9 @@ public class RenderTamedDucky extends RenderLiving<EntityDucky> {
      * Defines what float the third param in setRotationAngles of ModelBase is
      */
     @Override
-    protected float handleRotationFloat(final EntityDucky livingBase, final float partialTicks) {
-        final float f = livingBase.oFlap + (livingBase.wingRotation - livingBase.oFlap) * partialTicks;
-        final float f1 = livingBase.oFlapSpeed + (livingBase.destPos - livingBase.oFlapSpeed) * partialTicks;
+    protected float handleRotationFloat(final EntityDucky ducky, final float partialTicks) {
+        final float f = ducky.oFlap + (ducky.wingRotation - ducky.oFlap) * partialTicks;
+        final float f1 = ducky.oFlapSpeed + (ducky.destPos - ducky.oFlapSpeed) * partialTicks;
         return (MathHelper.sin(f) + 1.0F) * f1;
     }
 
