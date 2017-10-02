@@ -26,7 +26,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.setMutexBits(3);
+        this.setMutexBits(7);
     }
 
     /**
@@ -56,7 +56,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getDistanceSqToEntity(getTargetToFollow()) < minDistance * minDistance || !needToFly(getTargetToFollow())) {
             return false;
         }
-        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) < minDistance * minDistance && needToFly(getTargetToFollow())) {
+        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().posY < getTargetToFollow().posY) {
             distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
             return true;
         }
