@@ -71,7 +71,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         if (!updateCalc(distanceToTarget)) {
             return;
         }
-        if (distanceToTarget >= 144.0D || isDuckyStuck()) {
+        if (distanceToTarget >= 256.0D || isDuckyStuck()) {
             relocateDuckyNearTarget();
         } else {
             Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());

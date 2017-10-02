@@ -20,6 +20,8 @@ import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -119,9 +121,24 @@ public class EntityDucky extends EntityTameable {
         }
         this.wingRotDelta = (float) (this.wingRotDelta * 0.9D);
         this.wingRotation += this.wingRotDelta * 2.0F;
-        if (!this.onGround && this.motionY < 0.0D && !isFlying()) { // && !this.isInWater() && !this.isInLava()) {
+        if (!this.onGround && this.motionY < 0.0D && !isFlying() && getDistanceToGround() > 3) { // && !this.isInWater() && !this.isInLava()) {
             this.motionY *= 0.6D;
         }
+    }
+
+    public int getDistanceToGround() {
+        BlockPos loc = null;
+        final double y = this.getPosition().getY();
+        int distance = 0;
+        for (double i = y; i >= 0; i--) {
+            loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
+            final IBlockState blockstate = this.worldObj.getBlockState(loc);
+            if (blockstate.getMaterial() != Material.AIR || blockstate.isFullCube()) {
+                break;
+            }
+            distance++;
+        }
+        return distance;
     }
 
     @Override

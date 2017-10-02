@@ -70,7 +70,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
         final double speedModifier = getSpeedModifier(distanceToTarget);
         getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
 
-        if ((getDucky().getNavigator().getPath() != null && distanceToTarget >= 144.0D) || isDuckyStuck()) {
+        if ((getDucky().getNavigator().getPath() != null && distanceToTarget >= 256.0D) || isDuckyStuck()) {
             relocateDuckyNearTarget();
             getDucky().getNavigator().clearPathEntity();
         }
