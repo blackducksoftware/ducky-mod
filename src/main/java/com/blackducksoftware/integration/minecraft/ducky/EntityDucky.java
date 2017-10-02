@@ -211,6 +211,10 @@ public class EntityDucky extends EntityTameable {
         }
     }
 
+    public boolean canMove() {
+        return !isSitting() && !getLeashed();
+    }
+
     /**
      * Checks if the parameter is an item which this animal can be fed to breed it (wheat, carrots or seeds depending on the animal type)
      */

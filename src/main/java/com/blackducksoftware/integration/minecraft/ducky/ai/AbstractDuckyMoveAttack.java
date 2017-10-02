@@ -24,6 +24,7 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     private final EntityDucky ducky;
@@ -33,6 +34,8 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected float oldWaterCost;
     protected double distanceToTarget;
     protected double attackReach;
+    protected int stuckTick;
+    protected Vec3d lastPostion = null;
 
     public AbstractDuckyMoveAttack(final EntityDucky ducky) {
         this.ducky = ducky;
@@ -70,6 +73,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
 
     protected boolean updateCalc(final double distanceToTarget) {
         this.attackTick = Math.max(this.attackTick - 1, 0);
+        this.stuckTick++;
         return getTargetToFollow().isEntityAlive();
     }
 
@@ -131,17 +135,34 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         }
     }
 
-    public float rotationYawToTarget() {
-        double dirx = getDucky().posX - getTargetToFollow().posX;
-        final double diry = getDucky().posY - getTargetToFollow().posY;
-        double dirz = getDucky().posZ - getTargetToFollow().posZ;
-        final double len = Math.sqrt(dirx * dirx + diry * diry + dirz * dirz);
-        dirx /= len;
-        dirz /= len;
-        double yaw = Math.atan2(dirz, dirx);
-        // to degree
-        yaw = yaw * 180.0 / Math.PI;
-        yaw += 90f;
-        return (float) yaw;
+    protected boolean isDuckyStuck() {
+        if (lastPostion == null) {
+            lastPostion = getDucky().getPositionVector();
+        }
+        if (stuckTick > 100) {
+            stuckTick = 0;
+            if (lastPostion.squareDistanceTo(getDucky().getPositionVector()) < 2.25D) {
+                lastPostion = getDucky().getPositionVector();
+                stuckTick = 0;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void relocateDuckyNearTarget() {
+        final int i = MathHelper.floor_double(getTargetToFollow().posX) - 2;
+        final int j = MathHelper.floor_double(getTargetToFollow().posZ) - 2;
+        final int k = MathHelper.floor_double(getTargetToFollow().getEntityBoundingBox().minY);
+
+        for (int l = 0; l <= 4; ++l) {
+            for (int i1 = 0; i1 <= 4; ++i1) {
+                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && getDucky().worldObj.getBlockState(new BlockPos(i + l, k - 1, j + i1)).isOpaqueCube() && this.isEmptyBlock(new BlockPos(i + l, k, j + i1))
+                        && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
+                    getDucky().setLocationAndAngles(i + l + 0.5F, k, j + i1 + 0.5F, getDucky().rotationYaw, getDucky().rotationPitch);
+                    return;
+                }
+            }
+        }
     }
 }

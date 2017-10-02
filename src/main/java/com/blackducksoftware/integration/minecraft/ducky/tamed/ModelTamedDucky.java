@@ -118,6 +118,12 @@ public class ModelTamedDucky extends ModelBase {
     public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+        this.hatTop.rotateAngleX = this.head.rotateAngleX;
+        this.hatTop.rotateAngleY = this.head.rotateAngleY;
+        this.hatTop.rotateAngleZ = this.head.rotateAngleZ;
+        this.hatBottom.rotateAngleX = this.head.rotateAngleX;
+        this.hatBottom.rotateAngleY = this.head.rotateAngleY;
+        this.hatBottom.rotateAngleZ = this.head.rotateAngleZ;
         this.bill.rotateAngleX = this.head.rotateAngleX;
         this.bill.rotateAngleY = this.head.rotateAngleY;
         this.bill.rotateAngleZ = this.head.rotateAngleZ;

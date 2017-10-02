@@ -31,7 +31,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     @Override
     public boolean shouldExecute() {
         final Entity target = getDucky().getAttackTarget();
-        if (target == null || getDucky().isSitting()) {
+        if (target == null || !getDucky().canMove()) {
             return false;
         }
         setTargetToFollow(target);
@@ -50,7 +50,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean continueExecuting() {
-        if (!getTargetToFollow().isEntityAlive()) {
+        if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove() || isDuckyStuck()) {
             getDucky().setAttacking(false);
             return false;
         }

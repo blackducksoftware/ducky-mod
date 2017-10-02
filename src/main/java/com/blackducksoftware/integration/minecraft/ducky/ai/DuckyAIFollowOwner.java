@@ -15,8 +15,6 @@ import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 
 public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
     private final float minDistance;
@@ -35,7 +33,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
     @Override
     public boolean shouldExecute() {
         final EntityLivingBase owner = getDucky().getOwner();
-        if (owner == null || getDucky().isSitting() || getDucky().isAttacking()) {
+        if (owner == null || !getDucky().canMove() || getDucky().isAttacking()) {
             return false;
         } else if (owner instanceof EntityPlayer && ((EntityPlayer) owner).isSpectator()) {
             return false;
@@ -53,7 +51,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean continueExecuting() {
-        if (getDucky().isSitting() || getDucky().isAttacking() || getDucky().getNavigator().noPath()) {
+        if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getNavigator().noPath()) {
             getDucky().getNavigator().clearPathEntity();
             return false;
         }
@@ -72,25 +70,9 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
         final double speedModifier = getSpeedModifier(distanceToTarget);
         getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
 
-        if (getDucky().getNavigator().getPath() != null) {
-            if (!getDucky().getLeashed() && !getDucky().isSitting()) {
-                if (distanceToTarget >= 144.0D) {
-                    final int i = MathHelper.floor_double(getTargetToFollow().posX) - 2;
-                    final int j = MathHelper.floor_double(getTargetToFollow().posZ) - 2;
-                    final int k = MathHelper.floor_double(getTargetToFollow().getEntityBoundingBox().minY);
-
-                    for (int l = 0; l <= 4; ++l) {
-                        for (int i1 = 0; i1 <= 4; ++i1) {
-                            if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && getDucky().worldObj.getBlockState(new BlockPos(i + l, k - 1, j + i1)).isFullyOpaque() && this.isEmptyBlock(new BlockPos(i + l, k, j + i1))
-                                    && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
-                                getDucky().setLocationAndAngles(i + l + 0.5F, k, j + i1 + 0.5F, getDucky().rotationYaw, getDucky().rotationPitch);
-                                getDucky().getNavigator().clearPathEntity();
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+        if ((getDucky().getNavigator().getPath() != null && distanceToTarget >= 144.0D) || isDuckyStuck()) {
+            relocateDuckyNearTarget();
+            getDucky().getNavigator().clearPathEntity();
         }
     }
 
