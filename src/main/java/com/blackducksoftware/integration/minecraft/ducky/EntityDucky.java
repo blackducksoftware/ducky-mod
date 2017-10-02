@@ -98,7 +98,7 @@ public class EntityDucky extends EntityTameable {
      */
     @Override
     public boolean canAttackClass(final Class<? extends EntityLivingBase> cls) {
-        return cls != EntityPlayer.class && cls != EntityTamedDucky.class && cls != EntityDucky.class && !cls.isAssignableFrom(EntityAgeable.class);
+        return true;
     }
 
     /**

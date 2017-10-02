@@ -42,6 +42,6 @@ public class CommonProxy {
     /** registers the entity **/
     protected static void register(final Class entityClass, final String name) {
 
-        EntityRegistry.registerModEntity(new ResourceLocation(DuckyMod.MODID), entityClass, name, ++entityCount, DuckyMod.instance, 16 * 4, 3, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DuckyMod.MODID + ":" + name), entityClass, name, ++entityCount, DuckyMod.instance, 16 * 4, 3, true);
     }
 }

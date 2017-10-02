@@ -43,7 +43,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         distanceToTarget = getDucky().getDistanceSqToEntity(target);
         attackReach = getAttackReachSqr(target);
         checkAndPerformAttack(target, distanceToTarget);
-        if (distanceToTarget > this.maxTargetDistance * this.maxTargetDistance && needToFly(target)) {
+        if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance && needToFly(target)) {
             getDucky().setFlying(true);
             getDucky().setAttacking(true);
             return true;
@@ -61,7 +61,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
             getDucky().setAttacking(false);
             return false;
         }
-        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) > this.maxTargetDistance * this.maxTargetDistance && needToFly(getTargetToFollow())) {
+        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) < this.maxTargetDistance * this.maxTargetDistance && needToFly(getTargetToFollow())) {
             distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
             checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
             if (targetLastSeen < memoryLength) {
