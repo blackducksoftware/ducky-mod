@@ -121,24 +121,23 @@ public class EntityDucky extends EntityTameable {
         }
         this.wingRotDelta = (float) (this.wingRotDelta * 0.9D);
         this.wingRotation += this.wingRotDelta * 2.0F;
-        if (!this.onGround && this.motionY < 0.0D && !isFlying() && getDistanceToGround() > 3) { // && !this.isInWater() && !this.isInLava()) {
+        if (!this.onGround && this.motionY < 0.0D && !isFlying() && isTooHigh()) {
             this.motionY *= 0.6D;
         }
     }
 
-    public int getDistanceToGround() {
+    public boolean isTooHigh() {
         BlockPos loc = null;
         final double y = this.getPosition().getY();
-        int distance = 0;
-        for (double i = y; i >= 0; i--) {
+        boolean isTooHigh = true;
+        for (double i = y; i >= y - 3; i--) {
             loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
             final IBlockState blockstate = this.worldObj.getBlockState(loc);
             if (blockstate.getMaterial() != Material.AIR || blockstate.isFullCube()) {
-                break;
+                isTooHigh = false;
             }
-            distance++;
         }
-        return distance;
+        return isTooHigh;
     }
 
     @Override

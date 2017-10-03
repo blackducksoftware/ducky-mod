@@ -73,16 +73,16 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         }
         if (distanceToTarget >= 256.0D || isDuckyStuck()) {
             relocateDuckyNearTarget();
-        } else {
-            Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
-            vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-            getDucky().motionX = vector.xCoord;
-            getDucky().motionY = vector.yCoord + 0.05F;
-            getDucky().motionZ = vector.zCoord;
-
-            getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-            getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         }
+        Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
+        vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+        getDucky().motionX = vector.xCoord;
+        getDucky().motionY = vector.yCoord + 0.05F;
+        getDucky().motionZ = vector.zCoord;
+
+        getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+
     }
 
 }
