@@ -26,7 +26,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public DuckyAIFlyTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance, final long memoryLength) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexBits(1);
+        this.setMutexBits(3);
         this.memoryLength = memoryLength;
     }
 
@@ -56,7 +56,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean continueExecuting() {
-        if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove() || isDuckyStuck()) {
+        if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove()) {
             getDucky().setFlying(false);
             getDucky().setAttacking(false);
             return false;
@@ -89,7 +89,11 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
         vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
         getDucky().motionX = vector.xCoord;
-        getDucky().motionY = vector.yCoord + 0.1F;
+        float yAdjustment = 0.1F;
+        if (isDuckyStuck()) {
+            yAdjustment = 0.5F;
+        }
+        getDucky().motionY = vector.yCoord + yAdjustment;
         getDucky().motionZ = vector.zCoord;
 
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());

@@ -15,7 +15,9 @@ import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.DuckyModSounds;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAILookIdle;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIWander;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
@@ -28,11 +30,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMob;
@@ -78,8 +78,8 @@ public class EntityDucky extends EntityTameable {
     protected void initEntityAI() {
         this.aiSit = new EntityAISit(this);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIWander(this, 1.0D, 100));
-        this.tasks.addTask(2, new EntityAILookIdle(this));
+        this.tasks.addTask(1, new DuckyAIWander(this, 1.0D, 100));
+        this.tasks.addTask(2, new DuckyAILookIdle(this));
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
         this.tasks.addTask(4, new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32));
@@ -93,7 +93,7 @@ public class EntityDucky extends EntityTameable {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(BASE_HEALTH);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.65D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
     }
