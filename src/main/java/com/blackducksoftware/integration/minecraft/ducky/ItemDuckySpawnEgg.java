@@ -33,18 +33,20 @@ public class ItemDuckySpawnEgg extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer playerIn, final EnumHand hand) {
-        final ItemStack itemStack = playerIn.getHeldItem(hand);
-
-        worldIn.playSound((EntityPlayer) null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+    public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer player, final EnumHand hand) {
+        final ItemStack itemStack = player.getHeldItem(hand);
+        if (!player.capabilities.isCreativeMode) {
+            itemStack.func_190918_g(1);
+        }
+        worldIn.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
-            final EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(worldIn, playerIn);
-            entityegg.setHeadingFromThrower(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
+            final EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(worldIn, player);
+            entityegg.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.spawnEntityInWorld(entityegg);
         }
 
-        playerIn.addStat(StatList.getObjectUseStats(this));
+        player.addStat(StatList.getObjectUseStats(this));
         return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
     }
 }
