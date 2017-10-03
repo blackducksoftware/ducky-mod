@@ -26,7 +26,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public DuckyAIFlyTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance, final long memoryLength) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexBits(7);
+        this.setMutexBits(3);
         this.memoryLength = memoryLength;
     }
 

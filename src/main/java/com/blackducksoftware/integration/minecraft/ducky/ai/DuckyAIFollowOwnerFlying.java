@@ -26,7 +26,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.setMutexBits(7);
+        this.setMutexBits(3);
     }
 
     /**
