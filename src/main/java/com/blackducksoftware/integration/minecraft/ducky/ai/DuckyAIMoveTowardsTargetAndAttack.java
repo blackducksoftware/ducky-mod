@@ -22,7 +22,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexBits(3);
+        this.setMutexBits(1);
     }
 
     /**
