@@ -138,29 +138,32 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected boolean isDuckyStuck() {
         if (lastPostion == null) {
             lastPostion = getDucky().getPositionVector();
-        }
-        if (stuckTick > 100) {
+        } else if (stuckTick > 20) {
             stuckTick = 0;
             if (lastPostion.squareDistanceTo(getDucky().getPositionVector()) < 2.25D) {
-                lastPostion = getDucky().getPositionVector();
-                stuckTick = 0;
                 return true;
             }
+            lastPostion = getDucky().getPositionVector();
         }
         return false;
     }
 
     protected void relocateDuckyNearTarget() {
-        final int i = MathHelper.floor_double(getTargetToFollow().posX) - 2;
-        final int j = MathHelper.floor_double(getTargetToFollow().posZ) - 2;
-        final int k = MathHelper.floor_double(getTargetToFollow().getEntityBoundingBox().minY);
+        final int startingX = MathHelper.floor_double(getTargetToFollow().posX) - 2;
+        final int startingZ = MathHelper.floor_double(getTargetToFollow().posZ) - 2;
+        final int startingY = MathHelper.floor_double(getTargetToFollow().getEntityBoundingBox().minY);
 
-        for (int l = 0; l <= 4; ++l) {
-            for (int i1 = 0; i1 <= 4; ++i1) {
-                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && getDucky().worldObj.getBlockState(new BlockPos(i + l, k - 1, j + i1)).isOpaqueCube() && this.isEmptyBlock(new BlockPos(i + l, k, j + i1))
-                        && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
-                    getDucky().setLocationAndAngles(i + l + 0.5F, k, j + i1 + 0.5F, getDucky().rotationYaw, getDucky().rotationPitch);
-                    return;
+        // Search a 4x4 area around the target (at least 2 blocks away from the target) for a 2 high empty spot on a solid block to put Ducky
+        for (int xAdjustment = 0; xAdjustment <= 4; ++xAdjustment) {
+            for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
+                if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
+                    final boolean isBlockBelowSolid = getDucky().worldObj.getBlockState(new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment)).isOpaqueCube();
+                    final boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
+                    final boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
+                    if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {
+                        getDucky().setLocationAndAngles(startingX + xAdjustment + 0.5F, startingY, startingZ + zAdjustment + 0.5F, getDucky().rotationYaw, getDucky().rotationPitch);
+                        return;
+                    }
                 }
             }
         }

@@ -56,8 +56,8 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getDistanceSqToEntity(getTargetToFollow()) < minDistance * minDistance || !needToFly(getTargetToFollow())) {
             return false;
         }
-        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().posY < getTargetToFollow().posY) {
-            distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
+        distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
+        if (distanceToTarget > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().posY < getTargetToFollow().posY) {
             return true;
         }
         return false;
@@ -72,7 +72,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
             return;
         }
         final boolean isStuck = isDuckyStuck();
-        if (distanceToTarget >= 256.0D || isStuck) {
+        if (distanceToTarget >= 256.0D || (distanceToTarget > minDistance * minDistance && isStuck)) {
             relocateDuckyNearTarget();
         }
         Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());

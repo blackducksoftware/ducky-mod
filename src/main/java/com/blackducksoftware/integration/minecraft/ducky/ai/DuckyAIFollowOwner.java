@@ -55,7 +55,8 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
             getDucky().getNavigator().clearPathEntity();
             return false;
         }
-        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) > minDistance * minDistance && !needToFly(getTargetToFollow())) {
+        distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
+        if (distanceToTarget > minDistance * minDistance && !needToFly(getTargetToFollow())) {
             return true;
         }
         getDucky().getNavigator().clearPathEntity();
@@ -70,7 +71,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
         final double speedModifier = getSpeedModifier(distanceToTarget);
         getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
 
-        if ((getDucky().getNavigator().getPath() != null && distanceToTarget >= 256.0D) || isDuckyStuck()) {
+        if ((getDucky().getNavigator().getPath() != null && distanceToTarget >= 256.0D) || (distanceToTarget > minDistance * minDistance && isDuckyStuck())) {
             relocateDuckyNearTarget();
             getDucky().getNavigator().clearPathEntity();
         }
