@@ -4,7 +4,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -15,13 +15,13 @@ version = "1.11.2-0.0.1-SNAPSHOT"
 group= "com.blackducksoftware.integration" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ducky-mod"
 
-sourceCompatibility = targetCompatibility = "1.7" // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.7"
+    sourceCompatibility = targetCompatibility = "1.8"
 }
 
 minecraft {
-    version = "1.11.2-13.20.1.2386"
+    version = "1.12.2-14.23.0.2491"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.

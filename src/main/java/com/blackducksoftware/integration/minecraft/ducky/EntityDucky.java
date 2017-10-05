@@ -257,7 +257,7 @@ public class EntityDucky extends EntityTameable {
     }
 
     @Override
-    protected SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(final DamageSource source) {
         return DuckyModSounds.duckHurt;
     }
 

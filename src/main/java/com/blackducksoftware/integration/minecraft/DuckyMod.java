@@ -2,16 +2,12 @@ package com.blackducksoftware.integration.minecraft;
 
 import com.blackducksoftware.integration.minecraft.proxies.CommonProxy;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = DuckyMod.MODID, version = DuckyMod.VERSION)
 public class DuckyMod {
@@ -35,8 +31,8 @@ public class DuckyMod {
 
     @EventHandler
     public void init(final FMLInitializationEvent event) {
-        GameRegistry.addRecipe(new ItemStack(DuckyModItems.egg), new Object[] { "OF ", "O F", "OF ", 'F', Items.FEATHER, 'O', Blocks.OBSIDIAN });
-
+        // GameRegistry.addRecipe(new ItemStack(DuckyModItems.egg), new Object[] { "OF ", "O F", "OF ", 'F', Items.FEATHER, 'O', Blocks.OBSIDIAN });
+        // GameRegistry.addShapedRecipe(name, group, output, params);
     }
 
     @EventHandler
