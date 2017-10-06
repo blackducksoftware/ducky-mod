@@ -50,11 +50,11 @@ public class ModelGiantTamedDucky extends ModelBase {
         // For the parts attached to another body part, they must have the same rotation point for them to rotate correctly when that main body part turns
         // Ex: the Head and the bill must have the same rotation point, and the bill should offset from that point to render correctly
         // Ex: the body and the tail, legs and the feet
-        this.head = createNewModelRenderer(0, 0, 0.0F, -2.0F, 0.0F, 10, 10, 10, -5.0F, -2.0F, -16.0F);
-        this.hatTop = createNewModelRenderer(0, 52, 0.0F, -5.0F, 0.0F, 11, 3, 11, -5.0F, -2.0F, -16.0F);
-        this.hatBottom = createNewModelRenderer(0, 52, 0.0F, -3.0F, -3.0F, 11, 1, 15, -5.0F, -2.0F, -16.0F);
-        this.billBase = createNewModelRenderer(0, 20, 2.0F, 2.0F, -3.0F, 6, 4, 7, -5.0F, -2.0F, -16.0F);
-        this.billFront = createNewModelRenderer(0, 31, 2.0F, 3.0F, -5.0F, 6, 3, 7, -5.0F, -2.0F, -16.0F);
+        this.head = createNewModelRenderer(0, 0, 0.0F, -2.0F, -9.0F, 10, 10, 10, -5.0F, -2.0F, -7.0F);
+        this.hatTop = createNewModelRenderer(4, 54, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
+        this.hatBottom = createNewModelRenderer(0, 52, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
+        this.billBase = createNewModelRenderer(0, 20, 2.0F, 2.0F, -12.0F, 6, 4, 7, -5.0F, -2.0F, -7.0F);
+        this.billFront = createNewModelRenderer(0, 31, 2.0F, 3.0F, -14.0F, 6, 3, 7, -5.0F, -2.0F, -7.0F);
 
         this.body = createNewModelRenderer(40, 0, 0.0F, 0.0F, 0.0F, 16, 27, 11, -8.0F, 15.0F, -11.0F);
         this.tailBase = createNewModelRenderer(79, 39, 4.0F, 23.0F, 10.0F, 8, 5, 3, -8.0F, 15.0F, -11.0F);
@@ -111,11 +111,11 @@ public class ModelGiantTamedDucky extends ModelBase {
         if (entityDucky.isSitting()) {
             // When Ducky sits we want his parts to move down but his legs should remain in place
             // to move Ducky down, for some reason that is an increase in the Y rotation point
-            this.head.setRotationPoint(-5.0F, 5.0F, -16.0F);
-            this.hatTop.setRotationPoint(-5.0F, 5.0F, -16.0F);
-            this.hatBottom.setRotationPoint(-5.0F, 5.0F, -16.0F);
-            this.billBase.setRotationPoint(-5.0F, 5.0F, -16.0F);
-            this.billFront.setRotationPoint(-5.0F, 5.0F, -16.0F);
+            this.head.setRotationPoint(-5.0F, 5.0F, -7.0F);
+            this.hatTop.setRotationPoint(-5.0F, 5.0F, -7.0F);
+            this.hatBottom.setRotationPoint(-5.0F, 5.0F, -7.0F);
+            this.billBase.setRotationPoint(-5.0F, 5.0F, -7.0F);
+            this.billFront.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 14.5F, -3.0F);
@@ -132,11 +132,11 @@ public class ModelGiantTamedDucky extends ModelBase {
         } else {
             // When Ducky stands up we want his parts to move up again but his legs should remain in place
             // to move Ducky up, for some reason that is an decrease in the Y rotation point
-            this.head.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.hatTop.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.hatBottom.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.billBase.setRotationPoint(-5.0F, -2.0F, -16.0F);
-            this.billFront.setRotationPoint(-5.0F, -2.0F, -16.0F);
+            this.head.setRotationPoint(-5.0F, -2.0F, -7.0F);
+            this.hatTop.setRotationPoint(-5.0F, -2.0F, -7.0F);
+            this.hatBottom.setRotationPoint(-5.0F, -2.0F, -7.0F);
+            this.billBase.setRotationPoint(-5.0F, -2.0F, -7.0F);
+            this.billFront.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
 
             this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);

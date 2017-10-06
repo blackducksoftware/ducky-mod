@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
+import java.util.List;
+
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
@@ -20,9 +22,14 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIOwnerHurtByTarget;
 import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class EntityTamedDucky extends EntityDucky {
@@ -80,6 +87,13 @@ public class EntityTamedDucky extends EntityDucky {
                     this.playTameEffect(true);
                 }
                 return true;
+            } else if (Items.POTIONITEM == itemstack.getItem()) {
+                final ItemPotion potion = (ItemPotion) itemstack.getItem();
+                if (potion.hasEffect(itemstack)) {
+                    final List<PotionEffect> potionEffects = PotionUtils.getEffectsFromStack(itemstack);
+                    potionEffects.get(0).getEffectName();
+                    player.addChatMessage(new TextComponentString(potionEffects.get(0).getEffectName()));
+                }
             } else {
                 if (this.isOwner(player) && !this.worldObj.isRemote) {
                     setSitting(!this.isSitting());
