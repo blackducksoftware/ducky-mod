@@ -26,6 +26,10 @@ public class ModelTamedDucky extends ModelBase {
     public ModelRenderer head;
     public ModelRenderer hatTop;
     public ModelRenderer hatBottom;
+
+    public ModelRenderer fireProofHatTop;
+    public ModelRenderer fireProofHatBottom;
+
     public ModelRenderer body;
     public ModelRenderer rightLeg;
     public ModelRenderer leftLeg;
@@ -36,8 +40,14 @@ public class ModelTamedDucky extends ModelBase {
 
     public ModelTamedDucky() {
         this.head = createNewModelRenderer(0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
-        this.hatTop = createNewModelRenderer(40, 0, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
+        this.hatTop = createNewModelRenderer(40, 1, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
         this.hatBottom = createNewModelRenderer(39, 0, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
+
+        this.fireProofHatTop = createNewModelRenderer(40, 8, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
+        this.fireProofHatBottom = createNewModelRenderer(39, 7, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
+        this.fireProofHatTop.isHidden = true;
+        this.fireProofHatBottom.isHidden = true;
+
         this.bill = createNewModelRenderer(14, 0, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
 
         this.body = createNewModelRenderer(0, 9, -3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F, 16.0F, 0.0F);
@@ -62,11 +72,31 @@ public class ModelTamedDucky extends ModelBase {
      */
     @Override
     public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
+        final EntityDucky entityDucky = (EntityDucky) entityIn;
+
+        if (entityDucky.isFireProof()) {
+            this.hatTop.isHidden = true;
+            this.hatBottom.isHidden = true;
+
+            this.fireProofHatTop.isHidden = false;
+            this.fireProofHatBottom.isHidden = false;
+        } else {
+            this.hatTop.isHidden = false;
+            this.hatBottom.isHidden = false;
+
+            this.fireProofHatTop.isHidden = true;
+            this.fireProofHatBottom.isHidden = true;
+        }
+
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         this.head.render(scale);
         this.hatTop.render(scale);
         this.hatBottom.render(scale);
+
+        this.fireProofHatTop.render(scale);
+        this.fireProofHatBottom.render(scale);
+
         this.bill.render(scale);
         this.body.render(scale);
         this.tail.render(scale);
@@ -87,6 +117,10 @@ public class ModelTamedDucky extends ModelBase {
             this.head.setRotationPoint(0.0F, 20.0F, -4.0F);
             this.hatTop.setRotationPoint(0.0F, 20.0F, -4.0F);
             this.hatBottom.setRotationPoint(0.0F, 20.0F, -4.0F);
+
+            this.fireProofHatTop.setRotationPoint(0.0F, 20.0F, -4.0F);
+            this.fireProofHatBottom.setRotationPoint(0.0F, 20.0F, -4.0F);
+
             this.bill.setRotationPoint(0.0F, 20.0F, -4.0F);
             this.tail.setRotationPoint(0.0F, 21.0F, 0.0F);
             this.body.setRotationPoint(0.0F, 21.0F, 0.0F);
@@ -99,6 +133,10 @@ public class ModelTamedDucky extends ModelBase {
             this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
             this.hatTop.setRotationPoint(0.0F, 15.0F, -4.0F);
             this.hatBottom.setRotationPoint(0.0F, 15.0F, -4.0F);
+
+            this.fireProofHatTop.setRotationPoint(0.0F, 15.0F, -4.0F);
+            this.fireProofHatBottom.setRotationPoint(0.0F, 15.0F, -4.0F);
+
             this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
             this.tail.setRotationPoint(0.0F, 16.0F, 0.0F);
             this.body.setRotationPoint(0.0F, 16.0F, 0.0F);
@@ -118,12 +156,21 @@ public class ModelTamedDucky extends ModelBase {
     public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+
         this.hatTop.rotateAngleX = this.head.rotateAngleX;
         this.hatTop.rotateAngleY = this.head.rotateAngleY;
         this.hatTop.rotateAngleZ = this.head.rotateAngleZ;
         this.hatBottom.rotateAngleX = this.head.rotateAngleX;
         this.hatBottom.rotateAngleY = this.head.rotateAngleY;
         this.hatBottom.rotateAngleZ = this.head.rotateAngleZ;
+
+        this.fireProofHatTop.rotateAngleX = this.head.rotateAngleX;
+        this.fireProofHatTop.rotateAngleY = this.head.rotateAngleY;
+        this.fireProofHatTop.rotateAngleZ = this.head.rotateAngleZ;
+        this.fireProofHatBottom.rotateAngleX = this.head.rotateAngleX;
+        this.fireProofHatBottom.rotateAngleY = this.head.rotateAngleY;
+        this.fireProofHatBottom.rotateAngleZ = this.head.rotateAngleZ;
+
         this.bill.rotateAngleX = this.head.rotateAngleX;
         this.bill.rotateAngleY = this.head.rotateAngleY;
         this.bill.rotateAngleZ = this.head.rotateAngleZ;

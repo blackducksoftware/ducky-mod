@@ -29,6 +29,10 @@ public class ModelGiantTamedDucky extends ModelBase {
     public ModelRenderer head;
     public ModelRenderer hatTop;
     public ModelRenderer hatBottom;
+
+    public ModelRenderer fireProofHatTop;
+    public ModelRenderer fireProofHatBottom;
+
     public ModelRenderer billBase;
     public ModelRenderer billFront;
 
@@ -53,6 +57,12 @@ public class ModelGiantTamedDucky extends ModelBase {
         this.head = createNewModelRenderer(0, 0, 0.0F, -2.0F, -9.0F, 10, 10, 10, -5.0F, -2.0F, -7.0F);
         this.hatTop = createNewModelRenderer(4, 54, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
         this.hatBottom = createNewModelRenderer(0, 52, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
+
+        this.fireProofHatTop = createNewModelRenderer(4, 71, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
+        this.fireProofHatBottom = createNewModelRenderer(0, 69, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
+        this.fireProofHatTop.isHidden = true;
+        this.fireProofHatBottom.isHidden = true;
+
         this.billBase = createNewModelRenderer(0, 20, 2.0F, 2.0F, -12.0F, 6, 4, 7, -5.0F, -2.0F, -7.0F);
         this.billFront = createNewModelRenderer(0, 31, 2.0F, 3.0F, -14.0F, 6, 3, 7, -5.0F, -2.0F, -7.0F);
 
@@ -83,11 +93,31 @@ public class ModelGiantTamedDucky extends ModelBase {
      */
     @Override
     public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
+        final EntityDucky entityDucky = (EntityDucky) entityIn;
+
+        if (entityDucky.isFireProof()) {
+            this.hatTop.isHidden = true;
+            this.hatBottom.isHidden = true;
+
+            this.fireProofHatTop.isHidden = false;
+            this.fireProofHatBottom.isHidden = false;
+        } else {
+            this.hatTop.isHidden = false;
+            this.hatBottom.isHidden = false;
+
+            this.fireProofHatTop.isHidden = true;
+            this.fireProofHatBottom.isHidden = true;
+        }
+
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         this.head.render(scale);
         this.hatTop.render(scale);
         this.hatBottom.render(scale);
+
+        this.fireProofHatTop.render(scale);
+        this.fireProofHatBottom.render(scale);
+
         this.billBase.render(scale);
         this.billFront.render(scale);
         this.body.render(scale);
@@ -114,6 +144,10 @@ public class ModelGiantTamedDucky extends ModelBase {
             this.head.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.hatTop.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.hatBottom.setRotationPoint(-5.0F, 5.0F, -7.0F);
+
+            this.fireProofHatTop.setRotationPoint(-5.0F, 5.0F, -7.0F);
+            this.fireProofHatBottom.setRotationPoint(-5.0F, 5.0F, -7.0F);
+
             this.billBase.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.billFront.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
@@ -135,6 +169,10 @@ public class ModelGiantTamedDucky extends ModelBase {
             this.head.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.hatTop.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.hatBottom.setRotationPoint(-5.0F, -2.0F, -7.0F);
+
+            this.fireProofHatTop.setRotationPoint(-5.0F, -2.0F, -7.0F);
+            this.fireProofHatBottom.setRotationPoint(-5.0F, -2.0F, -7.0F);
+
             this.billBase.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.billFront.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
@@ -167,6 +205,14 @@ public class ModelGiantTamedDucky extends ModelBase {
         this.hatBottom.rotateAngleX = this.head.rotateAngleX;
         this.hatBottom.rotateAngleY = this.head.rotateAngleY;
         this.hatBottom.rotateAngleZ = this.head.rotateAngleZ;
+
+        this.fireProofHatTop.rotateAngleX = this.head.rotateAngleX;
+        this.fireProofHatTop.rotateAngleY = this.head.rotateAngleY;
+        this.fireProofHatTop.rotateAngleZ = this.head.rotateAngleZ;
+        this.fireProofHatBottom.rotateAngleX = this.head.rotateAngleX;
+        this.fireProofHatBottom.rotateAngleY = this.head.rotateAngleY;
+        this.fireProofHatBottom.rotateAngleZ = this.head.rotateAngleZ;
+
         // we want the bill to rotate the same as the head
         this.billBase.rotateAngleX = this.head.rotateAngleX;
         this.billBase.rotateAngleY = this.head.rotateAngleY;

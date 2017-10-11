@@ -11,11 +11,10 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
-import java.util.List;
-
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -26,10 +25,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class EntityTamedDucky extends EntityDucky {
@@ -76,36 +74,69 @@ public class EntityTamedDucky extends EntityDucky {
     @Override
     public boolean processInteract(final EntityPlayer player, final EnumHand hand) {
         final ItemStack itemstack = player.getHeldItem(hand);
-        if (this.isTamed()) {
-            if (isBreedingItem(itemstack)) {
-                final ItemFood itemfood = (ItemFood) itemstack.getItem();
-                if (this.getHealth() < TAMED_HEALTH) {
+        if (isBreedingItem(itemstack)) {
+            final ItemFood itemfood = (ItemFood) itemstack.getItem();
+            if (this.getHealth() < TAMED_HEALTH) {
+                if (!player.capabilities.isCreativeMode) {
+                    itemstack.func_190918_g(1);
+                }
+                this.heal(itemfood.getHealAmount(itemstack));
+                this.playTameEffect(true);
+            }
+            return true;
+        } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isImmuneToFire())) {
+            if (!player.capabilities.isCreativeMode) {
+                itemstack.func_190918_g(1);
+            }
+            if (!this.worldObj.isRemote) {
+                final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.worldObj);
+                entityTamedDucky.setFireProof(false);
+                spawnTamedDucky(player, entityTamedDucky);
+            }
+            return true;
+        } else if (Items.POTIONITEM == itemstack.getItem()) {
+            final ItemPotion potion = (ItemPotion) itemstack.getItem();
+            if (potion.hasEffect(itemstack)) {
+                final PotionType potionType = PotionUtils.getPotionFromItem(itemstack);
+                // player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
+                if ("healing".equalsIgnoreCase(potionType.getNamePrefixed("")) && !(this instanceof EntityGiantTamedDucky)) {
                     if (!player.capabilities.isCreativeMode) {
                         itemstack.func_190918_g(1);
                     }
-                    this.heal(itemfood.getHealAmount(itemstack));
-                    this.playTameEffect(true);
+                    if (!this.worldObj.isRemote) {
+                        final EntityTamedDucky entityTamedDucky = new EntityGiantTamedDucky(this.worldObj);
+                        entityTamedDucky.setFireProof(this.isFireProof());
+                        spawnTamedDucky(player, entityTamedDucky);
+                    }
+                    return true;
+                } else if ("weakness".equalsIgnoreCase(potionType.getNamePrefixed("")) && (this instanceof EntityGiantTamedDucky)) {
+                    if (!player.capabilities.isCreativeMode) {
+                        itemstack.func_190918_g(1);
+                    }
+                    if (!this.worldObj.isRemote) {
+                        final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.worldObj);
+                        entityTamedDucky.setFireProof(this.isFireProof());
+                        spawnTamedDucky(player, entityTamedDucky);
+                    }
+                    return true;
+                } else if ("fire_resistance".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
+                    if (!player.capabilities.isCreativeMode) {
+                        itemstack.func_190918_g(1);
+                    }
+                    this.setFireProof(true);
+                    return true;
                 }
-                return true;
-            } else if (Items.POTIONITEM == itemstack.getItem()) {
-                final ItemPotion potion = (ItemPotion) itemstack.getItem();
-                if (potion.hasEffect(itemstack)) {
-                    final List<PotionEffect> potionEffects = PotionUtils.getEffectsFromStack(itemstack);
-                    potionEffects.get(0).getEffectName();
-                    player.addChatMessage(new TextComponentString(potionEffects.get(0).getEffectName()));
-                }
-            } else {
-                if (this.isOwner(player) && !this.worldObj.isRemote) {
-                    setSitting(!this.isSitting());
-                    this.isJumping = false;
-                    this.navigator.clearPathEntity();
-                    this.setAttackTarget((EntityLivingBase) null);
-                }
-                return true;
             }
-        } else if (isBreedingItem(itemstack)) {
+        } else {
+            if (this.isOwner(player) && !this.worldObj.isRemote) {
+                setSitting(!this.isSitting());
+                this.isJumping = false;
+                this.navigator.clearPathEntity();
+                this.setAttackTarget((EntityLivingBase) null);
+            }
             return true;
         }
         return false;
     }
+
 }

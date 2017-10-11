@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
+import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.DuckyModSounds;
@@ -19,7 +21,6 @@ import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAILookIdle;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIWander;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
-import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -33,7 +34,6 @@ import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityShulker;
@@ -43,8 +43,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -65,6 +66,8 @@ public class EntityDucky extends EntityTameable {
     public float oFlap;
     public float wingRotDelta = 1.0F;
 
+    protected static final DataParameter<Byte> IS_FIRE_PROOF = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
+
     private boolean isFlying;
     private boolean isAttacking;
 
@@ -72,6 +75,12 @@ public class EntityDucky extends EntityTameable {
         super(worldIn);
         this.setSize(0.4F, 0.7F);
         this.setScale(1.0F);
+    }
+
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        this.dataManager.register(IS_FIRE_PROOF, Byte.valueOf((byte) 0));
     }
 
     @Override
@@ -160,59 +169,35 @@ public class EntityDucky extends EntityTameable {
                 itemstack.func_190918_g(1);
             }
             if (!this.worldObj.isRemote) {
-                EntityTamedDucky tamedDucky = null;
-                if (this.rand.nextInt(9) == 0) {
-                    tamedDucky = new EntityGiantTamedDucky(this.worldObj);
-                    final ItemStack firework = createFirework();
-                    final EntityFireworkRocket rocket = new EntityFireworkRocket(worldObj, this.posX, this.posY, this.posZ, firework);
-                    worldObj.spawnEntityInWorld(rocket);
-                } else {
-                    tamedDucky = new EntityTamedDucky(this.worldObj);
-                }
-                if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(tamedDucky, player)) {
-                    tamedDucky.moveToBlockPosAndAngles(this.getPosition(), 0.0F, 0.0F);
-                    tamedDucky.setTamed(true);
-                    tamedDucky.navigator.clearPathEntity();
-                    tamedDucky.setAttackTarget((EntityLivingBase) null);
-                    tamedDucky.setOwnerId(player.getUniqueID());
-                    tamedDucky.playTameEffect(true);
-                    tamedDucky.worldObj.setEntityState(this, (byte) 7);
-                    tamedDucky.onInitialSpawn(tamedDucky.worldObj.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
-                    tamedDucky.worldObj.spawnEntityInWorld(tamedDucky);
-                    this.setDead();
-                } else {
-                    this.playTameEffect(false);
-                    this.worldObj.setEntityState(this, (byte) 6);
-                }
+                final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.worldObj);
+                entityTamedDucky.setOwnerId(player.getUniqueID());
+                entityTamedDucky.setTamed(true);
+                spawnTamedDucky(player, entityTamedDucky);
+                entityTamedDucky.playTameEffect(true);
             }
             return true;
         }
         return false;
     }
 
-    private ItemStack createFirework() {
-        final ItemStack firework = new ItemStack(Items.FIREWORKS, 3);
+    public void setAttributesFromOriginal(final EntityDucky originalDucky, final UUID ownerId) {
+        this.setSitting(originalDucky.isSitting());
+        this.moveToBlockPosAndAngles(originalDucky.getPosition(), 0.0F, 0.0F);
+        this.navigator.clearPathEntity();
+        this.setAttackTarget((EntityLivingBase) null);
+        if (ownerId != null) {
+            this.setOwnerId(ownerId);
+            this.setTamed(true);
+        }
+    }
 
-        final NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-        final NBTTagCompound nbttagcompound2 = new NBTTagCompound();
-        // explosion
-        final NBTTagCompound explosionCompound = new NBTTagCompound();
-        final NBTTagCompound nbttagcompound3 = new NBTTagCompound();
-        final NBTTagList nbttaglist = new NBTTagList();
-
-        nbttagcompound2.setBoolean("Flicker", true);
-        nbttagcompound2.setBoolean("Trail", true);
-        nbttagcompound2.setByte("Type", (byte) 2);
-        explosionCompound.setTag("Explosion", nbttagcompound2);
-
-        nbttaglist.appendTag(explosionCompound);
-
-        nbttagcompound3.setTag("Explosions", nbttaglist);
-        nbttagcompound3.setByte("Flight", (byte) 1);
-        nbttagcompound1.setTag("Fireworks", nbttagcompound3);
-        firework.setTagCompound(nbttagcompound1);
-
-        return firework;
+    protected void spawnTamedDucky(final EntityPlayer player, final EntityTamedDucky entityTamedDucky) {
+        if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(entityTamedDucky, player)) {
+            entityTamedDucky.setAttributesFromOriginal(this, player.getUniqueID());
+            entityTamedDucky.onInitialSpawn(entityTamedDucky.worldObj.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
+            this.setDead();
+            entityTamedDucky.worldObj.spawnEntityInWorld(entityTamedDucky);
+        }
     }
 
     /**
@@ -292,6 +277,22 @@ public class EntityDucky extends EntityTameable {
             this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte | 1)));
         } else {
             this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte & -2)));
+        }
+    }
+
+    public boolean isFireProof() {
+        final byte fireProofByte = this.dataManager.get(IS_FIRE_PROOF).byteValue();
+        final boolean fireProof = (fireProofByte & 1) != 0;
+        return fireProof;
+    }
+
+    public void setFireProof(final boolean fireProof) {
+        this.isImmuneToFire = fireProof;
+        final byte fireProofByte = this.dataManager.get(IS_FIRE_PROOF).byteValue();
+        if (fireProof) {
+            this.dataManager.set(IS_FIRE_PROOF, Byte.valueOf((byte) (fireProofByte | 1)));
+        } else {
+            this.dataManager.set(IS_FIRE_PROOF, Byte.valueOf((byte) (fireProofByte & -2)));
         }
     }
 
