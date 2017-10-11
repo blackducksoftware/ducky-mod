@@ -11,9 +11,12 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 
+import java.util.Iterator;
+
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,9 +32,6 @@ public class ModelGiantTamedDucky extends ModelBase {
     public ModelRenderer head;
     public ModelRenderer hatTop;
     public ModelRenderer hatBottom;
-
-    public ModelRenderer fireProofHatTop;
-    public ModelRenderer fireProofHatBottom;
 
     public ModelRenderer billBase;
     public ModelRenderer billFront;
@@ -58,11 +58,6 @@ public class ModelGiantTamedDucky extends ModelBase {
         this.hatTop = createNewModelRenderer(4, 54, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
         this.hatBottom = createNewModelRenderer(0, 52, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
 
-        this.fireProofHatTop = createNewModelRenderer(4, 71, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
-        this.fireProofHatBottom = createNewModelRenderer(0, 69, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
-        this.fireProofHatTop.isHidden = true;
-        this.fireProofHatBottom.isHidden = true;
-
         this.billBase = createNewModelRenderer(0, 20, 2.0F, 2.0F, -12.0F, 6, 4, 7, -5.0F, -2.0F, -7.0F);
         this.billFront = createNewModelRenderer(0, 31, 2.0F, 3.0F, -14.0F, 6, 3, 7, -5.0F, -2.0F, -7.0F);
 
@@ -88,6 +83,14 @@ public class ModelGiantTamedDucky extends ModelBase {
         return renderer;
     }
 
+    private void updateModelRendererTexture(final ModelRenderer renderer, final int textureOffsetX, final int textureOffsetY) {
+        renderer.setTextureOffset(textureOffsetX, textureOffsetY);
+        final Iterator<ModelBox> cubeIterator = renderer.cubeList.iterator();
+        final ModelBox oldCube = cubeIterator.next();
+        cubeIterator.remove();
+        renderer.addBox(oldCube.posX1, oldCube.posY1, oldCube.posZ1, Math.round(oldCube.posX2 - oldCube.posX1), Math.round(oldCube.posY2 - oldCube.posY1), Math.round(oldCube.posZ2 - oldCube.posZ1));
+    }
+
     /**
      * Sets the models various rotation angles then renders the model.
      */
@@ -96,17 +99,33 @@ public class ModelGiantTamedDucky extends ModelBase {
         final EntityDucky entityDucky = (EntityDucky) entityIn;
 
         if (entityDucky.isFireProof()) {
-            this.hatTop.isHidden = true;
-            this.hatBottom.isHidden = true;
-
-            this.fireProofHatTop.isHidden = false;
-            this.fireProofHatBottom.isHidden = false;
+            updateModelRendererTexture(hatTop, 4, 71);
+            updateModelRendererTexture(hatBottom, 0, 69);
         } else {
-            this.hatTop.isHidden = false;
-            this.hatBottom.isHidden = false;
+            updateModelRendererTexture(hatTop, 4, 54);
+            updateModelRendererTexture(hatBottom, 0, 52);
+        }
 
-            this.fireProofHatTop.isHidden = true;
-            this.fireProofHatBottom.isHidden = true;
+        if (entityDucky.isCanFly()) {
+            updateModelRendererTexture(body, 107, 29);
+        } else {
+            updateModelRendererTexture(body, 40, 0);
+        }
+
+        if (entityDucky.isStrong()) {
+            updateModelRendererTexture(billBase, 79, 68);
+            updateModelRendererTexture(billFront, 79, 79);
+        } else {
+            updateModelRendererTexture(billBase, 0, 20);
+            updateModelRendererTexture(billFront, 0, 31);
+        }
+
+        if (entityDucky.isFast()) {
+            updateModelRendererTexture(rightFoot, 41, 46);
+            updateModelRendererTexture(leftFoot, 41, 46);
+        } else {
+            updateModelRendererTexture(rightFoot, 41, 39);
+            updateModelRendererTexture(leftFoot, 41, 39);
         }
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
@@ -114,9 +133,6 @@ public class ModelGiantTamedDucky extends ModelBase {
         this.head.render(scale);
         this.hatTop.render(scale);
         this.hatBottom.render(scale);
-
-        this.fireProofHatTop.render(scale);
-        this.fireProofHatBottom.render(scale);
 
         this.billBase.render(scale);
         this.billFront.render(scale);
@@ -145,9 +161,6 @@ public class ModelGiantTamedDucky extends ModelBase {
             this.hatTop.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.hatBottom.setRotationPoint(-5.0F, 5.0F, -7.0F);
 
-            this.fireProofHatTop.setRotationPoint(-5.0F, 5.0F, -7.0F);
-            this.fireProofHatBottom.setRotationPoint(-5.0F, 5.0F, -7.0F);
-
             this.billBase.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.billFront.setRotationPoint(-5.0F, 5.0F, -7.0F);
             this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
@@ -169,9 +182,6 @@ public class ModelGiantTamedDucky extends ModelBase {
             this.head.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.hatTop.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.hatBottom.setRotationPoint(-5.0F, -2.0F, -7.0F);
-
-            this.fireProofHatTop.setRotationPoint(-5.0F, -2.0F, -7.0F);
-            this.fireProofHatBottom.setRotationPoint(-5.0F, -2.0F, -7.0F);
 
             this.billBase.setRotationPoint(-5.0F, -2.0F, -7.0F);
             this.billFront.setRotationPoint(-5.0F, -2.0F, -7.0F);
@@ -205,13 +215,6 @@ public class ModelGiantTamedDucky extends ModelBase {
         this.hatBottom.rotateAngleX = this.head.rotateAngleX;
         this.hatBottom.rotateAngleY = this.head.rotateAngleY;
         this.hatBottom.rotateAngleZ = this.head.rotateAngleZ;
-
-        this.fireProofHatTop.rotateAngleX = this.head.rotateAngleX;
-        this.fireProofHatTop.rotateAngleY = this.head.rotateAngleY;
-        this.fireProofHatTop.rotateAngleZ = this.head.rotateAngleZ;
-        this.fireProofHatBottom.rotateAngleX = this.head.rotateAngleX;
-        this.fireProofHatBottom.rotateAngleY = this.head.rotateAngleY;
-        this.fireProofHatBottom.rotateAngleZ = this.head.rotateAngleZ;
 
         // we want the bill to rotate the same as the head
         this.billBase.rotateAngleX = this.head.rotateAngleX;

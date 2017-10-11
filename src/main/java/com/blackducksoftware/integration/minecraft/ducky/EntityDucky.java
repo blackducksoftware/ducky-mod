@@ -55,8 +55,16 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityDucky extends EntityTameable {
+    public static final double GIANT_HEALTH = 128.0D;
+    public static final double TAMED_HEALTH = 64.0D;
+    public static final double TAMED_DAMAGE = 15.0D;
+
     public static final double BASE_HEALTH = 15.0D;
     public static final double BASE_DAMAGE = 6.0D;
+    public static final double BASE_SPEED = 0.35D;
+
+    public static final double INCREASED_DAMAGE = 40.0D;
+    public static final double FAST_SPEED = 0.65D;
 
     public static final String DUCKY_NAME = "bd_ducky";
 
@@ -67,6 +75,9 @@ public class EntityDucky extends EntityTameable {
     public float wingRotDelta = 1.0F;
 
     protected static final DataParameter<Byte> IS_FIRE_PROOF = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> CAN_FLY = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> STRENGTH = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> SPEED = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
 
     private boolean isFlying;
     private boolean isAttacking;
@@ -81,6 +92,9 @@ public class EntityDucky extends EntityTameable {
     protected void entityInit() {
         super.entityInit();
         this.dataManager.register(IS_FIRE_PROOF, Byte.valueOf((byte) 0));
+        this.dataManager.register(CAN_FLY, Byte.valueOf((byte) 0));
+        this.dataManager.register(STRENGTH, Byte.valueOf((byte) 0));
+        this.dataManager.register(SPEED, Byte.valueOf((byte) 0));
     }
 
     @Override
@@ -102,7 +116,7 @@ public class EntityDucky extends EntityTameable {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(BASE_HEALTH);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.55D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
     }
@@ -293,6 +307,55 @@ public class EntityDucky extends EntityTameable {
             this.dataManager.set(IS_FIRE_PROOF, Byte.valueOf((byte) (fireProofByte | 1)));
         } else {
             this.dataManager.set(IS_FIRE_PROOF, Byte.valueOf((byte) (fireProofByte & -2)));
+        }
+    }
+
+    public boolean isCanFly() {
+        final byte canFlyByte = this.dataManager.get(CAN_FLY).byteValue();
+        final boolean canFly = (canFlyByte & 1) != 0;
+        return canFly;
+    }
+
+    public void setCanFly(final boolean canFly) {
+        final byte canFlyByte = this.dataManager.get(CAN_FLY).byteValue();
+        if (canFly) {
+            this.dataManager.set(CAN_FLY, Byte.valueOf((byte) (canFlyByte | 1)));
+        } else {
+            this.dataManager.set(CAN_FLY, Byte.valueOf((byte) (canFlyByte & -2)));
+        }
+    }
+
+    public boolean isStrong() {
+        final byte strongByte = this.dataManager.get(STRENGTH).byteValue();
+        final boolean strong = (strongByte & 1) != 0;
+        return strong;
+    }
+
+    public void setStrength(final boolean strong) {
+        final byte strongByte = this.dataManager.get(STRENGTH).byteValue();
+        if (strong) {
+            this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(INCREASED_DAMAGE);
+            this.dataManager.set(STRENGTH, Byte.valueOf((byte) (strongByte | 1)));
+        } else {
+            this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
+            this.dataManager.set(STRENGTH, Byte.valueOf((byte) (strongByte & -2)));
+        }
+    }
+
+    public boolean isFast() {
+        final byte fastByte = this.dataManager.get(SPEED).byteValue();
+        final boolean fast = (fastByte & 1) != 0;
+        return fast;
+    }
+
+    public void setSpeed(final boolean fast) {
+        final byte fastByte = this.dataManager.get(SPEED).byteValue();
+        if (fast) {
+            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(FAST_SPEED);
+            this.dataManager.set(SPEED, Byte.valueOf((byte) (fastByte | 1)));
+        } else {
+            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
+            this.dataManager.set(SPEED, Byte.valueOf((byte) (fastByte & -2)));
         }
     }
 

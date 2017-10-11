@@ -28,12 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class EntityTamedDucky extends EntityDucky {
-    public static final double TAMED_HEALTH = 64.0D;
-    public static final double TAMED_DAMAGE = 30.0D;
-
     public static final String TAMED_DUCKY_NAME = "tamed_bd_ducky";
 
     public EntityTamedDucky(final World worldIn) {
@@ -56,6 +54,7 @@ public class EntityTamedDucky extends EntityDucky {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class EntityTamedDucky extends EntityDucky {
                 this.playTameEffect(true);
             }
             return true;
-        } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isImmuneToFire())) {
+        } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isImmuneToFire() || this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue() == FAST_SPEED)) {
             if (!player.capabilities.isCreativeMode) {
                 itemstack.func_190918_g(1);
             }
@@ -92,13 +91,16 @@ public class EntityTamedDucky extends EntityDucky {
                 final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.worldObj);
                 entityTamedDucky.setFireProof(false);
                 spawnTamedDucky(player, entityTamedDucky);
+                entityTamedDucky.setCanFly(false);
+                entityTamedDucky.setStrength(false);
+                entityTamedDucky.setSpeed(false);
             }
             return true;
         } else if (Items.POTIONITEM == itemstack.getItem()) {
             final ItemPotion potion = (ItemPotion) itemstack.getItem();
             if (potion.hasEffect(itemstack)) {
                 final PotionType potionType = PotionUtils.getPotionFromItem(itemstack);
-                // player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
+                player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
                 if ("healing".equalsIgnoreCase(potionType.getNamePrefixed("")) && !(this instanceof EntityGiantTamedDucky)) {
                     if (!player.capabilities.isCreativeMode) {
                         itemstack.func_190918_g(1);
@@ -107,6 +109,9 @@ public class EntityTamedDucky extends EntityDucky {
                         final EntityTamedDucky entityTamedDucky = new EntityGiantTamedDucky(this.worldObj);
                         entityTamedDucky.setFireProof(this.isFireProof());
                         spawnTamedDucky(player, entityTamedDucky);
+                        entityTamedDucky.setCanFly(this.isCanFly());
+                        entityTamedDucky.setStrength(this.isStrong());
+                        entityTamedDucky.setSpeed(this.isFast());
                     }
                     return true;
                 } else if ("weakness".equalsIgnoreCase(potionType.getNamePrefixed("")) && (this instanceof EntityGiantTamedDucky)) {
@@ -117,6 +122,9 @@ public class EntityTamedDucky extends EntityDucky {
                         final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.worldObj);
                         entityTamedDucky.setFireProof(this.isFireProof());
                         spawnTamedDucky(player, entityTamedDucky);
+                        entityTamedDucky.setCanFly(this.isCanFly());
+                        entityTamedDucky.setStrength(this.isStrong());
+                        entityTamedDucky.setSpeed(this.isFast());
                     }
                     return true;
                 } else if ("fire_resistance".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
@@ -125,7 +133,26 @@ public class EntityTamedDucky extends EntityDucky {
                     }
                     this.setFireProof(true);
                     return true;
+                } else if ("swiftness".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
+                    if (!player.capabilities.isCreativeMode) {
+                        itemstack.func_190918_g(1);
+                    }
+                    this.setSpeed(true);
+                    return true;
+                } else if ("strength".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
+                    if (!player.capabilities.isCreativeMode) {
+                        itemstack.func_190918_g(1);
+                    }
+                    this.setStrength(true);
+                    return true;
+                } else if ("leaping".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
+                    if (!player.capabilities.isCreativeMode) {
+                        itemstack.func_190918_g(1);
+                    }
+                    this.setCanFly(true);
+                    return true;
                 }
+
             }
         } else {
             if (this.isOwner(player) && !this.worldObj.isRemote) {
