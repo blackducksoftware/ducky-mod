@@ -27,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class EntityTamedDucky extends EntityDucky {
@@ -98,7 +97,7 @@ public class EntityTamedDucky extends EntityDucky {
             final ItemPotion potion = (ItemPotion) itemstack.getItem();
             if (potion.hasEffect(itemstack)) {
                 final PotionType potionType = PotionUtils.getPotionFromItem(itemstack);
-                player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
+                // player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
                 if ("healing".equalsIgnoreCase(potionType.getNamePrefixed("")) && !(this instanceof EntityGiantTamedDucky)) {
                     if (!player.capabilities.isCreativeMode) {
                         itemstack.func_190918_g(1);
