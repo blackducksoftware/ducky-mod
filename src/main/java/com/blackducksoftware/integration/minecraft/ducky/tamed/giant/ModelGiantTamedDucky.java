@@ -11,12 +11,9 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 
-import java.util.Iterator;
-
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,16 +30,27 @@ public class ModelGiantTamedDucky extends ModelBase {
     public ModelRenderer hatTop;
     public ModelRenderer hatBottom;
 
+    public ModelRenderer fireProofHatTop;
+    public ModelRenderer fireProofHatBottom;
+
     public ModelRenderer billBase;
     public ModelRenderer billFront;
 
+    public ModelRenderer strongBillBase;
+    public ModelRenderer strongBillFront;
+
     public ModelRenderer body;
+
+    public ModelRenderer flyingBody;
 
     public ModelRenderer rightLeg;
     public ModelRenderer leftLeg;
 
     public ModelRenderer rightFoot;
     public ModelRenderer leftFoot;
+
+    public ModelRenderer fastRightFoot;
+    public ModelRenderer fastLeftFoot;
 
     public ModelRenderer rightWing;
     public ModelRenderer leftWing;
@@ -54,25 +62,39 @@ public class ModelGiantTamedDucky extends ModelBase {
         // For the parts attached to another body part, they must have the same rotation point for them to rotate correctly when that main body part turns
         // Ex: the Head and the bill must have the same rotation point, and the bill should offset from that point to render correctly
         // Ex: the body and the tail, legs and the feet
-        this.head = createNewModelRenderer(0, 0, 0.0F, -2.0F, -9.0F, 10, 10, 10, -5.0F, -2.0F, -7.0F);
-        this.hatTop = createNewModelRenderer(4, 54, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
-        this.hatBottom = createNewModelRenderer(0, 52, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
+        head = createNewModelRenderer(0, 0, 0.0F, -2.0F, -9.0F, 10, 10, 10, -5.0F, -2.0F, -7.0F);
+        hatTop = createNewModelRenderer(4, 54, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
+        hatBottom = createNewModelRenderer(0, 52, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
 
-        this.billBase = createNewModelRenderer(0, 20, 2.0F, 2.0F, -12.0F, 6, 4, 7, -5.0F, -2.0F, -7.0F);
-        this.billFront = createNewModelRenderer(0, 31, 2.0F, 3.0F, -14.0F, 6, 3, 7, -5.0F, -2.0F, -7.0F);
+        fireProofHatTop = createNewModelRenderer(4, 71, 0.0F, -5.0F, -9.0F, 11, 3, 11, -5.0F, -2.0F, -7.0F);
+        fireProofHatBottom = createNewModelRenderer(0, 69, 0.0F, -3.0F, -12.0F, 11, 1, 15, -5.0F, -2.0F, -7.0F);
 
-        this.body = createNewModelRenderer(40, 0, 0.0F, 0.0F, 0.0F, 16, 27, 11, -8.0F, 15.0F, -11.0F);
-        this.tailBase = createNewModelRenderer(79, 39, 4.0F, 23.0F, 10.0F, 8, 5, 3, -8.0F, 15.0F, -11.0F);
-        this.tailTop = createNewModelRenderer(79, 39, 6.0F, 25.0F, 13.0F, 4, 3, 2, -8.0F, 15.0F, -11.0F);
+        billBase = createNewModelRenderer(0, 20, 2.0F, 2.0F, -12.0F, 6, 4, 7, -5.0F, -2.0F, -7.0F);
+        billFront = createNewModelRenderer(0, 31, 2.0F, 3.0F, -14.0F, 6, 3, 7, -5.0F, -2.0F, -7.0F);
 
-        this.rightLeg = createNewModelRenderer(64, 39, 0.0F, 0.0F, 0.0F, 3, 9, 3, -6.0F, 15.0F, -3.0F);
-        this.rightFoot = createNewModelRenderer(41, 39, -1.0F, 7.0F, -3.0F, 5, 2, 4, -6.0F, 15.0F, -3.0F);
+        strongBillBase = createNewModelRenderer(79, 68, 2.0F, 2.0F, -12.0F, 6, 4, 7, -5.0F, -2.0F, -7.0F);
+        strongBillFront = createNewModelRenderer(79, 79, 2.0F, 3.0F, -14.0F, 6, 3, 7, -5.0F, -2.0F, -7.0F);
 
-        this.leftLeg = createNewModelRenderer(64, 39, 0.0F, 0.0F, 0.0F, 3, 9, 3, 2.0F, 15.0F, -3.0F);
-        this.leftFoot = createNewModelRenderer(41, 39, -1.0F, 7.0F, -3.0F, 5, 2, 4, 2.0F, 15.0F, -3.0F);
+        body = createNewModelRenderer(40, 0, 0.0F, 0.0F, 0.0F, 16, 27, 11, -8.0F, 15.0F, -11.0F);
 
-        this.rightWing = createNewModelRenderer(94, 0, 0.0F, 0.0F, 0.0F, 2, 8, 20, -10.0F, 5.0F, -9.0F);
-        this.leftWing = createNewModelRenderer(94, 0, 0.0F, 0.0F, 0.0F, 2, 8, 20, 8.0F, 5.0F, -9.0F);
+        flyingBody = createNewModelRenderer(107, 29, 0.0F, 0.0F, 0.0F, 16, 27, 11, -8.0F, 15.0F, -11.0F);
+
+        tailBase = createNewModelRenderer(79, 39, 4.0F, 23.0F, 10.0F, 8, 5, 3, -8.0F, 15.0F, -11.0F);
+        tailTop = createNewModelRenderer(79, 39, 6.0F, 25.0F, 13.0F, 4, 3, 2, -8.0F, 15.0F, -11.0F);
+
+        rightLeg = createNewModelRenderer(64, 39, 0.0F, 0.0F, 0.0F, 3, 9, 3, -6.0F, 15.0F, -3.0F);
+        leftLeg = createNewModelRenderer(64, 39, 0.0F, 0.0F, 0.0F, 3, 9, 3, 2.0F, 15.0F, -3.0F);
+
+        rightFoot = createNewModelRenderer(41, 39, -1.0F, 7.0F, -3.0F, 5, 2, 4, -6.0F, 15.0F, -3.0F);
+        leftFoot = createNewModelRenderer(41, 39, -1.0F, 7.0F, -3.0F, 5, 2, 4, 2.0F, 15.0F, -3.0F);
+
+        fastLeftFoot = createNewModelRenderer(41, 46, -1.0F, 7.0F, -3.0F, 5, 2, 4, 2.0F, 15.0F, -3.0F);
+        fastRightFoot = createNewModelRenderer(41, 46, -1.0F, 7.0F, -3.0F, 5, 2, 4, 2.0F, 15.0F, -3.0F);
+
+        rightWing = createNewModelRenderer(94, 0, 0.0F, 0.0F, 0.0F, 2, 8, 20, -10.0F, 5.0F, -9.0F);
+        leftWing = createNewModelRenderer(94, 0, 0.0F, 0.0F, 0.0F, 2, 8, 20, 8.0F, 5.0F, -9.0F);
+
+        hideModelRenderers(fireProofHatTop, fireProofHatBottom, flyingBody, strongBillBase, strongBillFront, fastLeftFoot, fastRightFoot);
     }
 
     private ModelRenderer createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
@@ -83,12 +105,16 @@ public class ModelGiantTamedDucky extends ModelBase {
         return renderer;
     }
 
-    private void updateModelRendererTexture(final ModelRenderer renderer, final int textureOffsetX, final int textureOffsetY) {
-        renderer.setTextureOffset(textureOffsetX, textureOffsetY);
-        final Iterator<ModelBox> cubeIterator = renderer.cubeList.iterator();
-        final ModelBox oldCube = cubeIterator.next();
-        cubeIterator.remove();
-        renderer.addBox(oldCube.posX1, oldCube.posY1, oldCube.posZ1, Math.round(oldCube.posX2 - oldCube.posX1), Math.round(oldCube.posY2 - oldCube.posY1), Math.round(oldCube.posZ2 - oldCube.posZ1));
+    private void showModelRenderers(final ModelRenderer... renderers) {
+        for (final ModelRenderer renderer : renderers) {
+            renderer.isHidden = false;
+        }
+    }
+
+    private void hideModelRenderers(final ModelRenderer... renderers) {
+        for (final ModelRenderer renderer : renderers) {
+            renderer.isHidden = true;
+        }
     }
 
     /**
@@ -99,52 +125,74 @@ public class ModelGiantTamedDucky extends ModelBase {
         final EntityDucky entityDucky = (EntityDucky) entityIn;
 
         if (entityDucky.isFireProof()) {
-            updateModelRendererTexture(hatTop, 4, 71);
-            updateModelRendererTexture(hatBottom, 0, 69);
+            showModelRenderers(fireProofHatTop, fireProofHatBottom);
+            hideModelRenderers(hatTop, hatBottom);
         } else {
-            updateModelRendererTexture(hatTop, 4, 54);
-            updateModelRendererTexture(hatBottom, 0, 52);
+            showModelRenderers(hatTop, hatBottom);
+            hideModelRenderers(fireProofHatTop, fireProofHatBottom);
         }
 
         if (entityDucky.isCanFly()) {
-            updateModelRendererTexture(body, 107, 29);
+            showModelRenderers(flyingBody);
+            hideModelRenderers(body);
         } else {
-            updateModelRendererTexture(body, 40, 0);
+            showModelRenderers(body);
+            hideModelRenderers(flyingBody);
         }
 
         if (entityDucky.isStrong()) {
-            updateModelRendererTexture(billBase, 79, 68);
-            updateModelRendererTexture(billFront, 79, 79);
+            showModelRenderers(strongBillBase, strongBillFront);
+            hideModelRenderers(billBase, billFront);
         } else {
-            updateModelRendererTexture(billBase, 0, 20);
-            updateModelRendererTexture(billFront, 0, 31);
+            showModelRenderers(billBase, billFront);
+            hideModelRenderers(strongBillBase, strongBillFront);
         }
 
         if (entityDucky.isFast()) {
-            updateModelRendererTexture(rightFoot, 41, 46);
-            updateModelRendererTexture(leftFoot, 41, 46);
+            showModelRenderers(fastRightFoot, fastLeftFoot);
+            hideModelRenderers(rightFoot, leftFoot);
         } else {
-            updateModelRendererTexture(rightFoot, 41, 39);
-            updateModelRendererTexture(leftFoot, 41, 39);
+            showModelRenderers(rightFoot, leftFoot);
+            hideModelRenderers(fastRightFoot, fastLeftFoot);
         }
 
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
-        this.head.render(scale);
-        this.hatTop.render(scale);
-        this.hatBottom.render(scale);
+        head.render(scale);
+        hatTop.render(scale);
+        hatBottom.render(scale);
 
-        this.billBase.render(scale);
-        this.billFront.render(scale);
-        this.body.render(scale);
-        this.tailBase.render(scale);
-        this.tailTop.render(scale);
-        this.rightLeg.render(scale);
-        this.leftLeg.render(scale);
-        this.rightFoot.render(scale);
-        this.leftFoot.render(scale);
-        this.rightWing.render(scale);
-        this.leftWing.render(scale);
+        fireProofHatTop.render(scale);
+        fireProofHatBottom.render(scale);
+
+        billBase.render(scale);
+        billFront.render(scale);
+
+        strongBillBase.render(scale);
+        strongBillFront.render(scale);
+
+        body.render(scale);
+
+        flyingBody.render(scale);
+
+        tailBase.render(scale);
+        tailTop.render(scale);
+        rightLeg.render(scale);
+        leftLeg.render(scale);
+        rightFoot.render(scale);
+        leftFoot.render(scale);
+
+        fastLeftFoot.render(scale);
+        fastRightFoot.render(scale);
+
+        rightWing.render(scale);
+        leftWing.render(scale);
+    }
+
+    private void setRotationPoint(final float xAmount, final float yAmount, final float zAmount, final ModelRenderer... renderers) {
+        for (final ModelRenderer renderer : renderers) {
+            renderer.setRotationPoint(xAmount, yAmount, zAmount);
+        }
     }
 
     /**
@@ -157,47 +205,43 @@ public class ModelGiantTamedDucky extends ModelBase {
         if (entityDucky.isSitting()) {
             // When Ducky sits we want his parts to move down but his legs should remain in place
             // to move Ducky down, for some reason that is an increase in the Y rotation point
-            this.head.setRotationPoint(-5.0F, 5.0F, -7.0F);
-            this.hatTop.setRotationPoint(-5.0F, 5.0F, -7.0F);
-            this.hatBottom.setRotationPoint(-5.0F, 5.0F, -7.0F);
 
-            this.billBase.setRotationPoint(-5.0F, 5.0F, -7.0F);
-            this.billFront.setRotationPoint(-5.0F, 5.0F, -7.0F);
-            this.body.setRotationPoint(-8.0F, 24.0F, -11.0F);
+            setRotationPoint(-5.0F, 5.0F, -7.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, billBase, billFront, strongBillBase, strongBillFront);
 
-            this.rightLeg.setRotationPoint(-6.0F, 14.5F, -3.0F);
-            this.leftLeg.setRotationPoint(2.0F, 14.5F, -3.0F);
+            setRotationPoint(-8.0F, 24.0F, -11.0F, body, tailBase, tailTop, flyingBody);
 
-            this.leftFoot.setRotationPoint(2.0F, 14.5F, -3.0F);
-            this.rightFoot.setRotationPoint(-6.0F, 14.5F, -3.0F);
+            rightLeg.setRotationPoint(-6.0F, 14.5F, -3.0F);
+            leftLeg.setRotationPoint(2.0F, 14.5F, -3.0F);
 
-            this.rightWing.setRotationPoint(-10.0F, 14.0F, -9.0F);
-            this.leftWing.setRotationPoint(8.0F, 14.0F, -9.0F);
+            setRotationPoint(2.0F, 14.5F, -3.0F, leftFoot, fastLeftFoot);
+            setRotationPoint(-6.0F, 14.5F, -3.0F, rightFoot, fastRightFoot);
 
-            this.tailBase.setRotationPoint(-8.0F, 24.0F, -11.0F);
-            this.tailTop.setRotationPoint(-8.0F, 24.0F, -11.0F);
+            rightWing.setRotationPoint(-10.0F, 14.0F, -9.0F);
+            leftWing.setRotationPoint(8.0F, 14.0F, -9.0F);
         } else {
             // When Ducky stands up we want his parts to move up again but his legs should remain in place
             // to move Ducky up, for some reason that is an decrease in the Y rotation point
-            this.head.setRotationPoint(-5.0F, -2.0F, -7.0F);
-            this.hatTop.setRotationPoint(-5.0F, -2.0F, -7.0F);
-            this.hatBottom.setRotationPoint(-5.0F, -2.0F, -7.0F);
+            setRotationPoint(-5.0F, -2.0F, -7.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, billBase, billFront, strongBillBase, strongBillFront);
 
-            this.billBase.setRotationPoint(-5.0F, -2.0F, -7.0F);
-            this.billFront.setRotationPoint(-5.0F, -2.0F, -7.0F);
-            this.body.setRotationPoint(-8.0F, 15.0F, -11.0F);
+            setRotationPoint(-8.0F, 25.0F, -11.0F, body, tailBase, tailTop, flyingBody);
 
-            this.rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
-            this.leftLeg.setRotationPoint(2.0F, 15.0F, -3.0F);
+            rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
+            leftLeg.setRotationPoint(2.0F, 15.0F, -3.0F);
 
-            this.leftFoot.setRotationPoint(2.0F, 15.0F, -3.0F);
-            this.rightFoot.setRotationPoint(-6.0F, 15.0F, -3.0F);
+            setRotationPoint(2.0F, 15.0F, -3.0F, leftFoot, fastLeftFoot);
+            setRotationPoint(-6.0F, 15.0F, -3.0F, rightFoot, fastRightFoot);
 
-            this.leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
-            this.rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
+            leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
+            rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
 
-            this.tailBase.setRotationPoint(-8.0F, 15.0F, -11.0F);
-            this.tailTop.setRotationPoint(-8.0F, 15.0F, -11.0F);
+        }
+    }
+
+    private void duplicateModelRotationAngles(final ModelRenderer rendererToCopy, final ModelRenderer... renderers) {
+        for (final ModelRenderer renderer : renderers) {
+            renderer.rotateAngleX = rendererToCopy.rotateAngleX;
+            renderer.rotateAngleY = rendererToCopy.rotateAngleY;
+            renderer.rotateAngleZ = rendererToCopy.rotateAngleZ;
         }
     }
 
@@ -207,44 +251,21 @@ public class ModelGiantTamedDucky extends ModelBase {
      */
     @Override
     public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
-        this.head.rotateAngleX = headPitch * 0.017453292F;
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
-        this.hatTop.rotateAngleX = this.head.rotateAngleX;
-        this.hatTop.rotateAngleY = this.head.rotateAngleY;
-        this.hatTop.rotateAngleZ = this.head.rotateAngleZ;
-        this.hatBottom.rotateAngleX = this.head.rotateAngleX;
-        this.hatBottom.rotateAngleY = this.head.rotateAngleY;
-        this.hatBottom.rotateAngleZ = this.head.rotateAngleZ;
+        head.rotateAngleX = headPitch * 0.017453292F;
+        head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        // we want the bill to rotate the same as the head
-        this.billBase.rotateAngleX = this.head.rotateAngleX;
-        this.billBase.rotateAngleY = this.head.rotateAngleY;
-        this.billBase.rotateAngleZ = this.head.rotateAngleZ;
-        this.billFront.rotateAngleX = this.head.rotateAngleX;
-        this.billFront.rotateAngleY = this.head.rotateAngleY;
-        this.billFront.rotateAngleZ = this.head.rotateAngleZ;
+        duplicateModelRotationAngles(head, hatTop, hatBottom, billBase, billFront, strongBillBase, strongBillFront, fireProofHatBottom, fireProofHatTop);
 
-        this.body.rotateAngleX = ((float) Math.PI / 2F);
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        body.rotateAngleX = ((float) Math.PI / 2F);
+        duplicateModelRotationAngles(body, tailBase, tailTop, flyingBody);
 
-        // we want the feet to rotate the same as the legs
-        this.rightFoot.rotateAngleX = this.rightLeg.rotateAngleX;
-        this.rightFoot.rotateAngleY = this.rightLeg.rotateAngleY;
-        this.rightFoot.rotateAngleZ = this.rightLeg.rotateAngleZ;
-        this.leftFoot.rotateAngleX = this.leftLeg.rotateAngleX;
-        this.leftFoot.rotateAngleY = this.leftLeg.rotateAngleY;
-        this.leftFoot.rotateAngleZ = this.leftLeg.rotateAngleZ;
+        rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
 
-        this.rightWing.rotateAngleZ = ageInTicks;
-        this.leftWing.rotateAngleZ = -ageInTicks;
+        duplicateModelRotationAngles(rightLeg, rightFoot, fastRightFoot);
+        duplicateModelRotationAngles(leftLeg, leftFoot, fastLeftFoot);
 
-        // we want the tail to rotate the same as the legs
-        this.tailBase.rotateAngleX = this.body.rotateAngleX;
-        this.tailBase.rotateAngleY = this.body.rotateAngleY;
-        this.tailBase.rotateAngleZ = this.body.rotateAngleZ;
-        this.tailTop.rotateAngleX = this.body.rotateAngleX;
-        this.tailTop.rotateAngleY = this.body.rotateAngleY;
-        this.tailTop.rotateAngleZ = this.body.rotateAngleZ;
+        rightWing.rotateAngleZ = ageInTicks;
+        leftWing.rotateAngleZ = -ageInTicks;
     }
 }
