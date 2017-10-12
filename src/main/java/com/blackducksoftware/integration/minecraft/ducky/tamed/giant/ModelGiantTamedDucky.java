@@ -223,7 +223,7 @@ public class ModelGiantTamedDucky extends ModelBase {
             // to move Ducky up, for some reason that is an decrease in the Y rotation point
             setRotationPoint(-5.0F, -2.0F, -7.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, billBase, billFront, strongBillBase, strongBillFront);
 
-            setRotationPoint(-8.0F, 25.0F, -11.0F, body, tailBase, tailTop, flyingBody);
+            setRotationPoint(-8.0F, 15.0F, -11.0F, body, tailBase, tailTop, flyingBody);
 
             rightLeg.setRotationPoint(-6.0F, 15.0F, -3.0F);
             leftLeg.setRotationPoint(2.0F, 15.0F, -3.0F);
@@ -231,9 +231,8 @@ public class ModelGiantTamedDucky extends ModelBase {
             setRotationPoint(2.0F, 15.0F, -3.0F, leftFoot, fastLeftFoot);
             setRotationPoint(-6.0F, 15.0F, -3.0F, rightFoot, fastRightFoot);
 
-            leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
             rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
-
+            leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
         }
     }
 

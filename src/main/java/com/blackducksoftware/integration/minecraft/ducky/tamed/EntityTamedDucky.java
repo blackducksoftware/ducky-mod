@@ -13,7 +13,6 @@ package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
-import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -44,7 +43,6 @@ public class EntityTamedDucky extends EntityDucky {
     protected void initEntityAI() {
         super.initEntityAI();
         this.tasks.addTask(7, new DuckyAIFollowOwner(this, 3.0F, 8.0F));
-        this.tasks.addTask(7, new DuckyAIFollowOwnerFlying(this, 3.0F, 8.0F));
         this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
     }

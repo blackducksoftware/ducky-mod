@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.DuckyModSounds;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAILookIdle;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIWander;
@@ -82,10 +83,15 @@ public class EntityDucky extends EntityTameable {
     private boolean isFlying;
     private boolean isAttacking;
 
+    protected final DuckyAIFlyTowardsTargetAndAttack duckyAIFlyTowardsTargetAndAttack;
+    protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying;
+
     public EntityDucky(final World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F);
         this.setScale(1.0F);
+        duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
+        duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 8.0F);
     }
 
     @Override
@@ -105,7 +111,6 @@ public class EntityDucky extends EntityTameable {
         this.tasks.addTask(2, new DuckyAILookIdle(this));
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
-        this.tasks.addTask(4, new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityMob.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityShulker.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityGhast.class, true, false));
@@ -319,8 +324,12 @@ public class EntityDucky extends EntityTameable {
     public void setCanFly(final boolean canFly) {
         final byte canFlyByte = this.dataManager.get(CAN_FLY).byteValue();
         if (canFly) {
+            this.tasks.addTask(4, duckyAIFlyTowardsTargetAndAttack);
+            this.tasks.addTask(7, duckyAIFollowOwnerFlying);
             this.dataManager.set(CAN_FLY, Byte.valueOf((byte) (canFlyByte | 1)));
         } else {
+            this.tasks.removeTask(duckyAIFlyTowardsTargetAndAttack);
+            this.tasks.removeTask(duckyAIFollowOwnerFlying);
             this.dataManager.set(CAN_FLY, Byte.valueOf((byte) (canFlyByte & -2)));
         }
     }
