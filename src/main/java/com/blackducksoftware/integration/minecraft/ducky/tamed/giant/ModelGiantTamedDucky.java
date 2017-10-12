@@ -11,9 +11,9 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 
+import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,10 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelGiantTamedDucky extends ModelBase {
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 128;
-
+public class ModelGiantTamedDucky extends AbstractCommonModel {
     public ModelRenderer head;
     public ModelRenderer hatTop;
     public ModelRenderer hatBottom;
@@ -59,6 +56,7 @@ public class ModelGiantTamedDucky extends ModelBase {
     public ModelRenderer tailTop;
 
     public ModelGiantTamedDucky() {
+        super(256, 128);
         // For the parts attached to another body part, they must have the same rotation point for them to rotate correctly when that main body part turns
         // Ex: the Head and the bill must have the same rotation point, and the bill should offset from that point to render correctly
         // Ex: the body and the tail, legs and the feet
@@ -95,26 +93,6 @@ public class ModelGiantTamedDucky extends ModelBase {
         leftWing = createNewModelRenderer(94, 0, 0.0F, 0.0F, 0.0F, 2, 8, 20, 8.0F, 5.0F, -9.0F);
 
         hideModelRenderers(fireProofHatTop, fireProofHatBottom, flyingBody, strongBillBase, strongBillFront, fastLeftFoot, fastRightFoot);
-    }
-
-    private ModelRenderer createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
-            final float rotationPointX, final float rotationPointY, final float rotationPointZ) {
-        final ModelRenderer renderer = new ModelRenderer(this, textureOffsetX, textureOffsetY).setTextureSize(TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        renderer.addBox(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth);
-        renderer.setRotationPoint(rotationPointX, rotationPointY, rotationPointZ);
-        return renderer;
-    }
-
-    private void showModelRenderers(final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.isHidden = false;
-        }
-    }
-
-    private void hideModelRenderers(final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.isHidden = true;
-        }
     }
 
     /**
@@ -189,12 +167,6 @@ public class ModelGiantTamedDucky extends ModelBase {
         leftWing.render(scale);
     }
 
-    private void setRotationPoint(final float xAmount, final float yAmount, final float zAmount, final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.setRotationPoint(xAmount, yAmount, zAmount);
-        }
-    }
-
     /**
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
@@ -233,14 +205,6 @@ public class ModelGiantTamedDucky extends ModelBase {
 
             rightWing.setRotationPoint(-10.0F, 5.0F, -9.0F);
             leftWing.setRotationPoint(8.0F, 5.0F, -9.0F);
-        }
-    }
-
-    private void duplicateModelRotationAngles(final ModelRenderer rendererToCopy, final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.rotateAngleX = rendererToCopy.rotateAngleX;
-            renderer.rotateAngleY = rendererToCopy.rotateAngleY;
-            renderer.rotateAngleZ = rendererToCopy.rotateAngleZ;
         }
     }
 

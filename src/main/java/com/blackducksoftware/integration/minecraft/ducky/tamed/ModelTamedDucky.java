@@ -11,9 +11,9 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
+import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelTamedDucky extends ModelBase {
+public class ModelTamedDucky extends AbstractCommonModel {
     public ModelRenderer head;
     public ModelRenderer hatTop;
     public ModelRenderer hatBottom;
@@ -50,6 +50,8 @@ public class ModelTamedDucky extends ModelBase {
     public ModelRenderer tail;
 
     public ModelTamedDucky() {
+        super(64, 32);
+
         head = createNewModelRenderer(0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
         hatTop = createNewModelRenderer(40, 1, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
         hatBottom = createNewModelRenderer(39, 0, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
@@ -76,26 +78,6 @@ public class ModelTamedDucky extends ModelBase {
         fastLeftLeg = createNewModelRenderer(0, 24, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
 
         hideModelRenderers(fireProofHatTop, fireProofHatBottom, flyingLeftWing, flyingRightWing, strongBill, fastLeftLeg, fastRightLeg);
-    }
-
-    private ModelRenderer createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
-            final float rotationPointX, final float rotationPointY, final float rotationPointZ) {
-        final ModelRenderer renderer = new ModelRenderer(this, textureOffsetX, textureOffsetY);
-        renderer.addBox(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth);
-        renderer.setRotationPoint(rotationPointX, rotationPointY, rotationPointZ);
-        return renderer;
-    }
-
-    private void showModelRenderers(final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.isHidden = false;
-        }
-    }
-
-    private void hideModelRenderers(final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.isHidden = true;
-        }
     }
 
     /**
@@ -165,12 +147,6 @@ public class ModelTamedDucky extends ModelBase {
         flyingRightWing.render(scale);
     }
 
-    private void setRotationPoint(final float xAmount, final float yAmount, final float zAmount, final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.setRotationPoint(xAmount, yAmount, zAmount);
-        }
-    }
-
     /**
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
@@ -198,14 +174,6 @@ public class ModelTamedDucky extends ModelBase {
 
             setRotationPoint(-2.0F, 19F, 1.0F, rightLeg, fastRightLeg);
             setRotationPoint(1.0F, 19F, 1.0F, leftLeg, fastLeftLeg);
-        }
-    }
-
-    private void duplicateModelRotationAngles(final ModelRenderer rendererToCopy, final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
-            renderer.rotateAngleX = rendererToCopy.rotateAngleX;
-            renderer.rotateAngleY = rendererToCopy.rotateAngleY;
-            renderer.rotateAngleZ = rendererToCopy.rotateAngleZ;
         }
     }
 

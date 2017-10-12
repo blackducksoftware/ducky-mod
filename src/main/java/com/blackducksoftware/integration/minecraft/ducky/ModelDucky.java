@@ -11,7 +11,6 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelDucky extends ModelBase {
+public class ModelDucky extends AbstractCommonModel {
 
     public ModelRenderer head;
     public ModelRenderer body;
@@ -32,6 +31,7 @@ public class ModelDucky extends ModelBase {
     public ModelRenderer tail;
 
     public ModelDucky() {
+        super(64, 32);
         this.head = createNewModelRenderer(0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
         this.bill = createNewModelRenderer(14, 0, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
 
@@ -42,14 +42,6 @@ public class ModelDucky extends ModelBase {
 
         this.rightLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, -2.0F, 19.0F, 1.0F);
         this.leftLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
-    }
-
-    private ModelRenderer createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
-            final float rotationPointX, final float rotationPointY, final float rotationPointZ) {
-        final ModelRenderer renderer = new ModelRenderer(this, textureOffsetX, textureOffsetY);
-        renderer.addBox(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth);
-        renderer.setRotationPoint(rotationPointX, rotationPointY, rotationPointZ);
-        return renderer;
     }
 
     /**
@@ -77,20 +69,18 @@ public class ModelDucky extends ModelBase {
         final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
 
         if (entityDucky.isSitting()) {
-            this.head.setRotationPoint(0.0F, 20.0F, -4.0F);
-            this.bill.setRotationPoint(0.0F, 20.0F, -4.0F);
-            this.tail.setRotationPoint(0.0F, 21.0F, 0.0F);
-            this.body.setRotationPoint(0.0F, 21.0F, 0.0F);
+            setRotationPoint(0.0F, 20.0F, -4.0F, head, bill);
+            setRotationPoint(0.0F, 21.0F, 0.0F, tail, body);
+
             this.rightWing.setRotationPoint(-4.0F, 18.0F, 0.0F);
             this.leftWing.setRotationPoint(4.0F, 18.0F, 0.0F);
 
             this.rightLeg.setRotationPoint(-2.0F, 18.9F, 1.0F);
             this.leftLeg.setRotationPoint(1.0F, 18.9F, 1.0F);
         } else {
-            this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
-            this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-            this.tail.setRotationPoint(0.0F, 16.0F, 0.0F);
-            this.body.setRotationPoint(0.0F, 16.0F, 0.0F);
+            setRotationPoint(0.0F, 15.0F, -4.0F, head, bill);
+            setRotationPoint(0.0F, 16.0F, 0.0F, tail, body);
+
             this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
             this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
 
@@ -107,14 +97,10 @@ public class ModelDucky extends ModelBase {
     public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
-        this.bill.rotateAngleX = this.head.rotateAngleX;
-        this.bill.rotateAngleY = this.head.rotateAngleY;
-        this.bill.rotateAngleZ = this.head.rotateAngleZ;
+        duplicateModelRotationAngles(head, bill);
 
         this.body.rotateAngleX = ((float) Math.PI / 2F);
-        this.tail.rotateAngleX = this.body.rotateAngleX;
-        this.tail.rotateAngleY = this.body.rotateAngleY;
-        this.tail.rotateAngleZ = this.body.rotateAngleZ;
+        duplicateModelRotationAngles(body, tail);
 
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
