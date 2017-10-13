@@ -44,6 +44,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -342,7 +343,7 @@ public class EntityDucky extends EntityTameable {
         return getManagedByteBoolean(STRENGTH);
     }
 
-    public void setStrength(final boolean strong) {
+    public void setStrong(final boolean strong) {
         setManagedByteBoolean(STRENGTH, strong);
         if (strong) {
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(INCREASED_DAMAGE);
@@ -355,13 +356,37 @@ public class EntityDucky extends EntityTameable {
         return getManagedByteBoolean(SPEED);
     }
 
-    public void setSpeed(final boolean fast) {
+    public void setFast(final boolean fast) {
         setManagedByteBoolean(SPEED, fast);
         if (fast) {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(FAST_SPEED);
         } else {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
         }
+    }
+
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    @Override
+    public void writeEntityToNBT(final NBTTagCompound compound) {
+        super.writeEntityToNBT(compound);
+        compound.setBoolean("FireProof", this.isFireProof());
+        compound.setBoolean("CanFly", this.isCanFly());
+        compound.setBoolean("Strong", this.isStrong());
+        compound.setBoolean("Fast", this.isFast());
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    @Override
+    public void readEntityFromNBT(final NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
+        this.setFireProof(compound.getBoolean("FireProof"));
+        this.setCanFly(compound.getBoolean("CanFly"));
+        this.setStrong(compound.getBoolean("Strong"));
+        this.setFast(compound.getBoolean("Fast"));
     }
 
     /**
