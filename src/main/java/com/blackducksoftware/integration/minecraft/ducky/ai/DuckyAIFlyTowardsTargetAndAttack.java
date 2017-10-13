@@ -14,8 +14,6 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.util.math.Vec3d;
 
 public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     /** If the distance to the target entity is further than this, this AI task will not run. */
@@ -86,18 +84,11 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         } else {
             targetLastSeen = 0;
         }
-        Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
-        vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-        getDucky().motionX = vector.xCoord;
-        float yAdjustment = 0.1F;
-        if (isDuckyStuck()) {
-            yAdjustment = 0.5F;
-        }
-        getDucky().motionY = vector.yCoord + yAdjustment;
-        getDucky().motionZ = vector.zCoord;
-
+        final double speedModifier = getSpeedModifier(distanceToTarget);
+        getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+
         checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
     }
 }

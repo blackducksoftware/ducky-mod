@@ -41,7 +41,7 @@ public class EntityTamedDucky extends EntityDucky {
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 3.0F, 8.0F));
+        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 3.0F, 12.0F));
         this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
     }
@@ -51,7 +51,6 @@ public class EntityTamedDucky extends EntityDucky {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class EntityTamedDucky extends EntityDucky {
                 this.playTameEffect(true);
             }
             return true;
-        } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isImmuneToFire() || this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue() == FAST_SPEED)) {
+        } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isImmuneToFire() || this.isStrong() || this.isFast() || this.isCanFly())) {
             if (!player.capabilities.isCreativeMode) {
                 itemstack.func_190918_g(1);
             }
