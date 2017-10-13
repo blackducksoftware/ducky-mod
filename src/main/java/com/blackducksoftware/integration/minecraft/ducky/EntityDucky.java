@@ -44,6 +44,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -299,73 +300,93 @@ public class EntityDucky extends EntityTameable {
         }
     }
 
+    private boolean getManagedByteBoolean(final DataParameter<Byte> dataParameter) {
+        final byte managedByte = this.dataManager.get(dataParameter).byteValue();
+        final boolean value = (managedByte & 1) != 0;
+        return value;
+    }
+
+    private void setManagedByteBoolean(final DataParameter<Byte> dataParameter, final boolean value) {
+        final byte managedByte = this.dataManager.get(dataParameter).byteValue();
+        if (value) {
+            this.dataManager.set(dataParameter, Byte.valueOf((byte) (managedByte | 1)));
+        } else {
+            this.dataManager.set(dataParameter, Byte.valueOf((byte) (managedByte & -2)));
+        }
+    }
+
     public boolean isFireProof() {
-        final byte fireProofByte = this.dataManager.get(IS_FIRE_PROOF).byteValue();
-        final boolean fireProof = (fireProofByte & 1) != 0;
-        return fireProof;
+        return getManagedByteBoolean(IS_FIRE_PROOF);
     }
 
     public void setFireProof(final boolean fireProof) {
         this.isImmuneToFire = fireProof;
-        final byte fireProofByte = this.dataManager.get(IS_FIRE_PROOF).byteValue();
-        if (fireProof) {
-            this.dataManager.set(IS_FIRE_PROOF, Byte.valueOf((byte) (fireProofByte | 1)));
-        } else {
-            this.dataManager.set(IS_FIRE_PROOF, Byte.valueOf((byte) (fireProofByte & -2)));
-        }
+        setManagedByteBoolean(IS_FIRE_PROOF, fireProof);
     }
 
     public boolean isCanFly() {
-        final byte canFlyByte = this.dataManager.get(CAN_FLY).byteValue();
-        final boolean canFly = (canFlyByte & 1) != 0;
-        return canFly;
+        return getManagedByteBoolean(CAN_FLY);
     }
 
     public void setCanFly(final boolean canFly) {
-        final byte canFlyByte = this.dataManager.get(CAN_FLY).byteValue();
+        setManagedByteBoolean(CAN_FLY, canFly);
         if (canFly) {
             this.tasks.addTask(4, duckyAIFlyTowardsTargetAndAttack);
             this.tasks.addTask(7, duckyAIFollowOwnerFlying);
-            this.dataManager.set(CAN_FLY, Byte.valueOf((byte) (canFlyByte | 1)));
         } else {
             this.tasks.removeTask(duckyAIFlyTowardsTargetAndAttack);
             this.tasks.removeTask(duckyAIFollowOwnerFlying);
-            this.dataManager.set(CAN_FLY, Byte.valueOf((byte) (canFlyByte & -2)));
         }
     }
 
     public boolean isStrong() {
-        final byte strongByte = this.dataManager.get(STRENGTH).byteValue();
-        final boolean strong = (strongByte & 1) != 0;
-        return strong;
+        return getManagedByteBoolean(STRENGTH);
     }
 
-    public void setStrength(final boolean strong) {
-        final byte strongByte = this.dataManager.get(STRENGTH).byteValue();
+    public void setStrong(final boolean strong) {
+        setManagedByteBoolean(STRENGTH, strong);
         if (strong) {
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(INCREASED_DAMAGE);
-            this.dataManager.set(STRENGTH, Byte.valueOf((byte) (strongByte | 1)));
         } else {
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
-            this.dataManager.set(STRENGTH, Byte.valueOf((byte) (strongByte & -2)));
         }
     }
 
     public boolean isFast() {
-        final byte fastByte = this.dataManager.get(SPEED).byteValue();
-        final boolean fast = (fastByte & 1) != 0;
-        return fast;
+        return getManagedByteBoolean(SPEED);
     }
 
-    public void setSpeed(final boolean fast) {
-        final byte fastByte = this.dataManager.get(SPEED).byteValue();
+    public void setFast(final boolean fast) {
+        setManagedByteBoolean(SPEED, fast);
         if (fast) {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(FAST_SPEED);
-            this.dataManager.set(SPEED, Byte.valueOf((byte) (fastByte | 1)));
         } else {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
-            this.dataManager.set(SPEED, Byte.valueOf((byte) (fastByte & -2)));
         }
+    }
+
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    @Override
+    public void writeEntityToNBT(final NBTTagCompound compound) {
+        super.writeEntityToNBT(compound);
+        compound.setBoolean("FireProof", this.isFireProof());
+        compound.setBoolean("CanFly", this.isCanFly());
+        compound.setBoolean("Strong", this.isStrong());
+        compound.setBoolean("Fast", this.isFast());
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    @Override
+    public void readEntityFromNBT(final NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
+        this.setFireProof(compound.getBoolean("FireProof"));
+        this.setCanFly(compound.getBoolean("CanFly"));
+        this.setStrong(compound.getBoolean("Strong"));
+        this.setFast(compound.getBoolean("Fast"));
     }
 
     /**

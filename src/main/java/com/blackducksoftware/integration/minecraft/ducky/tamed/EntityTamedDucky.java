@@ -89,8 +89,8 @@ public class EntityTamedDucky extends EntityDucky {
                 entityTamedDucky.setFireProof(false);
                 spawnTamedDucky(player, entityTamedDucky);
                 entityTamedDucky.setCanFly(false);
-                entityTamedDucky.setStrength(false);
-                entityTamedDucky.setSpeed(false);
+                entityTamedDucky.setStrong(false);
+                entityTamedDucky.setFast(false);
             }
             return true;
         } else if (Items.POTIONITEM == itemstack.getItem()) {
@@ -107,8 +107,8 @@ public class EntityTamedDucky extends EntityDucky {
                         entityTamedDucky.setFireProof(this.isFireProof());
                         spawnTamedDucky(player, entityTamedDucky);
                         entityTamedDucky.setCanFly(this.isCanFly());
-                        entityTamedDucky.setStrength(this.isStrong());
-                        entityTamedDucky.setSpeed(this.isFast());
+                        entityTamedDucky.setStrong(this.isStrong());
+                        entityTamedDucky.setFast(this.isFast());
                     }
                     return true;
                 } else if ("weakness".equalsIgnoreCase(potionType.getNamePrefixed("")) && (this instanceof EntityGiantTamedDucky)) {
@@ -120,8 +120,8 @@ public class EntityTamedDucky extends EntityDucky {
                         entityTamedDucky.setFireProof(this.isFireProof());
                         spawnTamedDucky(player, entityTamedDucky);
                         entityTamedDucky.setCanFly(this.isCanFly());
-                        entityTamedDucky.setStrength(this.isStrong());
-                        entityTamedDucky.setSpeed(this.isFast());
+                        entityTamedDucky.setStrong(this.isStrong());
+                        entityTamedDucky.setFast(this.isFast());
                     }
                     return true;
                 } else if ("fire_resistance".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
@@ -134,13 +134,13 @@ public class EntityTamedDucky extends EntityDucky {
                     if (!player.capabilities.isCreativeMode) {
                         itemstack.func_190918_g(1);
                     }
-                    this.setSpeed(true);
+                    this.setFast(true);
                     return true;
                 } else if ("strength".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
                     if (!player.capabilities.isCreativeMode) {
                         itemstack.func_190918_g(1);
                     }
-                    this.setStrength(true);
+                    this.setStrong(true);
                     return true;
                 } else if ("leaping".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
                     if (!player.capabilities.isCreativeMode) {
