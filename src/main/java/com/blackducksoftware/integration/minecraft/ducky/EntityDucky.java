@@ -20,7 +20,10 @@ import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFlyTowardsTar
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwnerFlying;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAILookIdle;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIMoveTowardsTargetAndAttack;
+import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIPanic;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIWander;
+import com.blackducksoftware.integration.minecraft.ducky.pathfinding.DuckyFlyHelper;
+import com.blackducksoftware.integration.minecraft.ducky.pathfinding.DuckyPathNavigateFlying;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
 
 import net.minecraft.block.Block;
@@ -35,6 +38,7 @@ import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityShulker;
@@ -48,6 +52,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -87,12 +93,28 @@ public class EntityDucky extends EntityTameable {
     protected final DuckyAIFlyTowardsTargetAndAttack duckyAIFlyTowardsTargetAndAttack;
     protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying;
 
+    protected final PathNavigateGround groundNavigator;
+    protected final DuckyPathNavigateFlying flyingNavigator;
+
+    protected final EntityMoveHelper groundMoveHelper;
+    protected final DuckyFlyHelper flyingMoveHelper;
+
     public EntityDucky(final World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F);
         this.setScale(1.0F);
         duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
-        duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 8.0F);
+        duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 12.0F);
+
+        groundNavigator = new PathNavigateGround(this, worldIn);
+        this.navigator = groundNavigator;
+        flyingNavigator = new DuckyPathNavigateFlying(this, worldIn);
+        flyingNavigator.setCanBreakDoors(false);
+        flyingNavigator.setCanSwim(true);
+        flyingNavigator.setCanEnterDoors(true);
+        groundMoveHelper = new EntityMoveHelper(this);
+        this.moveHelper = groundMoveHelper;
+        flyingMoveHelper = new DuckyFlyHelper(this);
     }
 
     @Override
@@ -108,8 +130,9 @@ public class EntityDucky extends EntityTameable {
     protected void initEntityAI() {
         this.aiSit = new EntityAISit(this);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new DuckyAIWander(this, 1.0D, 100));
-        this.tasks.addTask(2, new DuckyAILookIdle(this));
+        this.tasks.addTask(1, new DuckyAIPanic(this, 1.4D));
+        this.tasks.addTask(2, new DuckyAIWander(this, 1.0D, 100));
+        this.tasks.addTask(3, new DuckyAILookIdle(this));
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityMob.class, true, false));
@@ -123,6 +146,7 @@ public class EntityDucky extends EntityTameable {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(BASE_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.field_193334_e).setBaseValue(BASE_SPEED);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
     }
@@ -360,8 +384,10 @@ public class EntityDucky extends EntityTameable {
         setManagedByteBoolean(SPEED, fast);
         if (fast) {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(FAST_SPEED);
+            this.getEntityAttribute(SharedMonsterAttributes.field_193334_e).setBaseValue(FAST_SPEED);
         } else {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
+            this.getEntityAttribute(SharedMonsterAttributes.field_193334_e).setBaseValue(BASE_SPEED);
         }
     }
 
@@ -424,6 +450,13 @@ public class EntityDucky extends EntityTameable {
 
     public void setFlying(final boolean isFlying) {
         this.isFlying = isFlying;
+        if (isFlying) {
+            this.navigator = flyingNavigator;
+            this.moveHelper = flyingMoveHelper;
+        } else {
+            this.navigator = groundNavigator;
+            this.moveHelper = groundMoveHelper;
+        }
     }
 
     public boolean isAttacking() {
@@ -432,5 +465,13 @@ public class EntityDucky extends EntityTameable {
 
     public void setAttacking(final boolean isAttacking) {
         this.isAttacking = isAttacking;
+    }
+
+    public PathNavigate getGroundNavigator() {
+        return groundNavigator;
+    }
+
+    public PathNavigate getFlyingNavigator() {
+        return groundNavigator;
     }
 }

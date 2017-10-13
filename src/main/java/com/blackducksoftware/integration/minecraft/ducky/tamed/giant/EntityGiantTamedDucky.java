@@ -30,16 +30,15 @@ public class EntityGiantTamedDucky extends EntityTamedDucky {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(GIANT_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
     }
 
     @Override
     public void setTamed(final boolean tamed) {
         super.setTamed(tamed);
         if (tamed) {
-            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
+            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(GIANT_HEALTH);
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
-            this.setHealth((float) TAMED_HEALTH);
+            this.setHealth((float) GIANT_HEALTH);
         }
     }
 }

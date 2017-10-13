@@ -28,6 +28,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
+    protected final static double TELEPORT_RANGE = 24.0D;
+
     private final EntityDucky ducky;
     private Entity targetToFollow;
     protected int attackTick;
@@ -95,12 +97,12 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         if (target == null) {
             return false;
         }
-        final PathNavigate navigator = ducky.getNavigator();
+        final PathNavigate navigator = ducky.getGroundNavigator();
         Path path = navigator.getPath();
 
         boolean shouldFly = false;
         if (path == null) {
-            path = getDucky().getNavigator().getPathToEntityLiving(target);
+            path = navigator.getPathToEntityLiving(target);
         }
         if (path != null) {
             final PathPoint pathpoint = path.getFinalPathPoint();
@@ -108,7 +110,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
                 shouldFly = true;
             } else {
                 final int i = MathHelper.floor_double(target.posY) - pathpoint.yCoord;
-                shouldFly = !target.onGround || (i > 1.25D);
+                shouldFly = !target.onGround || (i > 1.5D);
             }
         } else {
             shouldFly = true;
@@ -149,7 +151,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         return false;
     }
 
-    protected void relocateDuckyNearTarget() {
+    protected boolean relocateDuckyNearTarget() {
         final int startingX = MathHelper.floor_double(getTargetToFollow().posX) - 2;
         final int startingZ = MathHelper.floor_double(getTargetToFollow().posZ) - 2;
         final int startingY = MathHelper.floor_double(getTargetToFollow().getEntityBoundingBox().minY);
@@ -164,10 +166,28 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
                     final boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {
                         getDucky().setLocationAndAngles(startingX + xAdjustment + 0.5F, startingY, startingZ + zAdjustment + 0.5F, getDucky().rotationYaw, getDucky().rotationPitch);
-                        return;
+                        return true;
                     }
                 }
             }
         }
+        return false;
+    }
+
+    public BlockPos getPositionBelowTarget() {
+        BlockPos location = null;
+        if (getTargetToFollow().onGround) {
+            location = new BlockPos(getTargetToFollow().posX, getTargetToFollow().posY, getTargetToFollow().posZ);
+        } else {
+            for (double i = getTargetToFollow().posY; i > 0.0D; i = i - 1.0D) {
+                final BlockPos currentLocation = new BlockPos(getTargetToFollow().posX, i, getTargetToFollow().posZ);
+                final IBlockState blockstate = getDucky().worldObj.getBlockState(currentLocation);
+                if (blockstate.getMaterial() != Material.AIR || blockstate.isFullCube()) {
+                    location = currentLocation;
+                    break;
+                }
+            }
+        }
+        return location;
     }
 }
