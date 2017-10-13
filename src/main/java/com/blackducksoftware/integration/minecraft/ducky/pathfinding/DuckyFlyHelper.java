@@ -27,7 +27,7 @@ public class DuckyFlyHelper extends EntityMoveHelper {
     public void onUpdateMoveHelper() {
         if (action == EntityMoveHelper.Action.MOVE_TO) {
             action = EntityMoveHelper.Action.WAIT;
-            final Vec3d targetPosition = new Vec3d(posX, posY, posZ);
+            final Vec3d targetPosition = new Vec3d(posX, posY + 1, posZ);
             Vec3d vector = targetPosition.subtract(entity.getPositionVector());
             vector = vector.normalize().scale(entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.field_193334_e).getAttributeValue() * speed);
             entity.motionX = vector.xCoord;
