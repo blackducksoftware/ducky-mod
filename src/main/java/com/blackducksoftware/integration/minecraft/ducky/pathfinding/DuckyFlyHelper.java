@@ -31,8 +31,7 @@ public class DuckyFlyHelper extends EntityMoveHelper {
             Vec3d vector = targetPosition.subtract(entity.getPositionVector());
             vector = vector.normalize().scale(entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getAttributeValue() * speed);
             entity.motionX = vector.x;
-            final float yAdjustment = 0.1F;
-            entity.motionY = vector.y + yAdjustment;
+            entity.motionY = vector.y + 0.1F;
             entity.motionZ = vector.z;
         }
     }

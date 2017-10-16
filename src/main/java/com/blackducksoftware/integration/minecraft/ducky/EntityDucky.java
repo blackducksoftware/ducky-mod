@@ -55,6 +55,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -106,8 +107,10 @@ public class EntityDucky extends EntityTameable {
         this.setScale(1.0F);
         duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
         duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 12.0F);
-
+        this.setPathPriority(PathNodeType.WATER, 0.0F);
         groundNavigator = new PathNavigateGround(this, worldIn);
+        groundNavigator.setCanSwim(true);
+        groundNavigator.setEnterDoors(true);
         this.navigator = groundNavigator;
         flyingNavigator = new DuckyPathNavigateFlying(this, worldIn);
         flyingNavigator.setCanSwim(true);
