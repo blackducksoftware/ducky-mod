@@ -162,4 +162,12 @@ public class EntityTamedDucky extends EntityDucky {
         return false;
     }
 
+    /**
+     * Get the experience points the entity currently has.
+     */
+    @Override
+    protected int getExperiencePoints(final EntityPlayer player) {
+        return 15;
+    }
+
 }

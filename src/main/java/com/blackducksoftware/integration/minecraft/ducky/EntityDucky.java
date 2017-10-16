@@ -42,6 +42,7 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityShulker;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -135,9 +136,10 @@ public class EntityDucky extends EntityTameable {
         // this.tasks.addTask(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.tasks.addTask(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityMob.class, true, false));
+        this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySlime.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityShulker.class, true, false));
         this.tasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityGhast.class, true, false));
-        this.targetTasks.addTask(6, new EntityAIHurtByTarget(this, true, EntityMob.class, EntityShulker.class, EntityGhast.class));
+        this.targetTasks.addTask(6, new EntityAIHurtByTarget(this, true, EntityMob.class, EntitySlime.class, EntityShulker.class, EntityGhast.class));
     }
 
     @Override
@@ -419,7 +421,7 @@ public class EntityDucky extends EntityTameable {
      */
     @Override
     protected int getExperiencePoints(final EntityPlayer player) {
-        return 20;
+        return 10;
     }
 
     /**

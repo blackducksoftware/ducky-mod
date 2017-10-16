@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
 
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class EntityGiantTamedDucky extends EntityTamedDucky {
@@ -40,5 +41,13 @@ public class EntityGiantTamedDucky extends EntityTamedDucky {
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
             this.setHealth((float) GIANT_HEALTH);
         }
+    }
+
+    /**
+     * Get the experience points the entity currently has.
+     */
+    @Override
+    protected int getExperiencePoints(final EntityPlayer player) {
+        return 30;
     }
 }
