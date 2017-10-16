@@ -36,7 +36,7 @@ public class DuckyAILookIdle extends EntityAILookIdle {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
-        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.continueExecuting();
+    public boolean shouldContinueExecuting() {
+        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldContinueExecuting();
     }
 }

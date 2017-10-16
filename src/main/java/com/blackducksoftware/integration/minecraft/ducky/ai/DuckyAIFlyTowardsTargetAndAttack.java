@@ -55,7 +55,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove()) {
             getDucky().setFlying(false);
             getDucky().setAttacking(false);
@@ -88,13 +88,13 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         }
         Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
         vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-        getDucky().motionX = vector.xCoord;
+        getDucky().motionX = vector.x;
         float yAdjustment = 0.1F;
         if (isDuckyStuck()) {
             yAdjustment = 0.5F;
         }
-        getDucky().motionY = vector.yCoord + yAdjustment;
-        getDucky().motionZ = vector.zCoord;
+        getDucky().motionY = vector.y + yAdjustment;
+        getDucky().motionZ = vector.z;
 
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());

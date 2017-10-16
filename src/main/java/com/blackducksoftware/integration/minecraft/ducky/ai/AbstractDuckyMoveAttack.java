@@ -86,7 +86,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     }
 
     public boolean isEmptyBlock(final BlockPos pos) {
-        final IBlockState iblockstate = getDucky().worldObj.getBlockState(pos);
+        final IBlockState iblockstate = getDucky().world.getBlockState(pos);
         return iblockstate.getMaterial() == Material.AIR ? true : !iblockstate.isFullCube();
     }
 
@@ -106,7 +106,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
             if (pathpoint == null) {
                 shouldFly = true;
             } else {
-                final int i = MathHelper.floor_double(target.posY) - pathpoint.yCoord;
+                final int i = MathHelper.floor(target.posY) - pathpoint.y;
                 shouldFly = !target.onGround || (i > 1.25D);
             }
         } else {
@@ -149,15 +149,15 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     }
 
     protected void relocateDuckyNearTarget() {
-        final int startingX = MathHelper.floor_double(getTargetToFollow().posX) - 2;
-        final int startingZ = MathHelper.floor_double(getTargetToFollow().posZ) - 2;
-        final int startingY = MathHelper.floor_double(getTargetToFollow().getEntityBoundingBox().minY);
+        final int startingX = MathHelper.floor(getTargetToFollow().posX) - 2;
+        final int startingZ = MathHelper.floor(getTargetToFollow().posZ) - 2;
+        final int startingY = MathHelper.floor(getTargetToFollow().getEntityBoundingBox().minY);
 
         // Search a 4x4 area around the target (at least 2 blocks away from the target) for a 2 high empty spot on a solid block to put Ducky
         for (int xAdjustment = 0; xAdjustment <= 4; ++xAdjustment) {
             for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
                 if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
-                    final boolean isBlockBelowSolid = getDucky().worldObj.getBlockState(new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment)).isOpaqueCube();
+                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment)).isOpaqueCube();
                     final boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
                     final boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {

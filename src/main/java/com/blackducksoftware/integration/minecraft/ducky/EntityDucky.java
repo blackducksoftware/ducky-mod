@@ -117,7 +117,7 @@ public class EntityDucky extends EntityTameable {
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
         this.destPos = (float) (this.destPos + (this.onGround ? -1 : 4) * 0.3D);
-        this.destPos = MathHelper.clamp_float(this.destPos, 0.0F, 1.0F);
+        this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
         if (!this.onGround && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
@@ -134,7 +134,7 @@ public class EntityDucky extends EntityTameable {
         boolean isTooHigh = true;
         for (double i = y; i >= y - 3; i--) {
             loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
-            final IBlockState blockstate = this.worldObj.getBlockState(loc);
+            final IBlockState blockstate = this.world.getBlockState(loc);
             if (blockstate.getMaterial() != Material.AIR || blockstate.isFullCube()) {
                 isTooHigh = false;
             }
@@ -159,17 +159,17 @@ public class EntityDucky extends EntityTameable {
         final ItemStack itemstack = player.getHeldItem(hand);
         if (isBreedingItem(itemstack)) {
             if (!player.capabilities.isCreativeMode) {
-                itemstack.func_190918_g(1);
+                itemstack.shrink(1);
             }
-            if (!this.worldObj.isRemote) {
+            if (!this.world.isRemote) {
                 EntityTamedDucky tamedDucky = null;
                 if (this.rand.nextInt(9) == 0) {
-                    tamedDucky = new EntityGiantTamedDucky(this.worldObj);
+                    tamedDucky = new EntityGiantTamedDucky(this.world);
                     final ItemStack firework = createFirework();
-                    final EntityFireworkRocket rocket = new EntityFireworkRocket(worldObj, this.posX, this.posY, this.posZ, firework);
-                    worldObj.spawnEntityInWorld(rocket);
+                    final EntityFireworkRocket rocket = new EntityFireworkRocket(world, this.posX, this.posY, this.posZ, firework);
+                    world.spawnEntity(rocket);
                 } else {
-                    tamedDucky = new EntityTamedDucky(this.worldObj);
+                    tamedDucky = new EntityTamedDucky(this.world);
                 }
                 if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(tamedDucky, player)) {
                     tamedDucky.moveToBlockPosAndAngles(this.getPosition(), 0.0F, 0.0F);
@@ -178,13 +178,13 @@ public class EntityDucky extends EntityTameable {
                     tamedDucky.setAttackTarget((EntityLivingBase) null);
                     tamedDucky.setOwnerId(player.getUniqueID());
                     tamedDucky.playTameEffect(true);
-                    tamedDucky.worldObj.setEntityState(this, (byte) 7);
-                    tamedDucky.onInitialSpawn(tamedDucky.worldObj.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
-                    tamedDucky.worldObj.spawnEntityInWorld(tamedDucky);
+                    tamedDucky.world.setEntityState(this, (byte) 7);
+                    tamedDucky.onInitialSpawn(tamedDucky.world.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
+                    tamedDucky.world.spawnEntity(tamedDucky);
                     this.setDead();
                 } else {
                     this.playTameEffect(false);
-                    this.worldObj.setEntityState(this, (byte) 6);
+                    this.world.setEntityState(this, (byte) 6);
                 }
             }
             return true;

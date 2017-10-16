@@ -36,14 +36,14 @@ public class ItemDuckySpawnEgg extends Item {
     public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer player, final EnumHand hand) {
         final ItemStack itemStack = player.getHeldItem(hand);
         if (!player.capabilities.isCreativeMode) {
-            itemStack.func_190918_g(1);
+            itemStack.shrink(1);
         }
         worldIn.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
             final EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(worldIn, player);
             entityegg.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
-            worldIn.spawnEntityInWorld(entityegg);
+            worldIn.spawnEntity(entityegg);
         }
 
         player.addStat(StatList.getObjectUseStats(this));

@@ -74,14 +74,14 @@ public class EntityTamedDucky extends EntityDucky {
                 final ItemFood itemfood = (ItemFood) itemstack.getItem();
                 if (this.getHealth() < TAMED_HEALTH) {
                     if (!player.capabilities.isCreativeMode) {
-                        itemstack.func_190918_g(1);
+                        itemstack.shrink(1);
                     }
                     this.heal(itemfood.getHealAmount(itemstack));
                     this.playTameEffect(true);
                 }
                 return true;
             } else {
-                if (this.isOwner(player) && !this.worldObj.isRemote) {
+                if (this.isOwner(player) && !this.world.isRemote) {
                     setSitting(!this.isSitting());
                     this.isJumping = false;
                     this.navigator.clearPathEntity();

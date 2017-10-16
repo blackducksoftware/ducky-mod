@@ -64,7 +64,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
                 this.closestEntity = this.theWatcher.getAttackTarget();
             }
 
-            final List<EntityLiving> list = theWatcher.worldObj.<EntityLiving> getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
+            final List<EntityLiving> list = theWatcher.world.<EntityLiving> getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
 
             if (list.isEmpty()) {
                 return false;
@@ -84,7 +84,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         return !this.closestEntity.isEntityAlive() ? false : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
     }
 
