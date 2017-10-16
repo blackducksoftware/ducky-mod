@@ -41,16 +41,16 @@ public class EntityDuckySpawnEgg extends EntityEgg {
             result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
         }
 
-        if (!this.worldObj.isRemote) {
-            final EntityDucky entityDucky = new EntityDucky(this.worldObj);
+        if (!this.world.isRemote) {
+            final EntityDucky entityDucky = new EntityDucky(this.world);
             entityDucky.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-            this.worldObj.spawnEntityInWorld(entityDucky);
+            this.world.spawnEntity(entityDucky);
         }
 
-        this.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D,
+        this.world.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D,
                 new int[] { Item.getIdFromItem(DuckyModItems.egg) });
 
-        if (!this.worldObj.isRemote) {
+        if (!this.world.isRemote) {
             this.setDead();
         }
 

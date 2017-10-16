@@ -43,7 +43,7 @@ public class DuckyAIPanic extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         if (ducky.isBurning()) {
-            final BlockPos blockpos = this.getRandomWaterPosition(ducky.worldObj, ducky, 15, 6);
+            final BlockPos blockpos = this.getRandomWaterPosition(ducky.world, ducky, 15, 6);
             if (blockpos != null) {
                 this.randPosX = blockpos.getX();
                 this.randPosY = blockpos.getY();
@@ -63,9 +63,9 @@ public class DuckyAIPanic extends EntityAIBase {
         if (vec3d == null) {
             return false;
         } else {
-            this.randPosX = vec3d.xCoord;
-            this.randPosY = vec3d.yCoord;
-            this.randPosZ = vec3d.zCoord;
+            this.randPosX = vec3d.x;
+            this.randPosY = vec3d.y;
+            this.randPosZ = vec3d.z;
             return true;
         }
     }
@@ -82,7 +82,7 @@ public class DuckyAIPanic extends EntityAIBase {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         return !ducky.getNavigator().noPath();
     }
 

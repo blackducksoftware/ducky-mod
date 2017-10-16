@@ -37,7 +37,7 @@ public class DuckyAIWander extends EntityAIWander {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
-        return entityDucky.canMove() && !entityDucky.isFlying() && !entityDucky.isAttacking() && super.continueExecuting();
+    public boolean shouldContinueExecuting() {
+        return entityDucky.canMove() && !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldContinueExecuting();
     }
 }

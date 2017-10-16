@@ -53,7 +53,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove()) {
             getDucky().setFlying(false);
             getDucky().setAttacking(false);

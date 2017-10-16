@@ -109,7 +109,6 @@ public class EntityDucky extends EntityTameable {
         groundNavigator = new PathNavigateGround(this, worldIn);
         this.navigator = groundNavigator;
         flyingNavigator = new DuckyPathNavigateFlying(this, worldIn);
-        flyingNavigator.setCanBreakDoors(false);
         flyingNavigator.setCanSwim(true);
         flyingNavigator.setCanEnterDoors(true);
         groundMoveHelper = new EntityMoveHelper(this);
@@ -146,7 +145,7 @@ public class EntityDucky extends EntityTameable {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(BASE_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.field_193334_e).setBaseValue(BASE_SPEED);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(BASE_SPEED);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(BASE_DAMAGE);
     }
@@ -168,7 +167,7 @@ public class EntityDucky extends EntityTameable {
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
         this.destPos = (float) (this.destPos + (this.onGround ? -1 : 4) * 0.3D);
-        this.destPos = MathHelper.clamp_float(this.destPos, 0.0F, 1.0F);
+        this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
         if (!this.onGround && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
@@ -185,7 +184,7 @@ public class EntityDucky extends EntityTameable {
         boolean isTooHigh = true;
         for (double i = y; i >= y - 3; i--) {
             loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
-            final IBlockState blockstate = this.worldObj.getBlockState(loc);
+            final IBlockState blockstate = this.world.getBlockState(loc);
             if (blockstate.getMaterial() != Material.AIR || blockstate.isFullCube()) {
                 isTooHigh = false;
             }
@@ -210,10 +209,10 @@ public class EntityDucky extends EntityTameable {
         final ItemStack itemstack = player.getHeldItem(hand);
         if (isBreedingItem(itemstack)) {
             if (!player.capabilities.isCreativeMode) {
-                itemstack.func_190918_g(1);
+                itemstack.shrink(1);
             }
-            if (!this.worldObj.isRemote) {
-                final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.worldObj);
+            if (!this.world.isRemote) {
+                final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
                 entityTamedDucky.setOwnerId(player.getUniqueID());
                 entityTamedDucky.setTamed(true);
                 spawnTamedDucky(player, entityTamedDucky);
@@ -238,9 +237,9 @@ public class EntityDucky extends EntityTameable {
     protected void spawnTamedDucky(final EntityPlayer player, final EntityTamedDucky entityTamedDucky) {
         if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(entityTamedDucky, player)) {
             entityTamedDucky.setAttributesFromOriginal(this, player.getUniqueID());
-            entityTamedDucky.onInitialSpawn(entityTamedDucky.worldObj.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
+            entityTamedDucky.onInitialSpawn(entityTamedDucky.world.getDifficultyForLocation(this.getPosition()), (IEntityLivingData) null);
             this.setDead();
-            entityTamedDucky.worldObj.spawnEntityInWorld(entityTamedDucky);
+            entityTamedDucky.world.spawnEntity(entityTamedDucky);
         }
     }
 
@@ -384,10 +383,10 @@ public class EntityDucky extends EntityTameable {
         setManagedByteBoolean(SPEED, fast);
         if (fast) {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(FAST_SPEED);
-            this.getEntityAttribute(SharedMonsterAttributes.field_193334_e).setBaseValue(FAST_SPEED);
+            this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(FAST_SPEED);
         } else {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(BASE_SPEED);
-            this.getEntityAttribute(SharedMonsterAttributes.field_193334_e).setBaseValue(BASE_SPEED);
+            this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(BASE_SPEED);
         }
     }
 

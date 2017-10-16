@@ -43,12 +43,12 @@ public class DuckyPathNavigateFlying extends PathNavigate {
      */
     @Override
     protected boolean canNavigate() {
-        return this.getCanSwim() && this.isInLiquid() || !this.theEntity.isRiding();
+        return this.getCanSwim() && this.isInLiquid() || !entity.isRiding();
     }
 
     @Override
     protected Vec3d getEntityPosition() {
-        return new Vec3d(this.theEntity.posX, this.theEntity.posY, this.theEntity.posZ);
+        return new Vec3d(entity.posX, entity.posY, entity.posZ);
     }
 
     /**
@@ -71,28 +71,27 @@ public class DuckyPathNavigateFlying extends PathNavigate {
             if (this.canNavigate()) {
                 this.pathFollow();
             } else if (this.currentPath != null && this.currentPath.getCurrentPathIndex() < this.currentPath.getCurrentPathLength()) {
-                final Vec3d vec3d = this.currentPath.getVectorFromIndex(this.theEntity, this.currentPath.getCurrentPathIndex());
+                final Vec3d vec3d = this.currentPath.getVectorFromIndex(entity, this.currentPath.getCurrentPathIndex());
 
-                if (MathHelper.floor_double(this.theEntity.posX) == MathHelper.floor_double(vec3d.xCoord) && MathHelper.floor_double(this.theEntity.posY) == MathHelper.floor_double(vec3d.yCoord)
-                        && MathHelper.floor_double(this.theEntity.posZ) == MathHelper.floor_double(vec3d.zCoord)) {
+                if (MathHelper.floor(entity.posX) == MathHelper.floor(vec3d.x) && MathHelper.floor(entity.posY) == MathHelper.floor(vec3d.y) && MathHelper.floor(entity.posZ) == MathHelper.floor(vec3d.z)) {
                     this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
                 }
             }
 
-            this.func_192876_m();
+            this.debugPathFinding();
 
             if (!this.noPath()) {
-                final Vec3d vec3d1 = this.currentPath.getPosition(this.theEntity);
-                this.theEntity.getMoveHelper().setMoveTo(vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, this.speed);
+                final Vec3d vec3d1 = this.currentPath.getPosition(entity);
+                entity.getMoveHelper().setMoveTo(vec3d1.x, vec3d1.y, vec3d1.z, this.speed);
             }
         }
     }
 
     @Override
     protected boolean isDirectPathBetweenPoints(final Vec3d currentPosition, final Vec3d targetPosition, final int sizeX, final int sizeY, final int sizeZ) {
-        final double xDifference = targetPosition.xCoord - currentPosition.xCoord;
-        final double yDifference = targetPosition.yCoord - currentPosition.yCoord;
-        final double zDifference = targetPosition.zCoord - currentPosition.zCoord;
+        final double xDifference = targetPosition.x - currentPosition.x;
+        final double yDifference = targetPosition.y - currentPosition.y;
+        final double zDifference = targetPosition.z - currentPosition.z;
         final double lengthToTarget = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
 
         if (lengthToTarget < 1.0E-8D) {
@@ -101,21 +100,17 @@ public class DuckyPathNavigateFlying extends PathNavigate {
             final Vec3d vectorToTarget = targetPosition.subtract(currentPosition);
             final double increment = 1 / lengthToTarget;
             for (double f = 0.0D; f < 1; f = f + increment) {
-                final Vec3d vectorToAdd = new Vec3d(vectorToTarget.xCoord * f, vectorToTarget.yCoord * f, vectorToTarget.zCoord * f);
+                final Vec3d vectorToAdd = new Vec3d(vectorToTarget.x * f, vectorToTarget.y * f, vectorToTarget.z * f);
                 final Vec3d currentAdjusted = currentPosition.add(vectorToAdd);
-                final BlockPos position = new BlockPos(currentAdjusted.xCoord, currentAdjusted.yCoord, currentAdjusted.zCoord);
+                final BlockPos position = new BlockPos(currentAdjusted.x, currentAdjusted.y, currentAdjusted.z);
 
-                final IBlockState iblockstate = this.theEntity.worldObj.getBlockState(position);
+                final IBlockState iblockstate = entity.world.getBlockState(position);
                 if (iblockstate.getMaterial() != Material.AIR || iblockstate.isFullCube()) {
                     return false;
                 }
             }
             return true;
         }
-    }
-
-    public void setCanBreakDoors(final boolean canBreakDoors) {
-        this.nodeProcessor.setCanBreakDoors(canBreakDoors);
     }
 
     public void setCanEnterDoors(final boolean canEnterDoors) {
@@ -132,6 +127,6 @@ public class DuckyPathNavigateFlying extends PathNavigate {
 
     @Override
     public boolean canEntityStandOnPos(final BlockPos pos) {
-        return this.worldObj.getBlockState(pos).isSideSolid(this.worldObj, pos, EnumFacing.UP);
+        return this.world.getBlockState(pos).isSideSolid(this.world, pos, EnumFacing.UP);
     }
 }

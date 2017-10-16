@@ -58,7 +58,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getNavigator().noPath()) {
             getDucky().getNavigator().clearPathEntity();
             return false;

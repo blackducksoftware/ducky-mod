@@ -29,11 +29,11 @@ public class DuckyFlyHelper extends EntityMoveHelper {
             action = EntityMoveHelper.Action.WAIT;
             final Vec3d targetPosition = new Vec3d(posX, posY + 1, posZ);
             Vec3d vector = targetPosition.subtract(entity.getPositionVector());
-            vector = vector.normalize().scale(entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.field_193334_e).getAttributeValue() * speed);
-            entity.motionX = vector.xCoord;
+            vector = vector.normalize().scale(entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getAttributeValue() * speed);
+            entity.motionX = vector.x;
             final float yAdjustment = 0.1F;
-            entity.motionY = vector.yCoord + yAdjustment;
-            entity.motionZ = vector.zCoord;
+            entity.motionY = vector.y + yAdjustment;
+            entity.motionZ = vector.z;
         }
     }
 }
