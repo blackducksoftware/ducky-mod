@@ -84,7 +84,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean shouldContinueExecuting() {
+    public boolean continueExecuting() {
         return !this.closestEntity.isEntityAlive() ? false : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
     }
 

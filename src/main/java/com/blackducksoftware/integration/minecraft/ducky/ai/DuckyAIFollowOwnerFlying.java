@@ -52,7 +52,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean shouldContinueExecuting() {
+    public boolean continueExecuting() {
         if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getDistanceSqToEntity(getTargetToFollow()) < minDistance * minDistance || !needToFly(getTargetToFollow())) {
             return false;
         }
@@ -77,13 +77,13 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         }
         Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
         vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-        getDucky().motionX = vector.x;
+        getDucky().motionX = vector.xCoord;
         float yAdjustment = 0.1F;
         if (isStuck) {
             yAdjustment = 0.5F;
         }
-        getDucky().motionY = vector.y + yAdjustment;
-        getDucky().motionZ = vector.z;
+        getDucky().motionY = vector.yCoord + yAdjustment;
+        getDucky().motionZ = vector.zCoord;
 
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());

@@ -106,7 +106,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
             if (pathpoint == null) {
                 shouldFly = true;
             } else {
-                final int i = MathHelper.floor(target.posY) - pathpoint.y;
+                final int i = MathHelper.floor(target.posY) - pathpoint.yCoord;
                 shouldFly = !target.onGround || (i > 1.25D);
             }
         } else {
