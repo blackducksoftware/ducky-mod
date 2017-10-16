@@ -302,7 +302,7 @@ public class EntityDucky extends EntityTameable {
      */
     @Override
     protected int getExperiencePoints(final EntityPlayer player) {
-        return 20;
+        return 10;
     }
 
     /**
