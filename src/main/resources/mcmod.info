@@ -5,10 +5,10 @@
   "description": "Black Duck Ducky mod for minecraft",
   "version": "0.0.1",
   "mcversion": "1.11.2",
-  "url": "",
-  "updateUrl": "",
+  "url": "https://blackducksoftware.atlassian.net/wiki/spaces/INTDOCS/pages/50823172/Minecraft+Ducky+Mod",
+  "updateUrl": "https://minecraft.curseforge.com/projects/ducky-mod",
   "authorList": ["BDS Integrations"],
-  "logoFile": "",
+  "logoFile": "DuckyLogo.png",
   "screenshots": [],
   "dependencies": []
 }
