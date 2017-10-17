@@ -2,8 +2,6 @@
 
 Installation Steps: http://www.minecraftmods.com/how-to-install-mods-for-minecraft-forge/
 
-## Ducky Spawn Egg:
-![Ducky Egg Recipe](https://github.com/blackducksoftware/ducky-mod/blob/master/DuckyEggRecipe.png)
+## Documentation:
+https://blackducksoftware.atlassian.net/wiki/spaces/INTDOCS/pages/50823172/Minecraft+Ducky+Mod
 
-## Feeding: 
-Tame and Heal Ducky with Bread
