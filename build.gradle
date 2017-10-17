@@ -1,14 +1,19 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+plugins {
+    id 'com.github.hierynomus.license' version '0.14.0'
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 
 version = "1.12.2-0.1.0-SNAPSHOT"
@@ -54,4 +59,15 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+license {
+    header = file('HEADER')
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    ignoreFailures = true
+    includes (["**/*.groovy", "**/*.java"])
+    excludes ([
+        "/src/test/*.groovy",
+        "src/test/*.java"
+    ])
 }
