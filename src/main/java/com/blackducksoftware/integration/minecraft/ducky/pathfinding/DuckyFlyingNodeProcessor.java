@@ -13,19 +13,24 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.FlyingNodeProcessor;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
-    public boolean isDirectPathBetweenPoints(final Vec3d currentPosition, final Vec3d targetPosition, final int sizeX, final int sizeY, final int sizeZ) {
+    public boolean isDirectPathBetweenPoints(final EntityLiving entity, final double currentPositionX, final double currentPositionY, final double currentPositionZ, final double targetPositionX, final double targetPositionY,
+            final double targetPositionZ) {
+        final Vec3d currentPosition = new Vec3d(currentPositionX, currentPositionY, currentPositionZ);
+        final Vec3d targetPosition = new Vec3d(targetPositionX, targetPositionY, targetPositionZ);
         final double xDifference = targetPosition.x - currentPosition.x;
         final double yDifference = targetPosition.y - currentPosition.y;
         final double zDifference = targetPosition.z - currentPosition.z;
         final double distanceToTargetSquared = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
 
-        if (distanceToTargetSquared < 1.0E-8D) {
-            return false;
+        if (distanceToTargetSquared < 1) {
+            return true;
         } else {
             final Vec3d vectorToTarget = targetPosition.subtract(currentPosition);
             final double increment = 1 / distanceToTargetSquared;
@@ -42,4 +47,24 @@ public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
             return true;
         }
     }
+
+    @Override
+    public int findPathOptions(final PathPoint[] pathOptions, final PathPoint currentPoint, final PathPoint targetPoint, final float maxDistance) {
+        if (isDirectPathBetweenPoints(entity, currentPoint.x, currentPoint.y, currentPoint.z, targetPoint.x, targetPoint.y, targetPoint.z)) {
+            int i = 0;
+            final Vec3d currentPosition = new Vec3d(currentPoint.x, currentPoint.y, currentPoint.z);
+            final Vec3d targetPosition = new Vec3d(targetPoint.x, targetPoint.y, targetPoint.z);
+            Vec3d vector = targetPosition.subtract(currentPosition);
+            vector = vector.normalize().scale(1.5);
+            final Vec3d pathPointVector = currentPosition.add(vector);
+            final PathPoint pathpoint = this.openPoint((int) pathPointVector.x, (int) pathPointVector.y, (int) pathPointVector.z);
+            if (pathpoint != null && !pathpoint.visited && pathpoint.distanceTo(targetPoint) < maxDistance) {
+                pathOptions[i++] = pathpoint;
+            }
+            return i;
+        } else {
+            return super.findPathOptions(pathOptions, currentPoint, targetPoint, maxDistance);
+        }
+    }
+
 }
