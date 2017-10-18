@@ -25,9 +25,7 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.Vec3d;
 
 public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
     private final float minDistance;
@@ -54,6 +52,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         distanceToTarget = getDucky().getDistanceSqToEntity(owner);
         if (distanceToTarget > maxDistance * maxDistance && needToFly(owner)) {
             setTargetToFollow(owner);
+            getDucky().setFlying(true);
             return true;
         }
         return false;
@@ -63,14 +62,16 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getDistanceSqToEntity(getTargetToFollow()) < minDistance * minDistance || !needToFly(getTargetToFollow())) {
+            getDucky().setFlying(false);
             return false;
         }
         distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
         if (distanceToTarget > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().posY < getTargetToFollow().posY) {
             return true;
         }
+        getDucky().setFlying(false);
         return false;
     }
 
@@ -82,23 +83,17 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         if (!updateCalc(distanceToTarget)) {
             return;
         }
-        final boolean isStuck = isDuckyStuck();
-        if (distanceToTarget >= 256.0D || (distanceToTarget > minDistance * minDistance && isStuck)) {
-            relocateDuckyNearTarget();
-        }
-        Vec3d vector = getTargetToFollow().getPositionVector().subtract(getDucky().getPositionVector());
-        vector = vector.normalize().scale(getDucky().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-        getDucky().motionX = vector.xCoord;
-        float yAdjustment = 0.1F;
-        if (isStuck) {
-            yAdjustment = 0.5F;
-        }
-        getDucky().motionY = vector.yCoord + yAdjustment;
-        getDucky().motionZ = vector.zCoord;
+        final double speedModifier = getSpeedModifier(distanceToTarget);
+        getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
 
+        final boolean isStuck = isDuckyStuck();
+        if (distanceToTarget >= TELEPORT_RANGE * TELEPORT_RANGE || (distanceToTarget > minDistance * minDistance && isStuck)) {
+            if (relocateDuckyNearTarget()) {
+                getDucky().getNavigator().clearPathEntity();
+            }
+        }
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
         getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-
     }
 
 }

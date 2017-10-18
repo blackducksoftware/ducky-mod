@@ -37,7 +37,6 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class DuckyAIWatchTarget extends EntityAIBase {
-
     protected EntityLiving theWatcher;
     /** The closest entity which is being watched by this one. */
     protected Entity closestEntity;
@@ -95,7 +94,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         return !this.closestEntity.isEntityAlive() ? false : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
     }
 

@@ -35,7 +35,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderDuckySpawnEgg extends RenderSnowball {
-
     public RenderDuckySpawnEgg(final RenderManager renderManager, final Item egg) {
         super(renderManager, egg, Minecraft.getMinecraft().getRenderItem());
     }

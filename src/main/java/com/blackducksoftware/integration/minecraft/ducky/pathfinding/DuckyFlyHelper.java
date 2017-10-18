@@ -20,34 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.minecraft.ducky.ai;
+package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.util.math.Vec3d;
 
-public class DuckyAILookIdle extends EntityAILookIdle {
-    /** The entity that is looking idle. */
-    private final EntityDucky entityDucky;
-
-    public DuckyAILookIdle(final EntityDucky entityDucky) {
-        super(entityDucky);
-        this.entityDucky = entityDucky;
+public class DuckyFlyHelper extends EntityMoveHelper {
+    public DuckyFlyHelper(final EntityDucky ducky) {
+        super(ducky);
     }
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
     @Override
-    public boolean shouldExecute() {
-        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldExecute();
-    }
-
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    @Override
-    public boolean shouldContinueExecuting() {
-        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldContinueExecuting();
+    public void onUpdateMoveHelper() {
+        if (action == EntityMoveHelper.Action.MOVE_TO) {
+            action = EntityMoveHelper.Action.WAIT;
+            final Vec3d targetPosition = new Vec3d(posX, posY + 1, posZ);
+            Vec3d vector = targetPosition.subtract(entity.getPositionVector());
+            vector = vector.normalize().scale(entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getAttributeValue() * speed);
+            entity.motionX = vector.x;
+            entity.motionY = vector.y + 0.1F;
+            entity.motionZ = vector.z;
+        }
     }
 }

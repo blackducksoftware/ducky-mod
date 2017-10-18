@@ -24,45 +24,43 @@ package com.blackducksoftware.integration.minecraft;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class DuckyModSounds {
-    private static final String DUCK_QUACK_FILE_NAME = "duckquack";
-    private static final String DUCK_HURT_FILE_NAME = "duckhurt";
-    private static final String DUCK_DEATH_FILE_NAME = "duckdeath";
-
-    public static ResourceLocation duckQuackResource;
-    public static ResourceLocation duckHurtResource;
-    public static ResourceLocation duckDeathResource;
+    private static final String DUCK_QUACK_NAME = "duckquack";
+    private static final String DUCK_HURT_NAME = "duckhurt";
+    private static final String DUCK_DEATH_NAME = "duckdeath";
 
     public static SoundEvent duckQuack;
     public static SoundEvent duckHurt;
     public static SoundEvent duckDeath;
 
-    private static int soundEventId = 0;
-
     public static void mainRegistry() {
         initSounds();
-        final RegistryNamespaced<ResourceLocation, SoundEvent> registry = SoundEvent.REGISTRY;
+        final IForgeRegistry<SoundEvent> registry = GameRegistry.findRegistry(SoundEvent.class);
 
-        registerSound(registry, duckQuack, duckQuackResource);
-        registerSound(registry, duckHurt, duckHurtResource);
-        registerSound(registry, duckDeath, duckDeathResource);
+        registerSound(registry, duckQuack);
+        registerSound(registry, duckHurt);
+        registerSound(registry, duckDeath);
     }
 
     private static void initSounds() {
-        duckQuackResource = new ResourceLocation(DuckyMod.MODID, DUCK_QUACK_FILE_NAME);
+        final ResourceLocation duckQuackResource = new ResourceLocation(DuckyMod.MODID, DUCK_QUACK_NAME);
         duckQuack = new SoundEvent(duckQuackResource);
+        duckQuack.setRegistryName(DuckyMod.MODID, DUCK_QUACK_NAME);
 
-        duckHurtResource = new ResourceLocation(DuckyMod.MODID, DUCK_HURT_FILE_NAME);
+        final ResourceLocation duckHurtResource = new ResourceLocation(DuckyMod.MODID, DUCK_HURT_NAME);
         duckHurt = new SoundEvent(duckHurtResource);
+        duckHurt.setRegistryName(DuckyMod.MODID, DUCK_HURT_NAME);
 
-        duckDeathResource = new ResourceLocation(DuckyMod.MODID, DUCK_DEATH_FILE_NAME);
+        final ResourceLocation duckDeathResource = new ResourceLocation(DuckyMod.MODID, DUCK_DEATH_NAME);
         duckDeath = new SoundEvent(duckDeathResource);
+        duckDeath.setRegistryName(DuckyMod.MODID, DUCK_DEATH_NAME);
     }
 
-    private static void registerSound(final RegistryNamespaced<ResourceLocation, SoundEvent> registry, final SoundEvent soundEvent, final ResourceLocation resourceLocation) {
-        registry.register(soundEventId++, resourceLocation, soundEvent);
+    private static void registerSound(final IForgeRegistry<SoundEvent> registry, final SoundEvent soundEvent) {
+        registry.register(soundEvent);
     }
 
 }

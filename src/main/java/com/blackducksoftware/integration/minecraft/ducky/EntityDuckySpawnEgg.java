@@ -33,7 +33,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityDuckySpawnEgg extends EntityEgg {
-
     public EntityDuckySpawnEgg(final World world) {
         super(world);
     }

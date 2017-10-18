@@ -25,12 +25,10 @@ package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
 
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class EntityGiantTamedDucky extends EntityTamedDucky {
-    public static final double TAMED_HEALTH = 128.0D;
-    public static final double TAMED_DAMAGE = 30.0D;
-
     public static final String TAMED_GIANT_DUCKY_NAME = "tamed_giant_bd_ducky";
 
     public EntityGiantTamedDucky(final World worldIn) {
@@ -42,7 +40,7 @@ public class EntityGiantTamedDucky extends EntityTamedDucky {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(GIANT_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
     }
 
@@ -50,9 +48,17 @@ public class EntityGiantTamedDucky extends EntityTamedDucky {
     public void setTamed(final boolean tamed) {
         super.setTamed(tamed);
         if (tamed) {
-            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
+            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(GIANT_HEALTH);
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
-            this.setHealth((float) TAMED_HEALTH);
+            this.setHealth((float) GIANT_HEALTH);
         }
+    }
+
+    /**
+     * Get the experience points the entity currently has.
+     */
+    @Override
+    protected int getExperiencePoints(final EntityPlayer player) {
+        return 30;
     }
 }

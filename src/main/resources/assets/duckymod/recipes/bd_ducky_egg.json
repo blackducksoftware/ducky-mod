@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OF ",
+        "O F",
+        "OF "
+    ],
+    "key": {
+        "O": {
+            "item": "minecraft:obsidian"
+        },
+        "F": {
+            "item": "minecraft:feather"
+        }
+    },
+    "result": {
+        "item": "duckymod:ducky_spawn_egg"
+    }
+}

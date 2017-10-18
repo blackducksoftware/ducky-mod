@@ -32,12 +32,15 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
+    protected final static double TELEPORT_RANGE = 24.0D;
+
     private final EntityDucky ducky;
     private Entity targetToFollow;
     protected int attackTick;
@@ -105,20 +108,20 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         if (target == null) {
             return false;
         }
-        final PathNavigate navigator = ducky.getNavigator();
+        final PathNavigate navigator = ducky.getGroundNavigator();
         Path path = navigator.getPath();
 
         boolean shouldFly = false;
         if (path == null) {
-            path = getDucky().getNavigator().getPathToEntityLiving(target);
+            path = navigator.getPathToEntityLiving(target);
         }
         if (path != null) {
             final PathPoint pathpoint = path.getFinalPathPoint();
             if (pathpoint == null) {
                 shouldFly = true;
             } else {
-                final int i = MathHelper.floor(target.posY) - pathpoint.yCoord;
-                shouldFly = !target.onGround || (i > 1.25D);
+                final int i = MathHelper.floor(target.posY) - pathpoint.y;
+                shouldFly = !target.onGround || (i > 1.5D);
             }
         } else {
             shouldFly = true;
@@ -159,7 +162,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         return false;
     }
 
-    protected void relocateDuckyNearTarget() {
+    protected boolean relocateDuckyNearTarget() {
         final int startingX = MathHelper.floor(getTargetToFollow().posX) - 2;
         final int startingZ = MathHelper.floor(getTargetToFollow().posZ) - 2;
         final int startingY = MathHelper.floor(getTargetToFollow().getEntityBoundingBox().minY);
@@ -168,15 +171,34 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
         for (int xAdjustment = 0; xAdjustment <= 4; ++xAdjustment) {
             for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
                 if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
-                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment)).isOpaqueCube();
+                    final BlockPos pos = new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment);
+                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isSideSolid(getDucky().world, pos, EnumFacing.UP);
                     final boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
                     final boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {
                         getDucky().setLocationAndAngles(startingX + xAdjustment + 0.5F, startingY, startingZ + zAdjustment + 0.5F, getDucky().rotationYaw, getDucky().rotationPitch);
-                        return;
+                        return true;
                     }
                 }
             }
         }
+        return false;
+    }
+
+    public BlockPos getPositionBelowTarget() {
+        BlockPos location = null;
+        if (getTargetToFollow().onGround) {
+            location = new BlockPos(getTargetToFollow().posX, getTargetToFollow().posY, getTargetToFollow().posZ);
+        } else {
+            for (double i = getTargetToFollow().posY; i > 0.0D; i = i - 1.0D) {
+                final BlockPos currentLocation = new BlockPos(getTargetToFollow().posX, i, getTargetToFollow().posZ);
+                final IBlockState blockstate = getDucky().world.getBlockState(currentLocation);
+                if (blockstate.getMaterial() != Material.AIR || blockstate.isFullCube()) {
+                    location = currentLocation;
+                    break;
+                }
+            }
+        }
+        return location;
     }
 }
