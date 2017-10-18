@@ -29,7 +29,6 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class DuckyFlyHelper extends EntityMoveHelper {
-
     public DuckyFlyHelper(final EntityDucky ducky) {
         super(ducky);
     }

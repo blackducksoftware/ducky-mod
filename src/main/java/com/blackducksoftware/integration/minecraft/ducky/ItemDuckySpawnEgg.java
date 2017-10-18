@@ -35,7 +35,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 public class ItemDuckySpawnEgg extends Item {
-
     public static final String DUCKY_EGG_NAME = "ducky_spawn_egg";
 
     public ItemDuckySpawnEgg() {

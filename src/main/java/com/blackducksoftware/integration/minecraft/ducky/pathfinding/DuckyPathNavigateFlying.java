@@ -24,10 +24,7 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.pathfinding.FlyingNodeProcessor;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
@@ -40,12 +37,12 @@ import net.minecraft.world.World;
 public class DuckyPathNavigateFlying extends PathNavigate {
     public DuckyPathNavigateFlying(final EntityDucky ducky, final World world) {
         super(ducky, world);
+        this.nodeProcessor = new DuckyFlyingNodeProcessor();
+        this.nodeProcessor.setCanEnterDoors(true);
     }
 
     @Override
     protected PathFinder getPathFinder() {
-        this.nodeProcessor = new FlyingNodeProcessor();
-        this.nodeProcessor.setCanEnterDoors(true);
         return new PathFinder(this.nodeProcessor);
     }
 
@@ -77,7 +74,6 @@ public class DuckyPathNavigateFlying extends PathNavigate {
         if (this.tryUpdatePath) {
             this.updatePath();
         }
-
         if (!this.noPath()) {
             if (this.canNavigate()) {
                 this.pathFollow();
@@ -88,9 +84,7 @@ public class DuckyPathNavigateFlying extends PathNavigate {
                     this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
                 }
             }
-
             this.debugPathFinding();
-
             if (!this.noPath()) {
                 final Vec3d vec3d1 = this.currentPath.getPosition(entity);
                 entity.getMoveHelper().setMoveTo(vec3d1.x, vec3d1.y, vec3d1.z, this.speed);
@@ -100,28 +94,8 @@ public class DuckyPathNavigateFlying extends PathNavigate {
 
     @Override
     protected boolean isDirectPathBetweenPoints(final Vec3d currentPosition, final Vec3d targetPosition, final int sizeX, final int sizeY, final int sizeZ) {
-        final double xDifference = targetPosition.x - currentPosition.x;
-        final double yDifference = targetPosition.y - currentPosition.y;
-        final double zDifference = targetPosition.z - currentPosition.z;
-        final double lengthToTarget = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
-
-        if (lengthToTarget < 1.0E-8D) {
-            return false;
-        } else {
-            final Vec3d vectorToTarget = targetPosition.subtract(currentPosition);
-            final double increment = 1 / lengthToTarget;
-            for (double f = 0.0D; f < 1; f = f + increment) {
-                final Vec3d vectorToAdd = new Vec3d(vectorToTarget.x * f, vectorToTarget.y * f, vectorToTarget.z * f);
-                final Vec3d currentAdjusted = currentPosition.add(vectorToAdd);
-                final BlockPos position = new BlockPos(currentAdjusted.x, currentAdjusted.y, currentAdjusted.z);
-
-                final IBlockState iblockstate = entity.world.getBlockState(position);
-                if (iblockstate.getMaterial() != Material.AIR || iblockstate.isFullCube()) {
-                    return false;
-                }
-            }
-            return true;
-        }
+        final DuckyFlyingNodeProcessor nodeProcessor = (DuckyFlyingNodeProcessor) this.nodeProcessor;
+        return nodeProcessor.isDirectPathBetweenPoints(currentPosition, targetPosition, sizeX, sizeY, sizeZ);
     }
 
     public void setCanEnterDoors(final boolean canEnterDoors) {

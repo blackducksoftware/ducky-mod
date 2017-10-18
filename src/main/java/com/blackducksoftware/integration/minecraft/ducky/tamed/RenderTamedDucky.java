@@ -33,7 +33,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderTamedDucky extends RenderLiving<EntityTamedDucky> {
-
     public RenderTamedDucky(final RenderManager manager) {
         super(manager, new ModelTamedDucky(), 0.4F);
     }

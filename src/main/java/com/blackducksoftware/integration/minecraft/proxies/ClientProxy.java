@@ -41,7 +41,6 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
-
     @Override
     public void preInitRenders() {
         registerRender(DuckyModItems.egg);

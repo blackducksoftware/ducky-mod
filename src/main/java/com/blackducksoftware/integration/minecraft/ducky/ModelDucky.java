@@ -31,7 +31,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelDucky extends AbstractCommonModel {
-
     public ModelRenderer head;
     public ModelRenderer body;
     public ModelRenderer rightLeg;

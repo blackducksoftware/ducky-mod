@@ -37,7 +37,6 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class DuckyAIWatchTarget extends EntityAIBase {
-
     protected EntityLiving theWatcher;
     /** The closest entity which is being watched by this one. */
     protected Entity closestEntity;
