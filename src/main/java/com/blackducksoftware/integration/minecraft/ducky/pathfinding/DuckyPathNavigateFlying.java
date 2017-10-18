@@ -96,7 +96,7 @@ public class DuckyPathNavigateFlying extends PathNavigate {
     @Override
     protected boolean isDirectPathBetweenPoints(final Vec3d currentPosition, final Vec3d targetPosition, final int sizeX, final int sizeY, final int sizeZ) {
         final DuckyFlyingNodeProcessor nodeProcessor = (DuckyFlyingNodeProcessor) this.nodeProcessor;
-        return nodeProcessor.isDirectPathBetweenPoints(entity, currentPosition.x, currentPosition.y, currentPosition.z, targetPosition.x, targetPosition.y, targetPosition.z);
+        return nodeProcessor.isDirectPathBetweenPoints(entity, currentPosition, targetPosition);
     }
 
     public void setCanEnterDoors(final boolean canEnterDoors) {

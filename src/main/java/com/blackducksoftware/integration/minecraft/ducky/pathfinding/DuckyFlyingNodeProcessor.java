@@ -24,6 +24,10 @@ public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
             final double targetPositionZ) {
         final Vec3d currentPosition = new Vec3d(currentPositionX, currentPositionY, currentPositionZ);
         final Vec3d targetPosition = new Vec3d(targetPositionX, targetPositionY, targetPositionZ);
+        return isDirectPathBetweenPoints(entity, currentPosition, targetPosition);
+    }
+
+    public boolean isDirectPathBetweenPoints(final EntityLiving entity, final Vec3d currentPosition, final Vec3d targetPosition) {
         final double xDifference = targetPosition.x - currentPosition.x;
         final double yDifference = targetPosition.y - currentPosition.y;
         final double zDifference = targetPosition.z - currentPosition.z;
