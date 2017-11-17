@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "1.12.2-0.1.0-SNAPSHOT"
+version = "1.12.2-0.1.0"
 group= "com.blackducksoftware.integration" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ducky-mod"
 
