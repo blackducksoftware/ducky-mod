@@ -10,3 +10,7 @@ gradle-app.setting
 /ducky-mod_Server.launch
 /bin/
 /run/
+
+.idea/
+*.iml
+out/
