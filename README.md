@@ -3,7 +3,7 @@
 Installation Steps: http://www.minecraftmods.com/how-to-install-mods-for-minecraft-forge/
 
 ## Documentation:
-https://blackducksoftware.atlassian.net/wiki/spaces/INTDOCS/pages/50823172/Minecraft+Ducky+Mod
+https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622716/Minecraft+Ducky+Mod
 
 ## Downloads:
 https://minecraft.curseforge.com/projects/ducky-mod
