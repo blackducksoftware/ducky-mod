@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Black Duck Software, Inc.
+ * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
  *
@@ -95,10 +95,10 @@ public class EntityDucky extends EntityTameable {
     public float oFlap;
     public float wingRotDelta = 1.0F;
 
-    protected static final DataParameter<Byte> IS_FIRE_PROOF = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
-    protected static final DataParameter<Byte> CAN_FLY = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
-    protected static final DataParameter<Byte> STRENGTH = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
-    protected static final DataParameter<Byte> SPEED = EntityDataManager.<Byte> createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> IS_FIRE_PROOF = EntityDataManager.<Byte>createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> CAN_FLY = EntityDataManager.<Byte>createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> STRENGTH = EntityDataManager.<Byte>createKey(EntityDucky.class, DataSerializers.BYTE);
+    protected static final DataParameter<Byte> SPEED = EntityDataManager.<Byte>createKey(EntityDucky.class, DataSerializers.BYTE);
 
     private boolean isFlying;
     private boolean isAttacking;
@@ -330,12 +330,14 @@ public class EntityDucky extends EntityTameable {
 
     @Override
     public void setSitting(final boolean sitting) {
-        this.aiSit.setSitting(sitting);
-        final byte tamedByte = this.dataManager.get(TAMED).byteValue();
-        if (sitting) {
-            this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte | 1)));
-        } else {
-            this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte & -2)));
+        if (this.aiSit != null) {
+            this.aiSit.setSitting(sitting);
+            final byte tamedByte = this.dataManager.get(TAMED).byteValue();
+            if (sitting) {
+                this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte | 1)));
+            } else {
+                this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte & -2)));
+            }
         }
     }
 
