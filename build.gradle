@@ -16,8 +16,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "1.12.2-0.1.1-SNAPSHOT"
-group= "com.blackducksoftware.integration" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.12.2-0.1.1"
+group = "com.blackducksoftware.integration" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ducky-mod"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -28,7 +28,7 @@ compileJava {
 minecraft {
     version = "1.12.2-14.23.0.2491"
     runDir = "run"
-    
+
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
@@ -38,11 +38,9 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-dependencies {
-}
+dependencies {}
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -50,11 +48,11 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
@@ -65,9 +63,7 @@ license {
     header = file('HEADER')
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ignoreFailures = true
-    includes (["**/*.groovy", "**/*.java"])
-    excludes ([
-        "/src/test/*.groovy",
-        "src/test/*.java"
-    ])
+    includes(["**/*.groovy", "**/*.java"])
+    excludes(["/src/test/*.groovy",
+              "src/test/*.java"])
 }
