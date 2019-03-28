@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 version = "1.12.2-0.1.2-SNAPSHOT"
-group = "com.blackducksoftware.integration" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "com.blackducksoftware.integration" // https://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ducky-mod"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
