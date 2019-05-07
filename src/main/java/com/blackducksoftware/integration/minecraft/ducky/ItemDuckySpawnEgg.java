@@ -22,10 +22,10 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
@@ -38,25 +38,23 @@ public class ItemDuckySpawnEgg extends Item {
     public static final String DUCKY_EGG_NAME = "ducky_spawn_egg";
 
     public ItemDuckySpawnEgg() {
-        this.maxStackSize = 16;
-        setCreativeTab(CreativeTabs.MISC);
+        super(new Item.Properties().maxStackSize(16).group(ItemGroup.MISC));
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer player, final EnumHand hand) {
         final ItemStack itemStack = player.getHeldItem(hand);
-        if (!player.capabilities.isCreativeMode) {
+        if (!player.abilities.isCreativeMode) {
             itemStack.shrink(1);
         }
-        worldIn.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        worldIn.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
             final EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(worldIn, player);
-            entityegg.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
+            entityegg.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.spawnEntity(entityegg);
         }
-
-        player.addStat(StatList.getObjectUseStats(this));
+        player.addStat(StatList.ITEM_USED.get(this));
         return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
     }
 }

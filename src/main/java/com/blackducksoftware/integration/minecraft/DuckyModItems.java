@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.minecraft;
 import com.blackducksoftware.integration.minecraft.ducky.ItemDuckySpawnEgg;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -42,8 +44,12 @@ public class DuckyModItems {
     }
 
     private static void registerItem(final IForgeRegistry<Item> itemRegistry, final Item item, final String name) {
-        item.setUnlocalizedName(name).setRegistryName(DuckyMod.MODID, name);
+        item.setRegistryName(new ResourceLocation(DuckyMod.MODID + ":" + "textures/items/" + name + ".png"));
         itemRegistry.register(item);
+    }
+
+    public static void registerLootTables() {
+        LootTableList.register(egg.getRegistryName());
     }
 
 }
