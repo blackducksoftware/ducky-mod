@@ -25,10 +25,11 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
 
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityFlyHelper;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.util.math.Vec3d;
 
-public class DuckyFlyHelper extends EntityMoveHelper {
+public class DuckyFlyHelper extends EntityFlyHelper {
     public DuckyFlyHelper(final BaseEntityDucky ducky) {
         super(ducky);
     }
@@ -37,12 +38,22 @@ public class DuckyFlyHelper extends EntityMoveHelper {
     public void tick() {
         if (action == EntityMoveHelper.Action.MOVE_TO) {
             action = EntityMoveHelper.Action.WAIT;
+            float moveSpeed = (float) (entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getValue() * speed);
+            this.entity.setAIMoveSpeed(moveSpeed);
             final Vec3d targetPosition = new Vec3d(posX, posY + 1, posZ);
             Vec3d vector = targetPosition.subtract(entity.getPositionVector());
-            vector = vector.normalize().scale(entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getValue() * speed);
+            vector = vector.normalize().scale(moveSpeed);
             entity.motionX = vector.x;
             entity.motionY = vector.y + 0.1F;
             entity.motionZ = vector.z;
+        } else {
+            float moveSpeed;
+            if (this.entity.onGround) {
+                moveSpeed = (float) (entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getValue() * speed);
+            } else {
+                moveSpeed = (float) (entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * speed);
+            }
+            this.entity.setAIMoveSpeed(moveSpeed);
         }
     }
 }
