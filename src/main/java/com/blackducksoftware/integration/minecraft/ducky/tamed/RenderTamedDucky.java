@@ -39,7 +39,7 @@ public class RenderTamedDucky extends RenderLiving<EntityTamedDucky> {
      */
     @Override
     protected ResourceLocation getEntityTexture(final EntityTamedDucky ducky) {
-        return new ResourceLocation(DuckyMod.MODID + ":" + "textures/entity/" + EntityTamedDucky.TAMED_DUCKY_NAME + ".png");
+        return new ResourceLocation(DuckyMod.MODID, "textures/entity/" + EntityTamedDucky.TAMED_DUCKY_NAME + ".png");
     }
 
     /**
