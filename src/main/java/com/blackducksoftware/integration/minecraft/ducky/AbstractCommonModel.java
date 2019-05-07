@@ -22,8 +22,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 
 public abstract class AbstractCommonModel extends ModelBase {
     private final int textureWidth;
@@ -35,7 +35,7 @@ public abstract class AbstractCommonModel extends ModelBase {
     }
 
     public ModelRenderer createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
-            final float rotationPointX, final float rotationPointY, final float rotationPointZ) {
+        final float rotationPointX, final float rotationPointY, final float rotationPointZ) {
         final ModelRenderer renderer = new ModelRenderer(this, textureOffsetX, textureOffsetY).setTextureSize(textureWidth, textureHeight);
         renderer.addBox(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth);
         renderer.setRotationPoint(rotationPointX, rotationPointY, rotationPointZ);
