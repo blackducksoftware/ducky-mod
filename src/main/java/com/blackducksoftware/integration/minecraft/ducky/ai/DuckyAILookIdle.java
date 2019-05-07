@@ -22,15 +22,17 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
 
 import net.minecraft.entity.ai.EntityAILookIdle;
 
 public class DuckyAILookIdle extends EntityAILookIdle {
-    /** The entity that is looking idle. */
-    private final EntityDucky entityDucky;
+    /**
+     * The entity that is looking idle.
+     */
+    private final BaseEntityDucky entityDucky;
 
-    public DuckyAILookIdle(final EntityDucky entityDucky) {
+    public DuckyAILookIdle(final BaseEntityDucky entityDucky) {
         super(entityDucky);
         this.entityDucky = entityDucky;
     }

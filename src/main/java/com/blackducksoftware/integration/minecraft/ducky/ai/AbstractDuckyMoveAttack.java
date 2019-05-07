@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -32,7 +32,6 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -41,7 +40,7 @@ import net.minecraft.util.math.Vec3d;
 public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected final static double TELEPORT_RANGE = 24.0D;
 
-    private final EntityDucky ducky;
+    private final BaseEntityDucky ducky;
     private Entity targetToFollow;
     protected int attackTick;
     protected final int attackInterval = 20;
@@ -51,11 +50,11 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected int stuckTick;
     protected Vec3d lastPostion = null;
 
-    public AbstractDuckyMoveAttack(final EntityDucky ducky) {
+    public AbstractDuckyMoveAttack(final BaseEntityDucky ducky) {
         this.ducky = ducky;
     }
 
-    public EntityDucky getDucky() {
+    public BaseEntityDucky getDucky() {
         return ducky;
     }
 
@@ -88,7 +87,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected boolean updateCalc(final double distanceToTarget) {
         this.attackTick = Math.max(this.attackTick - 1, 0);
         this.stuckTick++;
-        return getTargetToFollow().isEntityAlive();
+        return getTargetToFollow().isAlive();
     }
 
     protected double getSpeedModifier(final double distanceToTarget) {
@@ -127,7 +126,7 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
             shouldFly = true;
         }
         if (shouldFly) {
-            navigator.clearPathEntity();
+            navigator.clearPath();
         }
         return shouldFly;
     }
@@ -165,14 +164,14 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected boolean relocateDuckyNearTarget() {
         final int startingX = MathHelper.floor(getTargetToFollow().posX) - 2;
         final int startingZ = MathHelper.floor(getTargetToFollow().posZ) - 2;
-        final int startingY = MathHelper.floor(getTargetToFollow().getEntityBoundingBox().minY);
+        final int startingY = MathHelper.floor(getTargetToFollow().getBoundingBox().minY);
 
         // Search a 4x4 area around the target (at least 2 blocks away from the target) for a 2 high empty spot on a solid block to put Ducky
         for (int xAdjustment = 0; xAdjustment <= 4; ++xAdjustment) {
             for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
                 if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
                     final BlockPos pos = new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment);
-                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isSideSolid(getDucky().world, pos, EnumFacing.UP);
+                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isTopSolid();
                     final boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
                     final boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {

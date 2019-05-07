@@ -24,7 +24,7 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 
 import javax.annotation.Nullable;
 
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -36,13 +36,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class DuckyAIPanic extends EntityAIBase {
-    protected final EntityDucky ducky;
+    protected final BaseEntityDucky ducky;
     protected final double speed;
     protected double randPosX;
     protected double randPosY;
     protected double randPosZ;
 
-    public DuckyAIPanic(final EntityDucky ducky, final double speedIn) {
+    public DuckyAIPanic(final BaseEntityDucky ducky, final double speedIn) {
         this.ducky = ducky;
         this.speed = speedIn;
         this.setMutexBits(1);

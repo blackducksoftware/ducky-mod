@@ -22,17 +22,19 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
 
 import net.minecraft.entity.Entity;
 
 public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
-    /** If the distance to the target entity is further than this, this AI task will not run. */
+    /**
+     * If the distance to the target entity is further than this, this AI task will not run.
+     */
     private final float maxTargetDistance;
     private final long memoryLength;
     private long targetLastSeen = 0;
 
-    public DuckyAIFlyTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance, final long memoryLength) {
+    public DuckyAIFlyTowardsTargetAndAttack(final BaseEntityDucky creature, final float targetMaxDistance, final long memoryLength) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
         this.setMutexBits(3);
@@ -49,7 +51,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
             return false;
         }
         setTargetToFollow(target);
-        distanceToTarget = getDucky().getDistanceSqToEntity(target);
+        distanceToTarget = getDucky().getDistanceSq(target);
         attackReach = getAttackReachSqr(target);
         checkAndPerformAttack(target, distanceToTarget);
         if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance && needToFly(target)) {
@@ -65,13 +67,13 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean shouldContinueExecuting() {
-        if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove()) {
+        if (!getTargetToFollow().isAlive() || !getDucky().canMove()) {
             getDucky().setFlying(false);
             getDucky().setAttacking(false);
             return false;
         }
-        if (getDucky().getDistanceSqToEntity(getTargetToFollow()) < this.maxTargetDistance * this.maxTargetDistance && needToFly(getTargetToFollow())) {
-            distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
+        if (getDucky().getDistanceSq(getTargetToFollow()) < this.maxTargetDistance * this.maxTargetDistance && needToFly(getTargetToFollow())) {
+            distanceToTarget = getDucky().getDistanceSq(getTargetToFollow());
             checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
             if (targetLastSeen < memoryLength) {
                 return true;
@@ -86,7 +88,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      * Updates the task
      */
     @Override
-    public void updateTask() {
+    public void tick() {
         if (!updateCalc(distanceToTarget)) {
             return;
         }
