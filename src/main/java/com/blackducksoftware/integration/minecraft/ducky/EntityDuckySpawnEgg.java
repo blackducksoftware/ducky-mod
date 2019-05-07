@@ -53,7 +53,7 @@ public class EntityDuckySpawnEgg extends EntityEgg {
     public void handleStatusUpdate(byte id) {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {
-                ItemParticleData particleData = new ItemParticleData(Particles.ITEM, new ItemStack(DuckyModItems.egg));
+                ItemParticleData particleData = new ItemParticleData(Particles.ITEM, new ItemStack(DuckyModItems.DUCKY_SPAWN_EGG));
                 this.world.spawnParticle(particleData, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }

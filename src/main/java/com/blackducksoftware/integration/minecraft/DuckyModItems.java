@@ -25,31 +25,7 @@ package com.blackducksoftware.integration.minecraft;
 import com.blackducksoftware.integration.minecraft.ducky.ItemDuckySpawnEgg;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
 
 public class DuckyModItems {
-    public static Item egg;
-
-    public static void mainRegistry() {
-        initItems();
-        final IForgeRegistry<Item> itemRegistry = GameRegistry.findRegistry(Item.class);
-        registerItem(itemRegistry, egg, ItemDuckySpawnEgg.DUCKY_EGG_NAME);
-    }
-
-    private static void initItems() {
-        egg = new ItemDuckySpawnEgg();
-    }
-
-    private static void registerItem(final IForgeRegistry<Item> itemRegistry, final Item item, final String name) {
-        item.setRegistryName(new ResourceLocation(DuckyMod.MODID + ":" + "textures/items/" + name + ".png"));
-        itemRegistry.register(item);
-    }
-
-    public static void registerLootTables() {
-        LootTableList.register(egg.getRegistryName());
-    }
-
+    public static Item DUCKY_SPAWN_EGG = new ItemDuckySpawnEgg();
 }

@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
+import com.blackducksoftware.integration.minecraft.DuckyMod;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -31,6 +33,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -39,6 +42,7 @@ public class ItemDuckySpawnEgg extends Item {
 
     public ItemDuckySpawnEgg() {
         super(new Item.Properties().maxStackSize(16).group(ItemGroup.MISC));
+        this.setRegistryName(new ResourceLocation(DuckyMod.MODID + ":" + "textures/items/" + DUCKY_EGG_NAME + ".png"));
     }
 
     @Override

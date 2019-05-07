@@ -46,6 +46,6 @@ public class DuckyModEntities {
         RenderingRegistry.registerEntityRenderingHandler(EntityGiantTamedDucky.class, RenderGiantTamedDucky::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTamedDucky.class, RenderTamedDucky::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDucky.class, RenderDucky::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityDuckySpawnEgg.class, (RenderManager manager) -> new RenderSprite(manager, DuckyModItems.egg, Minecraft.getInstance().getItemRenderer()));
+        RenderingRegistry.registerEntityRenderingHandler(EntityDuckySpawnEgg.class, (RenderManager manager) -> new RenderSprite(manager, DuckyModItems.DUCKY_SPAWN_EGG, Minecraft.getInstance().getItemRenderer()));
     }
 }

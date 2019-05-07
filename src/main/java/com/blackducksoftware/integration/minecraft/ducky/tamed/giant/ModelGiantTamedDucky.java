@@ -23,7 +23,7 @@
 package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 
 import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
 
 import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -108,7 +108,7 @@ public class ModelGiantTamedDucky extends AbstractCommonModel {
      */
     @Override
     public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
-        final EntityDucky entityDucky = (EntityDucky) entityIn;
+        final BaseEntityDucky entityDucky = (BaseEntityDucky) entityIn;
 
         if (entityDucky.isFireProof()) {
             showModelRenderers(fireProofHatTop, fireProofHatBottom);
@@ -180,7 +180,7 @@ public class ModelGiantTamedDucky extends AbstractCommonModel {
      */
     @Override
     public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
-        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
+        final BaseEntityDucky entityDucky = (BaseEntityDucky) entitylivingbaseIn;
 
         if (entityDucky.isSitting()) {
             // When Ducky sits we want his parts to move down but his legs should remain in place

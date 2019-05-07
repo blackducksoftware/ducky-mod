@@ -24,13 +24,12 @@ package com.blackducksoftware.integration.minecraft;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(DuckyMod.MODID)
@@ -39,24 +38,10 @@ public class DuckyMod {
 
     public DuckyMod() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(this::init);
-        MinecraftForge.EVENT_BUS.register(this);
-
-        eventBus.addListener(this::setup);
         eventBus.addListener(this::clientSetup);
     }
 
-    public void init(final FMLCommonSetupEvent event) {
-        DuckyModItems.mainRegistry();
-        DuckyModSounds.mainRegistry();
-    }
-
-    private void setup(final FMLCommonSetupEvent evt) {
-        DuckyModItems.registerLootTables();
-    }
-
     private void clientSetup(final FMLClientSetupEvent evt) {
-
         DuckyModEntities.registerEntityRenders();
     }
 
@@ -65,7 +50,7 @@ public class DuckyMod {
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> evt) {
             evt.getRegistry().registerAll(
-                DuckyModItems.egg
+                DuckyModItems.DUCKY_SPAWN_EGG
             );
         }
 
@@ -76,6 +61,14 @@ public class DuckyMod {
                 DuckyModEntities.DUCKY_SPAWN_EGG,
                 DuckyModEntities.GIANT_TAMED_DUCKY,
                 DuckyModEntities.TAMED_DUCKY);
+        }
+
+        @SubscribeEvent
+        public static void onSoundRegistry(final RegistryEvent.Register<SoundEvent> evt) {
+            evt.getRegistry().registerAll(
+                DuckyModSounds.duckDeath,
+                DuckyModSounds.duckHurt,
+                DuckyModSounds.duckQuack);
         }
     }
 

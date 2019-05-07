@@ -24,8 +24,6 @@ package com.blackducksoftware.integration.minecraft;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
 
 public class DuckyModSounds {
     private static final String DUCK_QUACK_NAME = "duckquack";
@@ -36,16 +34,7 @@ public class DuckyModSounds {
     public static SoundEvent duckHurt;
     public static SoundEvent duckDeath;
 
-    public static void mainRegistry() {
-        initSounds();
-        final IForgeRegistry<SoundEvent> registry = GameRegistry.findRegistry(SoundEvent.class);
-
-        registerSound(registry, duckQuack);
-        registerSound(registry, duckHurt);
-        registerSound(registry, duckDeath);
-    }
-
-    private static void initSounds() {
+    static {
         final ResourceLocation duckQuackResource = new ResourceLocation(DuckyMod.MODID, DUCK_QUACK_NAME);
         duckQuack = new SoundEvent(duckQuackResource);
         duckQuack.setRegistryName(DuckyMod.MODID, DUCK_QUACK_NAME);
@@ -57,10 +46,6 @@ public class DuckyModSounds {
         final ResourceLocation duckDeathResource = new ResourceLocation(DuckyMod.MODID, DUCK_DEATH_NAME);
         duckDeath = new SoundEvent(duckDeathResource);
         duckDeath.setRegistryName(DuckyMod.MODID, DUCK_DEATH_NAME);
-    }
-
-    private static void registerSound(final IForgeRegistry<SoundEvent> registry, final SoundEvent soundEvent) {
-        registry.register(soundEvent);
     }
 
 }
