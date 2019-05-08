@@ -22,17 +22,24 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
+import javax.annotation.Nonnull;
+
 import com.blackducksoftware.integration.minecraft.DuckyModItems;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.item.Item;
+import net.minecraft.init.Particles;
+import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ItemParticleData;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityDuckySpawnEgg extends EntityEgg {
+    public static final String DUCKY_SPAWN_EGG_NAME = "ducky_spawn_egg";
+
     public EntityDuckySpawnEgg(final World world) {
         super(world);
     }
@@ -41,29 +48,30 @@ public class EntityDuckySpawnEgg extends EntityEgg {
         super(world, entity);
     }
 
-    public EntityDuckySpawnEgg(final World world, final double x, final double y, final double z) {
-        super(world, x, y, z);
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void handleStatusUpdate(byte id) {
+        if (id == 3) {
+            for (int i = 0; i < 8; ++i) {
+                ItemParticleData particleData = new ItemParticleData(Particles.ITEM, new ItemStack(DuckyModItems.DUCKY_SPAWN_EGG));
+                this.world.spawnParticle(particleData, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D);
+            }
+        }
     }
 
     @Override
-    protected void onImpact(final RayTraceResult result) {
-        if (result.entityHit != null) {
-            result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
+    protected void onImpact(@Nonnull RayTraceResult result) {
+        if (result.entity != null) {
+            result.entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
         }
 
         if (!this.world.isRemote) {
             final EntityDucky entityDucky = new EntityDucky(this.world);
             entityDucky.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
             this.world.spawnEntity(entityDucky);
+
+            this.remove();
         }
-
-        this.world.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D,
-                new int[] { Item.getIdFromItem(DuckyModItems.egg) });
-
-        if (!this.world.isRemote) {
-            this.setDead();
-        }
-
     }
 
 }

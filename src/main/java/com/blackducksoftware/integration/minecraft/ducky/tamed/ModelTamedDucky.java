@@ -25,14 +25,11 @@ package com.blackducksoftware.integration.minecraft.ducky.tamed;
 import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class ModelTamedDucky extends AbstractCommonModel {
     public ModelRenderer head;
     public ModelRenderer hatTop;

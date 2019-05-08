@@ -28,7 +28,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 
 public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
-    /** If the distance to the target entity is further than this, this AI task will not run. */
+    /**
+     * If the distance to the target entity is further than this, this AI task will not run.
+     */
     private final float maxTargetDistance;
 
     public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
@@ -47,7 +49,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
             return false;
         }
         setTargetToFollow(target);
-        distanceToTarget = getDucky().getDistanceSqToEntity(target);
+        distanceToTarget = getDucky().getDistanceSq(target);
         attackReach = getAttackReachSqr(target);
         checkAndPerformAttack(target, distanceToTarget);
         if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance && !needToFly(target)) {
@@ -69,11 +71,11 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean shouldContinueExecuting() {
-        if (!getTargetToFollow().isEntityAlive() || !getDucky().canMove() || isDuckyStuck()) {
+        if (!getTargetToFollow().isAlive() || !getDucky().canMove() || isDuckyStuck()) {
             getDucky().setAttacking(false);
             return false;
         }
-        distanceToTarget = getDucky().getDistanceSqToEntity(getTargetToFollow());
+        distanceToTarget = getDucky().getDistanceSq(getTargetToFollow());
         checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
         if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance) {
             if (needToFly(getTargetToFollow())) {
@@ -92,7 +94,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      * Updates the task
      */
     @Override
-    public void updateTask() {
+    public void tick() {
         if (!updateCalc(distanceToTarget)) {
             return;
         }

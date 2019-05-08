@@ -28,10 +28,7 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class RenderDucky extends RenderLiving<EntityDucky> {
     public RenderDucky(final RenderManager manager) {
         super(manager, new ModelDucky(), 0.4F);
@@ -42,7 +39,7 @@ public class RenderDucky extends RenderLiving<EntityDucky> {
      */
     @Override
     protected ResourceLocation getEntityTexture(final EntityDucky ducky) {
-        return new ResourceLocation(DuckyMod.MODID + ":" + "textures/entity/" + EntityDucky.DUCKY_NAME + ".png");
+        return new ResourceLocation(DuckyMod.MODID, "textures/entity/" + EntityDucky.DUCKY_NAME + ".png");
     }
 
     /**

@@ -27,7 +27,9 @@ import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import net.minecraft.entity.ai.EntityAILookIdle;
 
 public class DuckyAILookIdle extends EntityAILookIdle {
-    /** The entity that is looking idle. */
+    /**
+     * The entity that is looking idle.
+     */
     private final EntityDucky entityDucky;
 
     public DuckyAILookIdle(final EntityDucky entityDucky) {

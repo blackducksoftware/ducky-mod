@@ -38,9 +38,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 public class DuckyAIWatchTarget extends EntityAIBase {
     protected EntityLiving theWatcher;
-    /** The closest entity which is being watched by this one. */
+    /**
+     * The closest entity which is being watched by this one.
+     */
     protected Entity closestEntity;
-    /** This is the Maximum distance that the AI will look for the Entity */
+    /**
+     * This is the Maximum distance that the AI will look for the Entity
+     */
     protected float maxDistance;
     private int lookTime;
     private final float chance;
@@ -74,7 +78,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
                 this.closestEntity = this.theWatcher.getAttackTarget();
             }
 
-            final List<EntityLiving> list = theWatcher.world.<EntityLiving> getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
+            final List<EntityLiving> list = theWatcher.world.<EntityLiving>getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
 
             if (list.isEmpty()) {
                 return false;
@@ -87,7 +91,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
     }
 
     protected AxisAlignedBB getTargetableArea(final double targetDistance) {
-        return this.theWatcher.getEntityBoundingBox().expand(targetDistance, 4.0D, targetDistance);
+        return this.theWatcher.getBoundingBox().expand(targetDistance, 4.0D, targetDistance);
     }
 
     /**
@@ -95,7 +99,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
      */
     @Override
     public boolean shouldContinueExecuting() {
-        return !this.closestEntity.isEntityAlive() ? false : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
+        return !this.closestEntity.isAlive() ? false : (this.theWatcher.getDistanceSq(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
     }
 
     /**
@@ -120,9 +124,9 @@ public class DuckyAIWatchTarget extends EntityAIBase {
      * Updates the task
      */
     @Override
-    public void updateTask() {
+    public void tick() {
         this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX, this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, this.theWatcher.getHorizontalFaceSpeed(),
-                this.theWatcher.getVerticalFaceSpeed());
+            this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }
 

@@ -28,7 +28,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -37,7 +36,7 @@ import net.minecraft.world.World;
 public class DuckyPathNavigateFlying extends PathNavigate {
     public DuckyPathNavigateFlying(final EntityDucky ducky, final World world) {
         super(ducky, world);
-        this.nodeProcessor.initProcessor(world, ducky);
+        this.nodeProcessor.init(world, ducky);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class DuckyPathNavigateFlying extends PathNavigate {
      */
     @Override
     protected boolean canNavigate() {
-        return this.getCanSwim() && this.isInLiquid() || !entity.isRiding();
+        return (this.getCanSwim() && this.isInLiquid()) || !entity.isBeingRidden();
     }
 
     @Override
@@ -69,7 +68,7 @@ public class DuckyPathNavigateFlying extends PathNavigate {
     }
 
     @Override
-    public void onUpdateNavigation() {
+    public void tick() {
         ++this.totalTicks;
 
         if (this.tryUpdatePath) {
@@ -113,6 +112,6 @@ public class DuckyPathNavigateFlying extends PathNavigate {
 
     @Override
     public boolean canEntityStandOnPos(final BlockPos pos) {
-        return this.world.getBlockState(pos).isSideSolid(this.world, pos, EnumFacing.UP);
+        return this.world.getBlockState(pos).isTopSolid();
     }
 }

@@ -22,41 +22,54 @@
  */
 package com.blackducksoftware.integration.minecraft;
 
-import com.blackducksoftware.integration.minecraft.proxies.CommonProxy;
-
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(modid = DuckyMod.MODID, version = DuckyMod.VERSION)
+@Mod(DuckyMod.MODID)
 public class DuckyMod {
     public static final String MODID = "duckymod";
-    public static final String VERSION = "0.0.1";
 
-    @SidedProxy(modId = MODID, clientSide = "com.blackducksoftware.integration.minecraft.proxies.ClientProxy", serverSide = "com.blackducksoftware.integration.minecraft.proxies.CommonProxy")
-    public static CommonProxy proxy;
-
-    @Mod.Instance(DuckyMod.MODID)
-    public static DuckyMod instance;
-
-    @EventHandler
-    public void preInit(final FMLPreInitializationEvent event) {
-        DuckyModItems.mainRegistry();
-        DuckyModSounds.mainRegistry();
-        proxy.registerEntities();
-        proxy.preInitRenders();
-        proxy.initEvents();
+    public DuckyMod() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        eventBus.addListener(this::clientSetup);
     }
 
-    @EventHandler
-    public void init(final FMLInitializationEvent event) {
+    private void clientSetup(final FMLClientSetupEvent evt) {
+        DuckyModEntities.registerEntityRenders();
     }
 
-    @EventHandler
-    public void postInit(final FMLPostInitializationEvent event) {
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class RegistryEvents {
+        @SubscribeEvent
+        public static void onItemsRegistry(final RegistryEvent.Register<Item> evt) {
+            evt.getRegistry().registerAll(
+                DuckyModItems.DUCKY_SPAWN_EGG
+            );
+        }
+
+        @SubscribeEvent
+        public static void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> evt) {
+            evt.getRegistry().registerAll(
+                DuckyModEntities.DUCKY,
+                DuckyModEntities.DUCKY_SPAWN_EGG,
+                DuckyModEntities.GIANT_TAMED_DUCKY,
+                DuckyModEntities.TAMED_DUCKY);
+        }
+
+        @SubscribeEvent
+        public static void onSoundRegistry(final RegistryEvent.Register<SoundEvent> evt) {
+            evt.getRegistry().registerAll(
+                DuckyModSounds.duckDeath,
+                DuckyModSounds.duckHurt,
+                DuckyModSounds.duckQuack);
+        }
     }
 
 }
