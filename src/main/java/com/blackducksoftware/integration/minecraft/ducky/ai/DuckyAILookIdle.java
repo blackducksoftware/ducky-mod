@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2018 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * Copyright (C) 2019 Synopsys, Inc.
+ * https://www.synopsys.com/
  *
  *
  * Licensed to the Apache Software Foundation (ASF) under one
