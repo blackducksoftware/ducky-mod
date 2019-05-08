@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.pathfinding.Path;
@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class DuckyPathNavigateFlying extends PathNavigate {
-    public DuckyPathNavigateFlying(final BaseEntityDucky ducky, final World world) {
+    public DuckyPathNavigateFlying(final EntityDucky ducky, final World world) {
         super(ducky, world);
         this.nodeProcessor.init(world, ducky);
     }

@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +31,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
     private final float minDistance;
     private final float maxDistance;
 
-    public DuckyAIFollowOwnerFlying(final BaseEntityDucky ducky, final float minDistance, final float maxDistance) {
+    public DuckyAIFollowOwnerFlying(final EntityDucky ducky, final float minDistance, final float maxDistance) {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;

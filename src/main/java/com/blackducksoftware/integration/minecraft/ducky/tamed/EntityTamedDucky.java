@@ -23,7 +23,7 @@
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
 import com.blackducksoftware.integration.minecraft.DuckyModEntities;
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
@@ -41,7 +41,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class EntityTamedDucky extends BaseEntityDucky {
+public class EntityTamedDucky extends EntityDucky {
     public static final String TAMED_DUCKY_NAME = "tamed_bd_ducky";
 
     public EntityTamedDucky(final World worldIn) {

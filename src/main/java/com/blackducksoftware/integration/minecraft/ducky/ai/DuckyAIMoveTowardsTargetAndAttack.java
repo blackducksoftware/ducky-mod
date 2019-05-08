@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +33,7 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     private final float maxTargetDistance;
 
-    public DuckyAIMoveTowardsTargetAndAttack(final BaseEntityDucky creature, final float targetMaxDistance) {
+    public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
         this.setMutexBits(3);

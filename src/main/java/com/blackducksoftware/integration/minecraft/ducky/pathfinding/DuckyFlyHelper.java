@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityFlyHelper;
@@ -30,7 +30,7 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class DuckyFlyHelper extends EntityFlyHelper {
-    public DuckyFlyHelper(final BaseEntityDucky ducky) {
+    public DuckyFlyHelper(final EntityDucky ducky) {
         super(ducky);
     }
 
