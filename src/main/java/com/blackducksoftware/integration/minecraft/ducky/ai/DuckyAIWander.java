@@ -22,19 +22,19 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.ai.EntityAIWander;
 
 public class DuckyAIWander extends EntityAIWander {
-    private final BaseEntityDucky entityDucky;
+    private final EntityDucky entityDucky;
 
-    public DuckyAIWander(final BaseEntityDucky entityDucky, final double speedIn) {
+    public DuckyAIWander(final EntityDucky entityDucky, final double speedIn) {
         super(entityDucky, speedIn);
         this.entityDucky = entityDucky;
     }
 
-    public DuckyAIWander(final BaseEntityDucky entityDucky, final double speedIn, final int chance) {
+    public DuckyAIWander(final EntityDucky entityDucky, final double speedIn, final int chance) {
         super(entityDucky, speedIn, chance);
         this.entityDucky = entityDucky;
     }

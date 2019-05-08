@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -40,7 +40,7 @@ import net.minecraft.util.math.Vec3d;
 public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected final static double TELEPORT_RANGE = 24.0D;
 
-    private final BaseEntityDucky ducky;
+    private final EntityDucky ducky;
     private Entity targetToFollow;
     protected int attackTick;
     protected final int attackInterval = 20;
@@ -50,11 +50,11 @@ public abstract class AbstractDuckyMoveAttack extends EntityAIBase {
     protected int stuckTick;
     protected Vec3d lastPostion = null;
 
-    public AbstractDuckyMoveAttack(final BaseEntityDucky ducky) {
+    public AbstractDuckyMoveAttack(final EntityDucky ducky) {
         this.ducky = ducky;
     }
 
-    public BaseEntityDucky getDucky() {
+    public EntityDucky getDucky() {
         return ducky;
     }
 

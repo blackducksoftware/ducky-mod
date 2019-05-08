@@ -23,7 +23,7 @@
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
 import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
-import com.blackducksoftware.integration.minecraft.ducky.BaseEntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -93,7 +93,7 @@ public class ModelTamedDucky extends AbstractCommonModel {
      */
     @Override
     public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
-        final BaseEntityDucky entityDucky = (BaseEntityDucky) entityIn;
+        final EntityDucky entityDucky = (EntityDucky) entityIn;
 
         if (entityDucky.isFireProof()) {
             showModelRenderers(fireProofHatTop, fireProofHatBottom);
@@ -160,7 +160,7 @@ public class ModelTamedDucky extends AbstractCommonModel {
      */
     @Override
     public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
-        final BaseEntityDucky entityDucky = (BaseEntityDucky) entitylivingbaseIn;
+        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
 
         if (entityDucky.isSitting()) {
             setRotationPoint(0.0F, 20.0F, -4.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, bill, strongBill);
