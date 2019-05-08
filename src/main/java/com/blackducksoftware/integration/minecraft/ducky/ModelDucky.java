@@ -73,7 +73,7 @@ public class ModelDucky extends AbstractCommonModel {
      */
     @Override
     public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
-        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
+        final BaseEntityDucky entityDucky = (BaseEntityDucky) entitylivingbaseIn;
 
         if (entityDucky.isSitting()) {
             setRotationPoint(0.0F, 20.0F, -4.0F, head, bill);

@@ -102,8 +102,8 @@ public abstract class BaseEntityDucky extends EntityTameable {
     private boolean isFlying;
     private boolean isAttacking;
 
-    protected final DuckyAIFlyTowardsTargetAndAttack duckyAIFlyTowardsTargetAndAttack;
-    protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying;
+    protected final DuckyAIFlyTowardsTargetAndAttack duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
+    protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 12.0F);
 
     protected final PathNavigateGround groundNavigator;
     protected final DuckyPathNavigateFlying flyingNavigator;
@@ -115,18 +115,20 @@ public abstract class BaseEntityDucky extends EntityTameable {
         super(type, worldIn);
         this.setSize(0.4F, 0.7F);
         this.setScale(1.0F);
-        duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
-        duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 12.0F);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
+
         groundNavigator = new PathNavigateGround(this, worldIn);
         groundNavigator.setCanSwim(true);
         groundNavigator.setEnterDoors(true);
         this.navigator = groundNavigator;
+
         flyingNavigator = new DuckyPathNavigateFlying(this, worldIn);
         flyingNavigator.setCanSwim(true);
         flyingNavigator.setCanEnterDoors(true);
+
         groundMoveHelper = new EntityMoveHelper(this);
         this.moveHelper = groundMoveHelper;
+
         flyingMoveHelper = new DuckyFlyHelper(this);
     }
 
