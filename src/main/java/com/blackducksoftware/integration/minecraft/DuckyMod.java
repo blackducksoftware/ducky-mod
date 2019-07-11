@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.minecraft;
 
-import static net.minecraftforge.versions.forge.ForgeVersion.MOD_ID;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvent;
@@ -45,7 +43,7 @@ public class DuckyMod {
         DuckyModEntities.registerEntityRenders();
     }
 
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> evt) {
