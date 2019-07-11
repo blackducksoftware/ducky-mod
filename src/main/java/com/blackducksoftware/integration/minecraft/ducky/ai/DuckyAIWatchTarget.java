@@ -22,22 +22,20 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Predicate;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class DuckyAIWatchTarget extends EntityAIBase {
-    protected EntityLiving theWatcher;
+public class DuckyAIWatchTarget extends TargetGoal {
+    protected MobEntity theWatcher;
     /**
      * The closest entity which is being watched by this one.
      */
@@ -48,22 +46,20 @@ public class DuckyAIWatchTarget extends EntityAIBase {
     protected float maxDistance;
     private int lookTime;
     private final float chance;
-    protected Predicate<EntityLivingBase> watchedClassSelector;
+    protected Predicate<LivingEntity> watchedClassSelector;
 
-    protected EntityAINearestAttackableTarget.Sorter theNearestAttackableTargetSorter;
-
-    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLivingBase> watchedClassSelector, final float maxDistance, final int lookTime) {
+    public DuckyAIWatchTarget(final MobEntity theWatcher, @Nullable final Predicate<LivingEntity> watchedClassSelector, final float maxDistance, final int lookTime) {
         this(theWatcher, watchedClassSelector, maxDistance, lookTime, 0.02F);
     }
 
-    public DuckyAIWatchTarget(final EntityLiving theWatcher, @Nullable final Predicate<EntityLivingBase> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
+    public DuckyAIWatchTarget(final MobEntity theWatcher, @Nullable final Predicate<LivingEntity> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
+        super(theWatcher, false);
         this.theWatcher = theWatcher;
         this.watchedClassSelector = watchedClassSelector;
         this.maxDistance = maxDistance;
         this.chance = chanceIn;
-        this.setMutexBits(5);
+        this.setMutexFlags(EnumSet.of(Flag.TARGET));
         this.lookTime = lookTime;
-        this.theNearestAttackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(theWatcher);
     }
 
     /**
@@ -78,12 +74,11 @@ public class DuckyAIWatchTarget extends EntityAIBase {
                 this.closestEntity = this.theWatcher.getAttackTarget();
             }
 
-            final List<EntityLiving> list = theWatcher.world.<EntityLiving>getEntitiesWithinAABB(EntityLiving.class, this.getTargetableArea(maxDistance), watchedClassSelector);
+            final List<LivingEntity> list = theWatcher.world.getEntitiesWithinAABB(LivingEntity.class, this.getTargetableArea(maxDistance), watchedClassSelector);
 
             if (list.isEmpty()) {
                 return false;
             } else {
-                Collections.sort(list, this.theNearestAttackableTargetSorter);
                 this.closestEntity = list.get(0);
                 return true;
             }
@@ -125,7 +120,7 @@ public class DuckyAIWatchTarget extends EntityAIBase {
      */
     @Override
     public void tick() {
-        this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX, this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, this.theWatcher.getHorizontalFaceSpeed(),
+        this.theWatcher.getLookController().setLookPosition(this.closestEntity.posX, this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, this.theWatcher.getHorizontalFaceSpeed(),
             this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }

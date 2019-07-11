@@ -24,13 +24,13 @@ package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 
 import com.blackducksoftware.integration.minecraft.DuckyMod;
 
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class RenderGiantTamedDucky extends RenderLiving<EntityGiantTamedDucky> {
-    public RenderGiantTamedDucky(final RenderManager manager) {
+public class RenderGiantTamedDucky extends MobRenderer<EntityGiantTamedDucky, ModelGiantTamedDucky> {
+    public RenderGiantTamedDucky(final EntityRendererManager manager) {
         super(manager, new ModelGiantTamedDucky(), 1.0F);
     }
 

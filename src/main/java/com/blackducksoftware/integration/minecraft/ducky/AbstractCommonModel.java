@@ -22,10 +22,11 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.entity.Entity;
 
-public abstract class AbstractCommonModel extends ModelBase {
+public abstract class AbstractCommonModel<T extends Entity> extends EntityModel<T> {
     private final int textureWidth;
     private final int textureHeight;
 
@@ -34,34 +35,34 @@ public abstract class AbstractCommonModel extends ModelBase {
         this.textureHeight = textureHeight;
     }
 
-    public ModelRenderer createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
+    public RendererModel createNewModelRenderer(final int textureOffsetX, final int textureOffsetY, final float boxOffsetX, final float boxOffsetY, final float boxOffsetZ, final int boxWidth, final int boxHeight, final int boxDepth,
         final float rotationPointX, final float rotationPointY, final float rotationPointZ) {
-        final ModelRenderer renderer = new ModelRenderer(this, textureOffsetX, textureOffsetY).setTextureSize(textureWidth, textureHeight);
+        final RendererModel renderer = new RendererModel(this, textureOffsetX, textureOffsetY).setTextureSize(textureWidth, textureHeight);
         renderer.addBox(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth);
         renderer.setRotationPoint(rotationPointX, rotationPointY, rotationPointZ);
         return renderer;
     }
 
-    public void showModelRenderers(final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
+    public void showModelRenderers(final RendererModel... renderers) {
+        for (final RendererModel renderer : renderers) {
             renderer.isHidden = false;
         }
     }
 
-    public void hideModelRenderers(final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
+    public void hideModelRenderers(final RendererModel... renderers) {
+        for (final RendererModel renderer : renderers) {
             renderer.isHidden = true;
         }
     }
 
-    public void setRotationPoint(final float xAmount, final float yAmount, final float zAmount, final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
+    public void setRotationPoint(final float xAmount, final float yAmount, final float zAmount, final RendererModel... renderers) {
+        for (final RendererModel renderer : renderers) {
             renderer.setRotationPoint(xAmount, yAmount, zAmount);
         }
     }
 
-    public void duplicateModelRotationAngles(final ModelRenderer rendererToCopy, final ModelRenderer... renderers) {
-        for (final ModelRenderer renderer : renderers) {
+    public void duplicateModelRotationAngles(final RendererModel rendererToCopy, final RendererModel... renderers) {
+        for (final RendererModel renderer : renderers) {
             renderer.rotateAngleX = rendererToCopy.rotateAngleX;
             renderer.rotateAngleY = rendererToCopy.rotateAngleY;
             renderer.rotateAngleZ = rendererToCopy.rotateAngleZ;

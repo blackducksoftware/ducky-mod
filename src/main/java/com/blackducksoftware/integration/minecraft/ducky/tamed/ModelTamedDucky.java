@@ -23,39 +23,36 @@
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
 import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelTamedDucky extends AbstractCommonModel {
-    public ModelRenderer head;
-    public ModelRenderer hatTop;
-    public ModelRenderer hatBottom;
+public class ModelTamedDucky extends AbstractCommonModel<EntityTamedDucky> {
+    public RendererModel head;
+    public RendererModel hatTop;
+    public RendererModel hatBottom;
 
-    public ModelRenderer fireProofHatTop;
-    public ModelRenderer fireProofHatBottom;
+    public RendererModel fireProofHatTop;
+    public RendererModel fireProofHatBottom;
 
-    public ModelRenderer body;
-    public ModelRenderer rightLeg;
-    public ModelRenderer leftLeg;
+    public RendererModel body;
+    public RendererModel rightLeg;
+    public RendererModel leftLeg;
 
-    public ModelRenderer fastRightLeg;
-    public ModelRenderer fastLeftLeg;
+    public RendererModel fastRightLeg;
+    public RendererModel fastLeftLeg;
 
-    public ModelRenderer rightWing;
-    public ModelRenderer leftWing;
+    public RendererModel rightWing;
+    public RendererModel leftWing;
 
-    public ModelRenderer flyingRightWing;
-    public ModelRenderer flyingLeftWing;
+    public RendererModel flyingRightWing;
+    public RendererModel flyingLeftWing;
 
-    public ModelRenderer bill;
+    public RendererModel bill;
 
-    public ModelRenderer strongBill;
+    public RendererModel strongBill;
 
-    public ModelRenderer tail;
+    public RendererModel tail;
 
     public ModelTamedDucky() {
         super(64, 32);
@@ -92,9 +89,7 @@ public class ModelTamedDucky extends AbstractCommonModel {
      * Sets the models various rotation angles then renders the model.
      */
     @Override
-    public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
-        final EntityDucky entityDucky = (EntityDucky) entityIn;
-
+    public void render(final EntityTamedDucky entityDucky, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
         if (entityDucky.isFireProof()) {
             showModelRenderers(fireProofHatTop, fireProofHatBottom);
             hideModelRenderers(hatTop, hatBottom);
@@ -127,7 +122,7 @@ public class ModelTamedDucky extends AbstractCommonModel {
             hideModelRenderers(fastLeftLeg, fastRightLeg);
         }
 
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+        setRotationAngles(entityDucky, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         head.render(scale);
         hatTop.render(scale);
@@ -159,9 +154,7 @@ public class ModelTamedDucky extends AbstractCommonModel {
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
     @Override
-    public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
-        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
-
+    public void setLivingAnimations(final EntityTamedDucky entityDucky, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
         if (entityDucky.isSitting()) {
             setRotationPoint(0.0F, 20.0F, -4.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, bill, strongBill);
 
@@ -190,7 +183,7 @@ public class ModelTamedDucky extends AbstractCommonModel {
      * and legs can swing at most.
      */
     @Override
-    public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
+    public void setRotationAngles(final EntityTamedDucky entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor) {
         head.rotateAngleX = headPitch * 0.017453292F;
         head.rotateAngleY = netHeadYaw * 0.017453292F;
 

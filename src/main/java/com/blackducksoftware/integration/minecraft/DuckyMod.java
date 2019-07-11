@@ -22,11 +22,12 @@
  */
 package com.blackducksoftware.integration.minecraft;
 
+import static net.minecraftforge.versions.forge.ForgeVersion.MOD_ID;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -37,15 +38,14 @@ public class DuckyMod {
     public static final String MODID = "duckymod";
 
     public DuckyMod() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
     }
 
     private void clientSetup(final FMLClientSetupEvent evt) {
         DuckyModEntities.registerEntityRenders();
     }
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> evt) {

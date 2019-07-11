@@ -25,25 +25,26 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.network.DebugPacketSender;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class DuckyPathNavigateFlying extends PathNavigate {
+public class DuckyPathNavigateFlying extends PathNavigator {
     public DuckyPathNavigateFlying(final EntityDucky ducky, final World world) {
         super(ducky, world);
         this.nodeProcessor.init(world, ducky);
     }
 
     @Override
-    protected PathFinder getPathFinder() {
+    protected PathFinder getPathFinder(int var) {
         this.nodeProcessor = new DuckyFlyingNodeProcessor();
         this.nodeProcessor.setCanEnterDoors(true);
-        return new PathFinder(this.nodeProcessor);
+        return new PathFinder(this.nodeProcessor, var);
     }
 
     /**
@@ -84,7 +85,7 @@ public class DuckyPathNavigateFlying extends PathNavigate {
                     this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
                 }
             }
-            this.debugPathFinding();
+            DebugPacketSender.func_218803_a(this.world, this.entity, this.currentPath, this.maxDistanceToWaypoint);
             if (!this.noPath()) {
                 final Vec3d vec3d1 = this.currentPath.getPosition(entity);
                 entity.getMoveHelper().setMoveTo(vec3d1.x, vec3d1.y, vec3d1.z, this.speed);
@@ -112,6 +113,6 @@ public class DuckyPathNavigateFlying extends PathNavigate {
 
     @Override
     public boolean canEntityStandOnPos(final BlockPos pos) {
-        return this.world.getBlockState(pos).isTopSolid();
+        return this.world.getBlockState(pos).isSolid();
     }
 }

@@ -24,9 +24,9 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 
-public class DuckyAILookIdle extends EntityAILookIdle {
+public class DuckyAILookIdle extends LookRandomlyGoal {
     /**
      * The entity that is looking idle.
      */

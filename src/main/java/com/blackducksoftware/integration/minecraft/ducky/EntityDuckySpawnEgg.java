@@ -26,26 +26,32 @@ import javax.annotation.Nonnull;
 
 import com.blackducksoftware.integration.minecraft.DuckyModItems;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.init.Particles;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.EggEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ItemParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityDuckySpawnEgg extends EntityEgg {
+public class EntityDuckySpawnEgg extends EggEntity {
     public static final String DUCKY_SPAWN_EGG_NAME = "ducky_spawn_egg";
 
     public EntityDuckySpawnEgg(final World world) {
-        super(world);
+        super(EntityType.EGG, world);
     }
 
-    public EntityDuckySpawnEgg(final World world, final EntityLivingBase entity) {
+    public EntityDuckySpawnEgg(final World world, final LivingEntity entity) {
         super(world, entity);
+    }
+
+    public EntityDuckySpawnEgg(EntityType<? extends EntityDuckySpawnEgg> type, final World worldIn) {
+        super(type, worldIn);
     }
 
     @Override
@@ -53,22 +59,21 @@ public class EntityDuckySpawnEgg extends EntityEgg {
     public void handleStatusUpdate(byte id) {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {
-                ItemParticleData particleData = new ItemParticleData(Particles.ITEM, new ItemStack(DuckyModItems.DUCKY_SPAWN_EGG));
-                this.world.spawnParticle(particleData, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D);
+                ItemParticleData particleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(DuckyModItems.DUCKY_SPAWN_EGG));
+                this.world.addParticle(particleData, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
 
     @Override
     protected void onImpact(@Nonnull RayTraceResult result) {
-        if (result.entity != null) {
-            result.entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
+        if (result.getType() == RayTraceResult.Type.ENTITY) {
+            ((EntityRayTraceResult) result).getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
         }
-
         if (!this.world.isRemote) {
             final EntityDucky entityDucky = new EntityDucky(this.world);
             entityDucky.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-            this.world.spawnEntity(entityDucky);
+            this.world.addEntity(entityDucky);
 
             this.remove();
         }

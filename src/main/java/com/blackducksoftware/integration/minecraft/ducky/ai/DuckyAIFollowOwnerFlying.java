@@ -22,10 +22,12 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
+import java.util.EnumSet;
+
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
     private final float minDistance;
@@ -35,7 +37,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Flag.TARGET, Flag.MOVE));
     }
 
     /**
@@ -43,10 +45,10 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean shouldExecute() {
-        final EntityLivingBase owner = getDucky().getOwner();
+        final LivingEntity owner = getDucky().getOwner();
         if (owner == null || !getDucky().canMove() || getDucky().isAttacking()) {
             return false;
-        } else if (owner instanceof EntityPlayer && ((EntityPlayer) owner).isSpectator()) {
+        } else if (owner instanceof PlayerEntity && owner.isSpectator()) {
             return false;
         }
         distanceToTarget = getDucky().getDistanceSq(owner);
@@ -93,7 +95,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
             }
         }
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-        getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        getDucky().getLookController().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
     }
 
 }

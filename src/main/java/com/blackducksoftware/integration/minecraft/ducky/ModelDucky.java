@@ -22,20 +22,18 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelDucky extends AbstractCommonModel {
-    public ModelRenderer head;
-    public ModelRenderer body;
-    public ModelRenderer rightLeg;
-    public ModelRenderer leftLeg;
-    public ModelRenderer rightWing;
-    public ModelRenderer leftWing;
-    public ModelRenderer bill;
-    public ModelRenderer tail;
+public class ModelDucky extends AbstractCommonModel<EntityDucky> {
+    public RendererModel head;
+    public RendererModel body;
+    public RendererModel rightLeg;
+    public RendererModel leftLeg;
+    public RendererModel rightWing;
+    public RendererModel leftWing;
+    public RendererModel bill;
+    public RendererModel tail;
 
     public ModelDucky() {
         super(64, 32);
@@ -55,8 +53,8 @@ public class ModelDucky extends AbstractCommonModel {
      * Sets the models various rotation angles then renders the model.
      */
     @Override
-    public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+    public void render(final EntityDucky entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
+        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         this.head.render(scale);
         this.bill.render(scale);
@@ -72,9 +70,7 @@ public class ModelDucky extends AbstractCommonModel {
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
     @Override
-    public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
-        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
-
+    public void setLivingAnimations(final EntityDucky entityDucky, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
         if (entityDucky.isSitting()) {
             setRotationPoint(0.0F, 20.0F, -4.0F, head, bill);
             setRotationPoint(0.0F, 21.0F, 0.0F, tail, body);
@@ -101,7 +97,7 @@ public class ModelDucky extends AbstractCommonModel {
      * and legs can swing at most.
      */
     @Override
-    public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
+    public void setRotationAngles(final EntityDucky entityDucky, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor) {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
         duplicateModelRotationAngles(head, bill);

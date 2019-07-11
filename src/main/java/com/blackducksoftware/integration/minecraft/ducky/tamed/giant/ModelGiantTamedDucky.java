@@ -23,45 +23,42 @@
 package com.blackducksoftware.integration.minecraft.ducky.tamed.giant;
 
 import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelGiantTamedDucky extends AbstractCommonModel {
-    public ModelRenderer head;
-    public ModelRenderer hatTop;
-    public ModelRenderer hatBottom;
+public class ModelGiantTamedDucky extends AbstractCommonModel<EntityGiantTamedDucky> {
+    public RendererModel head;
+    public RendererModel hatTop;
+    public RendererModel hatBottom;
 
-    public ModelRenderer fireProofHatTop;
-    public ModelRenderer fireProofHatBottom;
+    public RendererModel fireProofHatTop;
+    public RendererModel fireProofHatBottom;
 
-    public ModelRenderer billBase;
-    public ModelRenderer billFront;
+    public RendererModel billBase;
+    public RendererModel billFront;
 
-    public ModelRenderer strongBillBase;
-    public ModelRenderer strongBillFront;
+    public RendererModel strongBillBase;
+    public RendererModel strongBillFront;
 
-    public ModelRenderer body;
+    public RendererModel body;
 
-    public ModelRenderer flyingBody;
+    public RendererModel flyingBody;
 
-    public ModelRenderer rightLeg;
-    public ModelRenderer leftLeg;
+    public RendererModel rightLeg;
+    public RendererModel leftLeg;
 
-    public ModelRenderer rightFoot;
-    public ModelRenderer leftFoot;
+    public RendererModel rightFoot;
+    public RendererModel leftFoot;
 
-    public ModelRenderer fastRightFoot;
-    public ModelRenderer fastLeftFoot;
+    public RendererModel fastRightFoot;
+    public RendererModel fastLeftFoot;
 
-    public ModelRenderer rightWing;
-    public ModelRenderer leftWing;
+    public RendererModel rightWing;
+    public RendererModel leftWing;
 
-    public ModelRenderer tailBase;
-    public ModelRenderer tailTop;
+    public RendererModel tailBase;
+    public RendererModel tailTop;
 
     public ModelGiantTamedDucky() {
         super(256, 128);
@@ -107,9 +104,7 @@ public class ModelGiantTamedDucky extends AbstractCommonModel {
      * Sets the models various rotation angles then renders the model.
      */
     @Override
-    public void render(final Entity entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
-        final EntityDucky entityDucky = (EntityDucky) entityIn;
-
+    public void render(final EntityGiantTamedDucky entityDucky, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
         if (entityDucky.isFireProof()) {
             showModelRenderers(fireProofHatTop, fireProofHatBottom);
             hideModelRenderers(hatTop, hatBottom);
@@ -142,7 +137,7 @@ public class ModelGiantTamedDucky extends AbstractCommonModel {
             hideModelRenderers(fastRightFoot, fastLeftFoot);
         }
 
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+        setRotationAngles(entityDucky, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         head.render(scale);
         hatTop.render(scale);
@@ -179,9 +174,7 @@ public class ModelGiantTamedDucky extends AbstractCommonModel {
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
     @Override
-    public void setLivingAnimations(final EntityLivingBase entitylivingbaseIn, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
-        final EntityDucky entityDucky = (EntityDucky) entitylivingbaseIn;
-
+    public void setLivingAnimations(final EntityGiantTamedDucky entityDucky, final float limbSwingAmount, final float ageInTicks, final float partialTickTime) {
         if (entityDucky.isSitting()) {
             // When Ducky sits we want his parts to move down but his legs should remain in place
             // to move Ducky down, for some reason that is an increase in the Y rotation point
@@ -221,7 +214,7 @@ public class ModelGiantTamedDucky extends AbstractCommonModel {
      * and legs can swing at most.
      */
     @Override
-    public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor, final Entity entityIn) {
+    public void setRotationAngles(EntityGiantTamedDucky entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor) {
         head.rotateAngleX = headPitch * 0.017453292F;
         head.rotateAngleY = netHeadYaw * 0.017453292F;
 

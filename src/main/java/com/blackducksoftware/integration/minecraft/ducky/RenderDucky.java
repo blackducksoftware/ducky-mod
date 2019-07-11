@@ -24,13 +24,13 @@ package com.blackducksoftware.integration.minecraft.ducky;
 
 import com.blackducksoftware.integration.minecraft.DuckyMod;
 
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class RenderDucky extends RenderLiving<EntityDucky> {
-    public RenderDucky(final RenderManager manager) {
+public class RenderDucky extends MobRenderer<EntityDucky, ModelDucky> {
+    public RenderDucky(final EntityRendererManager manager) {
         super(manager, new ModelDucky(), 0.4F);
     }
 
