@@ -106,6 +106,14 @@ jar {
     }
 }
 
+processResources {
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand 'version': project.version, 'mod_id': mod_id, 'mod_name': mod_name, 'mod_url': mod_url, 'mod_author': mod_author, 'mod_description': mod_description, 'mod_icon': mod_icon
+    }
+}
+
 license {
     header = file('HEADER')
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
