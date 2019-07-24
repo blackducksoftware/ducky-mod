@@ -53,6 +53,7 @@ import net.minecraft.entity.ai.goal.SitGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.PhantomEntity;
 import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -104,6 +105,7 @@ public class EntityDucky extends TameableEntity {
 
     private boolean isFlying;
     private boolean isAttacking;
+    private boolean isFireProof;
 
     protected final DuckyAIFlyTowardsTargetAndAttack duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
     protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 1.0F, 12.0F);
@@ -155,6 +157,7 @@ public class EntityDucky extends TameableEntity {
         //  this.goalSelector.addGoal(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.goalSelector.addGoal(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, MonsterEntity.class, true, false));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PhantomEntity.class, true, false));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SlimeEntity.class, true, false));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ShulkerEntity.class, true, false));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, GhastEntity.class, true, false));
@@ -363,7 +366,15 @@ public class EntityDucky extends TameableEntity {
     }
 
     public boolean isFireProof() {
-        return getManagedByteBoolean(IS_FIRE_PROOF);
+        if (!isFireProof) {
+            isFireProof = getManagedByteBoolean(IS_FIRE_PROOF);
+        }
+        return isFireProof;
+    }
+
+    public void setFireProof(final boolean fireProof) {
+        setManagedByteBoolean(IS_FIRE_PROOF, fireProof);
+        isFireProof = fireProof;
     }
 
     /**
@@ -378,15 +389,31 @@ public class EntityDucky extends TameableEntity {
 
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
-        if (isFireProof() && DamageSource.ON_FIRE == damageSrc || DamageSource.IN_FIRE == damageSrc) {
+        if (isFireProof() && damageSrc.isFireDamage()) {
             //ignore
         } else {
             super.damageEntity(damageSrc, damageAmount);
         }
     }
 
-    public void setFireProof(final boolean fireProof) {
-        setManagedByteBoolean(IS_FIRE_PROOF, fireProof);
+    /**
+     * Called whenever the entity is walking inside of lava.
+     */
+    @Override
+    protected void setOnFireFromLava() {
+        if (!this.isFireProof()) {
+            super.setOnFireFromLava();
+        }
+    }
+
+    /**
+     * Sets entity to burn for x amount of seconds, cannot lower amount of existing fire.
+     */
+    @Override
+    public void setFire(int seconds) {
+        if (!this.isFireProof()) {
+            super.setFire(seconds);
+        }
     }
 
     public boolean isCanFly() {
