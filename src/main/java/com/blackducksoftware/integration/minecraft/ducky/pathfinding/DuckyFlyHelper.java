@@ -35,25 +35,20 @@ public class DuckyFlyHelper extends FlyingMovementController {
 
     @Override
     public void tick() {
-        // field_188491_h == action
-        // field_75648_a == entity
+        float moveSpeed;
+        if (this.mob.onGround) {
+            moveSpeed = (float) (this.mob.getAttributes().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * speed);
+        } else {
+            moveSpeed = (float) (this.mob.getAttributes().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getValue() * speed);
+        }
+        this.mob.setAIMoveSpeed(moveSpeed);
         if (this.action == FlyingMovementController.Action.MOVE_TO) {
             this.action = FlyingMovementController.Action.WAIT;
-            float moveSpeed = (float) (this.mob.getAttributes().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getValue() * speed);
-            this.mob.setAIMoveSpeed(moveSpeed);
-            final Vec3d targetPosition = new Vec3d(posX, posY + 1, posZ);
+            final Vec3d targetPosition = new Vec3d(posX, posY, posZ);
             Vec3d vector = targetPosition.subtract(this.mob.getPositionVector());
             vector = vector.normalize().scale(moveSpeed);
             vector.add(0, 0.1F, 0);
             this.mob.setMotion(vector);
-        } else {
-            float moveSpeed;
-            if (this.mob.onGround) {
-                moveSpeed = (float) (this.mob.getAttributes().getAttributeInstance(SharedMonsterAttributes.FLYING_SPEED).getValue() * speed);
-            } else {
-                moveSpeed = (float) (this.mob.getAttributes().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * speed);
-            }
-            this.mob.setAIMoveSpeed(moveSpeed);
         }
     }
 }

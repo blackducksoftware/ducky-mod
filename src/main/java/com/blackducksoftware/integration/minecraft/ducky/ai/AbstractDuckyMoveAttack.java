@@ -170,7 +170,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
             for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
                 if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
                     final BlockPos pos = new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment);
-                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isSolid();
+                    final boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).func_215682_a(getDucky().world, pos, getDucky());
                     final boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
                     final boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {
@@ -191,7 +191,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
             for (double i = getTargetToFollow().posY; i > 0.0D; i = i - 1.0D) {
                 final BlockPos currentLocation = new BlockPos(getTargetToFollow().posX, i, getTargetToFollow().posZ);
                 final BlockState blockstate = getDucky().world.getBlockState(currentLocation);
-                if (blockstate.getMaterial() != Material.AIR || blockstate.isSolid()) {
+                if (blockstate.getMaterial() != Material.AIR || blockstate.func_215682_a(getDucky().world, currentLocation, getDucky())) {
                     location = currentLocation;
                     break;
                 }

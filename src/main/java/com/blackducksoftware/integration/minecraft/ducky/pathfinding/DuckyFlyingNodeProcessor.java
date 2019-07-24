@@ -22,63 +22,141 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.pathfinding.FlyingNodeProcessor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.pathfinding.PathPoint;
 
 public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
-    public boolean isDirectPathBetweenPoints(final LivingEntity entity, final double currentPositionX, final double currentPositionY, final double currentPositionZ, final double targetPositionX, final double targetPositionY,
-        final double targetPositionZ) {
-        final Vec3d currentPosition = new Vec3d(currentPositionX, currentPositionY, currentPositionZ);
-        final Vec3d targetPosition = new Vec3d(targetPositionX, targetPositionY, targetPositionZ);
-        return isDirectPathBetweenPoints(entity, currentPosition, targetPosition);
+
+    @Override
+    public int func_222859_a(final PathPoint[] pathOptions, final PathPoint targetPoint) {
+        Map<PathPoint, Double> closePathDistances = new HashMap<>();
+        PathPoint pathpoint = this.openPoint(targetPoint.x, targetPoint.y, targetPoint.z + 1);
+        PathPoint pathpoint1 = this.openPoint(targetPoint.x - 1, targetPoint.y, targetPoint.z);
+        PathPoint pathpoint2 = this.openPoint(targetPoint.x + 1, targetPoint.y, targetPoint.z);
+        PathPoint pathpoint3 = this.openPoint(targetPoint.x, targetPoint.y, targetPoint.z - 1);
+        PathPoint pathpoint4 = this.openPoint(targetPoint.x, targetPoint.y + 1, targetPoint.z);
+        PathPoint pathpoint5 = this.openPoint(targetPoint.x, targetPoint.y - 1, targetPoint.z);
+
+        addPathPoint(pathpoint, targetPoint, closePathDistances);
+        addPathPoint(pathpoint1, targetPoint, closePathDistances);
+        addPathPoint(pathpoint2, targetPoint, closePathDistances);
+        addPathPoint(pathpoint3, targetPoint, closePathDistances);
+        addPathPoint(pathpoint4, targetPoint, closePathDistances);
+        addPathPoint(pathpoint5, targetPoint, closePathDistances);
+
+        final Double shortestDistance = closePathDistances.values().stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
+        for (PathPoint pathPoint : closePathDistances.keySet()) {
+            Double distance = closePathDistances.get(pathPoint);
+            if (distance > shortestDistance) {
+                pathPoint.costMalus++;
+            }
+        }
+
+        boolean flag = pathpoint3 == null || pathpoint3.costMalus != 0.0F;
+        boolean flag1 = pathpoint == null || pathpoint.costMalus != 0.0F;
+        boolean flag2 = pathpoint2 == null || pathpoint2.costMalus != 0.0F;
+        boolean flag3 = pathpoint1 == null || pathpoint1.costMalus != 0.0F;
+        boolean flag4 = pathpoint4 == null || pathpoint4.costMalus != 0.0F;
+        boolean flag5 = pathpoint5 == null || pathpoint5.costMalus != 0.0F;
+        Map<PathPoint, Double> nextPathDistances = new HashMap<>();
+        if (flag && flag3) {
+            PathPoint pathpoint6 = this.openPoint(targetPoint.x - 1, targetPoint.y, targetPoint.z - 1);
+            addPathPoint(pathpoint6, targetPoint, nextPathDistances);
+        }
+
+        if (flag && flag2) {
+            PathPoint pathpoint7 = this.openPoint(targetPoint.x + 1, targetPoint.y, targetPoint.z - 1);
+            addPathPoint(pathpoint7, targetPoint, nextPathDistances);
+        }
+
+        if (flag1 && flag3) {
+            PathPoint pathpoint8 = this.openPoint(targetPoint.x - 1, targetPoint.y, targetPoint.z + 1);
+            addPathPoint(pathpoint8, targetPoint, nextPathDistances);
+        }
+
+        if (flag1 && flag2) {
+            PathPoint pathpoint9 = this.openPoint(targetPoint.x + 1, targetPoint.y, targetPoint.z + 1);
+            addPathPoint(pathpoint9, targetPoint, nextPathDistances);
+        }
+
+        if (flag && flag4) {
+            PathPoint pathpoint10 = this.openPoint(targetPoint.x, targetPoint.y + 1, targetPoint.z - 1);
+            addPathPoint(pathpoint10, targetPoint, nextPathDistances);
+        }
+
+        if (flag1 && flag4) {
+            PathPoint pathpoint11 = this.openPoint(targetPoint.x, targetPoint.y + 1, targetPoint.z + 1);
+            addPathPoint(pathpoint11, targetPoint, nextPathDistances);
+        }
+
+        if (flag2 && flag4) {
+            PathPoint pathpoint12 = this.openPoint(targetPoint.x + 1, targetPoint.y + 1, targetPoint.z);
+            addPathPoint(pathpoint12, targetPoint, nextPathDistances);
+        }
+
+        if (flag3 && flag4) {
+            PathPoint pathpoint13 = this.openPoint(targetPoint.x - 1, targetPoint.y + 1, targetPoint.z);
+            addPathPoint(pathpoint13, targetPoint, nextPathDistances);
+        }
+
+        if (flag && flag5) {
+            PathPoint pathpoint14 = this.openPoint(targetPoint.x, targetPoint.y - 1, targetPoint.z - 1);
+            addPathPoint(pathpoint14, targetPoint, nextPathDistances);
+        }
+
+        if (flag1 && flag5) {
+            PathPoint pathpoint15 = this.openPoint(targetPoint.x, targetPoint.y - 1, targetPoint.z + 1);
+            addPathPoint(pathpoint15, targetPoint, nextPathDistances);
+        }
+
+        if (flag2 && flag5) {
+            PathPoint pathpoint16 = this.openPoint(targetPoint.x + 1, targetPoint.y - 1, targetPoint.z);
+            addPathPoint(pathpoint16, targetPoint, nextPathDistances);
+        }
+
+        if (flag3 && flag5) {
+            PathPoint pathpoint17 = this.openPoint(targetPoint.x - 1, targetPoint.y - 1, targetPoint.z);
+            addPathPoint(pathpoint17, targetPoint, nextPathDistances);
+        }
+
+        final Double nextShortestDistance = nextPathDistances.values().stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
+        for (PathPoint pathPoint : nextPathDistances.keySet()) {
+            Double distance = nextPathDistances.get(pathPoint);
+            if (distance > nextShortestDistance) {
+                pathPoint.costMalus++;
+            }
+        }
+
+        int i = 0;
+        for (PathPoint pathPoint : closePathDistances.keySet()) {
+            pathOptions[i++] = pathPoint;
+        }
+        for (PathPoint pathPoint : nextPathDistances.keySet()) {
+            pathOptions[i++] = pathPoint;
+        }
+
+        return i;
     }
 
-    public boolean isDirectPathBetweenPoints(final LivingEntity entity, final Vec3d currentPosition, final Vec3d targetPosition) {
-        final double xDifference = targetPosition.x - currentPosition.x;
-        final double yDifference = targetPosition.y - currentPosition.y;
-        final double zDifference = targetPosition.z - currentPosition.z;
-        final double distanceToTargetSquared = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
-
-        if (distanceToTargetSquared < 1) {
-            return true;
-        } else {
-            final Vec3d vectorToTarget = targetPosition.subtract(currentPosition);
-            final double increment = 1 / distanceToTargetSquared;
-            for (double f = 0.0D; f < 1; f = f + increment) {
-                final Vec3d vectorToAdd = new Vec3d(vectorToTarget.x * f, vectorToTarget.y * f, vectorToTarget.z * f);
-                final Vec3d currentAdjusted = currentPosition.add(vectorToAdd);
-                final BlockPos position = new BlockPos(currentAdjusted.x, currentAdjusted.y, currentAdjusted.z);
-
-                final BlockState iblockstate = entity.world.getBlockState(position);
-                if (iblockstate.getMaterial() != Material.AIR || iblockstate.isSolid()) {
-                    return false;
-                }
-            }
-            return true;
+    private void addPathPoint(PathPoint pathPoint, PathPoint targetPoint, Map<PathPoint, Double> pathDistances) {
+        if (pathPoint != null && !pathPoint.visited) {
+            pathDistances.put(pathPoint, distanceToTargetSquared(pathPoint, targetPoint));
         }
     }
 
-    //    @Override
-    //    public int func_222859_a(final PathPoint[] pathOptions, final PathPoint currentPoint, final PathPoint targetPoint, final float maxDistance) {
-    //        if (isDirectPathBetweenPoints(entity, currentPoint.x, currentPoint.y, currentPoint.z, targetPoint.x, targetPoint.y, targetPoint.z)) {
-    //            int i = 0;
-    //            final Vec3d currentPosition = new Vec3d(currentPoint.x, currentPoint.y, currentPoint.z);
-    //            final Vec3d targetPosition = new Vec3d(targetPoint.x, targetPoint.y, targetPoint.z);
-    //            Vec3d vector = targetPosition.subtract(currentPosition);
-    //            vector = vector.normalize().scale(1.5);
-    //            final Vec3d pathPointVector = currentPosition.add(vector);
-    //            final PathPoint pathpoint = this.openPoint((int) pathPointVector.x, (int) pathPointVector.y, (int) pathPointVector.z);
-    //            if (pathpoint != null && !pathpoint.visited && pathpoint.distanceTo(targetPoint) < maxDistance) {
-    //                pathOptions[i++] = pathpoint;
-    //            }
-    //            return i;
-    //        } else {
-    //            return super.findPathOptions(pathOptions, currentPoint, targetPoint, maxDistance);
-    //        }
-    //    }
+    private double distanceToTargetSquared(PathPoint pathPoint, PathPoint targetPoint) {
+        return distanceToTargetSquared(pathPoint.x, pathPoint.y, pathPoint.z, targetPoint.x, targetPoint.y, targetPoint.z);
+    }
+
+    private double distanceToTargetSquared(double x, double y, double z, double targetX, double targetY, double targetZ) {
+        final double xDifference = targetX - x;
+        final double yDifference = targetY - y;
+        final double zDifference = targetZ - z;
+        final double distanceToTargetSquared = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
+        return distanceToTargetSquared;
+    }
 
 }

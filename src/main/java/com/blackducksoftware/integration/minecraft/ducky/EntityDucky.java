@@ -44,7 +44,6 @@ import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -53,6 +52,7 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SitGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.GhastEntity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -106,7 +106,7 @@ public class EntityDucky extends TameableEntity {
     private boolean isAttacking;
 
     protected final DuckyAIFlyTowardsTargetAndAttack duckyAIFlyTowardsTargetAndAttack = new DuckyAIFlyTowardsTargetAndAttack(this, 32.0F, 32);
-    protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 3.0F, 12.0F);
+    protected final DuckyAIFollowOwnerFlying duckyAIFollowOwnerFlying = new DuckyAIFollowOwnerFlying(this, 1.0F, 12.0F);
 
     protected final GroundPathNavigator groundNavigator;
     protected final DuckyPathNavigateFlying flyingNavigator;
@@ -150,15 +150,15 @@ public class EntityDucky extends TameableEntity {
         this.sitGoal = new SitGoal(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new DuckyAIPanic(this, 1.4D));
-        this.goalSelector.addGoal(2, new DuckyAIWander(this, 1.0D, 100));
-        this.goalSelector.addGoal(3, new DuckyAILookIdle(this));
+        this.goalSelector.addGoal(10, new DuckyAIWander(this, 1.0D, 100));
+        this.goalSelector.addGoal(10, new DuckyAILookIdle(this));
         //  this.goalSelector.addGoal(2, new DuckyAIWatchTarget(this, predicate, 32.0F, 5));
         this.goalSelector.addGoal(3, new DuckyAIMoveTowardsTargetAndAttack(this, 32.0F));
-        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, MobEntity.class, true, false));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, MonsterEntity.class, true, false));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SlimeEntity.class, true, false));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ShulkerEntity.class, true, false));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, GhastEntity.class, true, false));
-        this.targetSelector.addGoal(6, new HurtByTargetGoal(this, MobEntity.class, SlimeEntity.class, ShulkerEntity.class, GhastEntity.class));
+        this.targetSelector.addGoal(6, new HurtByTargetGoal(this));
     }
 
     @Override
@@ -207,7 +207,7 @@ public class EntityDucky extends TameableEntity {
         for (double i = y; i >= y - 3; i--) {
             loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
             final BlockState blockstate = this.world.getBlockState(loc);
-            if (blockstate.getMaterial() != Material.AIR || blockstate.isSolid()) {
+            if (blockstate.getMaterial() != Material.AIR || blockstate.func_215682_a(this.world, loc, this)) {
                 isTooHigh = false;
             }
         }

@@ -55,7 +55,7 @@ public class EntityTamedDucky extends EntityDucky {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(7, new DuckyAIFollowOwner(this, 3.0F, 12.0F));
+        this.goalSelector.addGoal(7, new DuckyAIFollowOwner(this, 1.0F, 12.0F));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
     }
