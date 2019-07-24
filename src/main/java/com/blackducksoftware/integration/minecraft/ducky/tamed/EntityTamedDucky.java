@@ -29,16 +29,16 @@ import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiant
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIOwnerHurtByTarget;
-import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemPotion;
+import net.minecraft.entity.ai.goal.OwnerHurtByTargetGoal;
+import net.minecraft.entity.ai.goal.OwnerHurtTargetGoal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Food;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionType;
+import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class EntityTamedDucky extends EntityDucky {
@@ -48,18 +48,16 @@ public class EntityTamedDucky extends EntityDucky {
         this(DuckyModEntities.TAMED_DUCKY, worldIn);
     }
 
-    protected EntityTamedDucky(EntityType<?> type, final World worldIn) {
+    public EntityTamedDucky(EntityType<? extends EntityTamedDucky> type, final World worldIn) {
         super(type, worldIn);
-        this.setSize(0.4F, 0.7F);
-        this.setScale(1.0F);
     }
 
     @Override
-    protected void initEntityAI() {
-        super.initEntityAI();
-        this.tasks.addTask(7, new DuckyAIFollowOwner(this, 3.0F, 12.0F));
-        this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
-        this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(7, new DuckyAIFollowOwner(this, 1.0F, 12.0F));
+        this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
     }
 
     @Override
@@ -83,15 +81,15 @@ public class EntityTamedDucky extends EntityDucky {
      * Return true if you want to skip processing the other hand
      */
     @Override
-    public boolean processInteract(final EntityPlayer player, final EnumHand hand) {
+    public boolean processInteract(final PlayerEntity player, final Hand hand) {
         final ItemStack itemstack = player.getHeldItem(hand);
-        if (isBreedingItem(itemstack)) {
-            final ItemFood itemfood = (ItemFood) itemstack.getItem();
+        if (isBreedingItem(itemstack) && itemstack.getItem().isFood()) {
+            final Food itemfood = itemstack.getItem().getFood();
             if (this.getHealth() < TAMED_HEALTH) {
                 if (!player.abilities.isCreativeMode) {
                     itemstack.shrink(1);
                 }
-                this.heal(itemfood.getHealAmount(itemstack));
+                this.heal(itemfood.getHealing());
                 this.playTameEffect(true);
             }
             return true;
@@ -109,9 +107,9 @@ public class EntityTamedDucky extends EntityDucky {
             }
             return true;
         } else if (Items.POTION == itemstack.getItem()) {
-            final ItemPotion potion = (ItemPotion) itemstack.getItem();
+            final PotionItem potion = (PotionItem) itemstack.getItem();
             if (potion.hasEffect(itemstack)) {
-                final PotionType potionType = PotionUtils.getPotionFromItem(itemstack);
+                final Potion potionType = PotionUtils.getPotionFromItem(itemstack);
                 // player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
                 if ("healing".equalsIgnoreCase(potionType.getNamePrefixed("")) && !(this instanceof EntityGiantTamedDucky)) {
                     if (!player.abilities.isCreativeMode) {
@@ -170,7 +168,7 @@ public class EntityTamedDucky extends EntityDucky {
             if (this.isOwner(player) && !this.world.isRemote) {
                 setSitting(!this.isSitting());
                 this.isJumping = false;
-                this.navigator.clearPath();
+                this.getNavigator().clearPath();
                 this.setAttackTarget(null);
             }
             return true;
@@ -182,7 +180,7 @@ public class EntityTamedDucky extends EntityDucky {
      * Get the experience points the entity currently has.
      */
     @Override
-    protected int getExperiencePoints(final EntityPlayer player) {
+    protected int getExperiencePoints(final PlayerEntity player) {
         return 15;
     }
 

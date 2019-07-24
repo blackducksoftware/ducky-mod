@@ -24,9 +24,9 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 
-public class DuckyAIWander extends EntityAIWander {
+public class DuckyAIWander extends RandomWalkingGoal {
     private final EntityDucky entityDucky;
 
     public DuckyAIWander(final EntityDucky entityDucky, final double speedIn) {

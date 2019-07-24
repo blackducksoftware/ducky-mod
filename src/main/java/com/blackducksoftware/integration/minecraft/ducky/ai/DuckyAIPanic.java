@@ -22,20 +22,22 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
+import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class DuckyAIPanic extends EntityAIBase {
+public class DuckyAIPanic extends Goal {
     protected final EntityDucky ducky;
     protected final double speed;
     protected double randPosX;
@@ -45,7 +47,7 @@ public class DuckyAIPanic extends EntityAIBase {
     public DuckyAIPanic(final EntityDucky ducky, final double speedIn) {
         this.ducky = ducky;
         this.speed = speedIn;
-        this.setMutexBits(1);
+        this.setMutexFlags(EnumSet.of(Flag.MOVE));
     }
 
     /**
@@ -111,9 +113,9 @@ public class DuckyAIPanic extends EntityAIBase {
             for (int i1 = y - verticalRange; i1 <= y + verticalRange; ++i1) {
                 for (int j1 = z - horizontalRange; j1 <= z + horizontalRange; ++j1) {
                     mutablePosition.setPos(l, i1, j1);
-                    final IBlockState iblockstate = worldIn.getBlockState(mutablePosition);
+                    final BlockState blockstate = worldIn.getBlockState(mutablePosition);
 
-                    if (iblockstate.getMaterial() == Material.WATER) {
+                    if (blockstate.getMaterial() == Material.WATER) {
                         final float f1 = (l - x) * (l - x) + (i1 - y) * (i1 - y) + (j1 - z) * (j1 - z);
 
                         if (f1 < f) {

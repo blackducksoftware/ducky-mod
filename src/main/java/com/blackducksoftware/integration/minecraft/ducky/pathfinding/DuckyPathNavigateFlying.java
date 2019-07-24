@@ -24,94 +24,22 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.pathfinding.Path;
+import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class DuckyPathNavigateFlying extends PathNavigate {
+public class DuckyPathNavigateFlying extends FlyingPathNavigator {
     public DuckyPathNavigateFlying(final EntityDucky ducky, final World world) {
         super(ducky, world);
-        this.nodeProcessor.init(world, ducky);
     }
 
     @Override
-    protected PathFinder getPathFinder() {
+    protected PathFinder getPathFinder(int var) {
         this.nodeProcessor = new DuckyFlyingNodeProcessor();
         this.nodeProcessor.setCanEnterDoors(true);
-        return new PathFinder(this.nodeProcessor);
+        this.nodeProcessor.setCanSwim(true);
+        this.nodeProcessor.init(this.world, this.entity);
+        return new PathFinder(this.nodeProcessor, var);
     }
 
-    /**
-     * If on ground or swimming and can swim
-     */
-    @Override
-    protected boolean canNavigate() {
-        return (this.getCanSwim() && this.isInLiquid()) || !entity.isBeingRidden();
-    }
-
-    @Override
-    protected Vec3d getEntityPosition() {
-        return new Vec3d(entity.posX, entity.posY, entity.posZ);
-    }
-
-    /**
-     * Returns the path to the given EntityLiving. Args : entity
-     */
-    @Override
-    public Path getPathToEntityLiving(final Entity entityIn) {
-        return this.getPathToPos(new BlockPos(entityIn));
-    }
-
-    @Override
-    public void tick() {
-        ++this.totalTicks;
-
-        if (this.tryUpdatePath) {
-            this.updatePath();
-        }
-        if (!this.noPath()) {
-            if (this.canNavigate()) {
-                this.pathFollow();
-            } else if (this.currentPath != null && this.currentPath.getCurrentPathIndex() < this.currentPath.getCurrentPathLength()) {
-                final Vec3d vec3d = this.currentPath.getVectorFromIndex(entity, this.currentPath.getCurrentPathIndex());
-
-                if (MathHelper.floor(entity.posX) == MathHelper.floor(vec3d.x) && MathHelper.floor(entity.posY) == MathHelper.floor(vec3d.y) && MathHelper.floor(entity.posZ) == MathHelper.floor(vec3d.z)) {
-                    this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
-                }
-            }
-            this.debugPathFinding();
-            if (!this.noPath()) {
-                final Vec3d vec3d1 = this.currentPath.getPosition(entity);
-                entity.getMoveHelper().setMoveTo(vec3d1.x, vec3d1.y, vec3d1.z, this.speed);
-            }
-        }
-    }
-
-    @Override
-    protected boolean isDirectPathBetweenPoints(final Vec3d currentPosition, final Vec3d targetPosition, final int sizeX, final int sizeY, final int sizeZ) {
-        final DuckyFlyingNodeProcessor nodeProcessor = (DuckyFlyingNodeProcessor) this.nodeProcessor;
-        return nodeProcessor.isDirectPathBetweenPoints(entity, currentPosition, targetPosition);
-    }
-
-    public void setCanEnterDoors(final boolean canEnterDoors) {
-        this.nodeProcessor.setCanEnterDoors(canEnterDoors);
-    }
-
-    public void setCanSwim(final boolean canSwim) {
-        this.nodeProcessor.setCanSwim(canSwim);
-    }
-
-    public boolean getCanSwim() {
-        return this.nodeProcessor.getCanSwim();
-    }
-
-    @Override
-    public boolean canEntityStandOnPos(final BlockPos pos) {
-        return this.world.getBlockState(pos).isTopSolid();
-    }
 }

@@ -22,23 +22,26 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
+import javax.annotation.Nullable;
+
 import com.blackducksoftware.integration.minecraft.DuckyMod;
 
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class RenderTamedDucky extends RenderLiving<EntityTamedDucky> {
-    public RenderTamedDucky(final RenderManager manager) {
+@OnlyIn(Dist.CLIENT)
+public class RenderTamedDucky extends MobRenderer<EntityTamedDucky, ModelTamedDucky> {
+    public RenderTamedDucky(final EntityRendererManager manager) {
         super(manager, new ModelTamedDucky(), 0.4F);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
+    @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(final EntityTamedDucky ducky) {
+    protected ResourceLocation getEntityTexture(final EntityTamedDucky entity) {
         return new ResourceLocation(DuckyMod.MODID, "textures/entity/" + EntityTamedDucky.TAMED_DUCKY_NAME + ".png");
     }
 

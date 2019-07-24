@@ -24,16 +24,16 @@ package com.blackducksoftware.integration.minecraft.ducky;
 
 import com.blackducksoftware.integration.minecraft.DuckyMod;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
 public class ItemDuckySpawnEgg extends Item {
@@ -45,7 +45,7 @@ public class ItemDuckySpawnEgg extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer player, final EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(final World worldIn, final PlayerEntity player, final Hand hand) {
         final ItemStack itemStack = player.getHeldItem(hand);
         if (!player.abilities.isCreativeMode) {
             itemStack.shrink(1);
@@ -55,9 +55,9 @@ public class ItemDuckySpawnEgg extends Item {
         if (!worldIn.isRemote) {
             final EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(worldIn, player);
             entityegg.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
-            worldIn.spawnEntity(entityegg);
+            worldIn.addEntity(entityegg);
         }
-        player.addStat(StatList.ITEM_USED.get(this));
-        return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
+        player.addStat(Stats.ITEM_USED.get(this));
+        return new ActionResult<>(ActionResultType.SUCCESS.SUCCESS, itemStack);
     }
 }

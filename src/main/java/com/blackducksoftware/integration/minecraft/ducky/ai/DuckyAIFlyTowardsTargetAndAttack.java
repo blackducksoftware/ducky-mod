@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky.ai;
 
+import java.util.EnumSet;
+
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.entity.Entity;
@@ -37,7 +39,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     public DuckyAIFlyTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance, final long memoryLength) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Flag.TARGET, Flag.MOVE));
         this.memoryLength = memoryLength;
     }
 
@@ -100,7 +102,7 @@ public class DuckyAIFlyTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         final double speedModifier = getSpeedModifier(distanceToTarget);
         getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
         getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-        getDucky().getLookHelper().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        getDucky().getLookController().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
 
         checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
     }

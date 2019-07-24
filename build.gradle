@@ -1,8 +1,8 @@
 buildscript {
     repositories {
+        maven { url = "https://files.minecraftforge.net/maven" }
         jcenter()
         mavenCentral()
-        maven { url = "https://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
@@ -14,7 +14,6 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-
 
 version = "${version_minecraft}-${mod_version}"
 group = "${mod_group}"
@@ -67,6 +66,24 @@ minecraft {
                 }
             }
         }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'duckymod', '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                duckymod {
+                    source sourceSets.main
+                }
+            }
+        }
     }
 }
 dependencies {
@@ -94,10 +111,6 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
         expand 'version': project.version, 'mod_id': mod_id, 'mod_name': mod_name, 'mod_url': mod_url, 'mod_author': mod_author, 'mod_description': mod_description, 'mod_icon': mod_icon
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
     }
 }
 
