@@ -111,7 +111,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
 
         boolean shouldFly = false;
         if (path == null) {
-            path = navigator.getPathToEntityLiving(target);
+            path = navigator.getPathToEntityLiving(target, 0);
         }
         if (path != null) {
             final PathPoint pathpoint = path.getFinalPathPoint();
