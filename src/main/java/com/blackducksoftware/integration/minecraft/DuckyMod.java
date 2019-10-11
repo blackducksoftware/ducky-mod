@@ -22,26 +22,33 @@
  */
 package com.blackducksoftware.integration.minecraft;
 
+import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
+import com.blackducksoftware.integration.minecraft.ducky.EntityDuckySpawnEgg;
+import com.blackducksoftware.integration.minecraft.ducky.RenderDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.RenderTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
+import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.RenderGiantTamedDucky;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.SpriteRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(value = DuckyMod.MODID)
 public class DuckyMod {
     public static final String MODID = "duckymod";
 
     public DuckyMod() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-    }
-
-    private void clientSetup(final FMLClientSetupEvent evt) {
-        DuckyModEntities.registerEntityRenders();
     }
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -68,6 +75,17 @@ public class DuckyMod {
                 DuckyModSounds.duckDeath,
                 DuckyModSounds.duckHurt,
                 DuckyModSounds.duckQuack);
+        }
+    }
+
+    @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+    public static class RegistryClient {
+        @SubscribeEvent
+        public static void onRendererRegistry(FMLClientSetupEvent clientSetupEvent) {
+            RenderingRegistry.registerEntityRenderingHandler(EntityGiantTamedDucky.class, RenderGiantTamedDucky::new);
+            RenderingRegistry.registerEntityRenderingHandler(EntityTamedDucky.class, RenderTamedDucky::new);
+            RenderingRegistry.registerEntityRenderingHandler(EntityDucky.class, RenderDucky::new);
+            RenderingRegistry.registerEntityRenderingHandler(EntityDuckySpawnEgg.class, (EntityRendererManager manager) -> new SpriteRenderer(manager, Minecraft.getInstance().getItemRenderer()));
         }
     }
 

@@ -24,18 +24,11 @@ package com.blackducksoftware.integration.minecraft;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.EntityDuckySpawnEgg;
-import com.blackducksoftware.integration.minecraft.ducky.RenderDucky;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
-import com.blackducksoftware.integration.minecraft.ducky.tamed.RenderTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
-import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.RenderGiantTamedDucky;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.SpriteRenderer;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class DuckyModEntities {
     public static final EntityType<EntityGiantTamedDucky> GIANT_TAMED_DUCKY;
@@ -74,12 +67,5 @@ public class DuckyModEntities {
                               .setShouldReceiveVelocityUpdates(true)
                               .build(EntityDuckySpawnEgg.DUCKY_SPAWN_EGG_NAME);
         DUCKY_SPAWN_EGG.setRegistryName(DuckyMod.MODID, EntityDuckySpawnEgg.DUCKY_SPAWN_EGG_NAME);
-    }
-
-    public static void registerEntityRenders() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityGiantTamedDucky.class, RenderGiantTamedDucky::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTamedDucky.class, RenderTamedDucky::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityDucky.class, RenderDucky::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityDuckySpawnEgg.class, (EntityRendererManager manager) -> new SpriteRenderer(manager, Minecraft.getInstance().getItemRenderer()));
     }
 }
