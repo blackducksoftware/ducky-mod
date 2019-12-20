@@ -38,7 +38,7 @@ public class RenderGiantTamedDucky extends MobRenderer<EntityGiantTamedDucky, Mo
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     @Override
-    protected ResourceLocation getEntityTexture(final EntityGiantTamedDucky ducky) {
+    public ResourceLocation getEntityTexture(final EntityGiantTamedDucky ducky) {
         return new ResourceLocation(DuckyMod.MODID, "textures/entity/" + EntityGiantTamedDucky.TAMED_GIANT_DUCKY_NAME + ".png");
     }
 

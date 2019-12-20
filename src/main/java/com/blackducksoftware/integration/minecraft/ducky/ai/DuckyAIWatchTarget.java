@@ -48,11 +48,11 @@ public class DuckyAIWatchTarget extends TargetGoal {
     private final float chance;
     protected Predicate<LivingEntity> watchedClassSelector;
 
-    public DuckyAIWatchTarget(final MobEntity theWatcher, @Nullable final Predicate<LivingEntity> watchedClassSelector, final float maxDistance, final int lookTime) {
+    public DuckyAIWatchTarget(MobEntity theWatcher, @Nullable Predicate<LivingEntity> watchedClassSelector, float maxDistance, int lookTime) {
         this(theWatcher, watchedClassSelector, maxDistance, lookTime, 0.02F);
     }
 
-    public DuckyAIWatchTarget(final MobEntity theWatcher, @Nullable final Predicate<LivingEntity> watchedClassSelector, final float maxDistance, final int lookTime, final float chanceIn) {
+    public DuckyAIWatchTarget(MobEntity theWatcher, @Nullable Predicate<LivingEntity> watchedClassSelector, float maxDistance, int lookTime, float chanceIn) {
         super(theWatcher, false);
         this.theWatcher = theWatcher;
         this.watchedClassSelector = watchedClassSelector;
@@ -74,7 +74,7 @@ public class DuckyAIWatchTarget extends TargetGoal {
                 this.closestEntity = this.theWatcher.getAttackTarget();
             }
 
-            final List<LivingEntity> list = theWatcher.world.getEntitiesWithinAABB(LivingEntity.class, this.getTargetableArea(maxDistance), watchedClassSelector);
+            List<LivingEntity> list = theWatcher.world.getEntitiesWithinAABB(LivingEntity.class, this.getTargetableArea(maxDistance), watchedClassSelector);
 
             if (list.isEmpty()) {
                 return false;
@@ -85,7 +85,7 @@ public class DuckyAIWatchTarget extends TargetGoal {
         }
     }
 
-    protected AxisAlignedBB getTargetableArea(final double targetDistance) {
+    protected AxisAlignedBB getTargetableArea(double targetDistance) {
         return this.theWatcher.getBoundingBox().expand(targetDistance, 4.0D, targetDistance);
     }
 
@@ -120,8 +120,9 @@ public class DuckyAIWatchTarget extends TargetGoal {
      */
     @Override
     public void tick() {
-        this.theWatcher.getLookController().setLookPosition(this.closestEntity.posX, this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, this.theWatcher.getHorizontalFaceSpeed(),
-            this.theWatcher.getVerticalFaceSpeed());
+        this.theWatcher.getLookController()
+            .setLookPosition(this.closestEntity.getPosition().getX(), this.closestEntity.getPosition().getY() + this.closestEntity.getEyeHeight(), this.closestEntity.getPosition().getZ(), this.theWatcher.getHorizontalFaceSpeed(),
+                this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }
 

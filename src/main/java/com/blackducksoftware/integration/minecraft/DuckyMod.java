@@ -54,14 +54,14 @@ public class DuckyMod {
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
-        public static void onItemsRegistry(final RegistryEvent.Register<Item> evt) {
+        public static void onItemsRegistry(RegistryEvent.Register<Item> evt) {
             evt.getRegistry().register(
                 DuckyModItems.DUCKY_SPAWN_EGG
             );
         }
 
         @SubscribeEvent
-        public static void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> evt) {
+        public static void onEntityRegistry(RegistryEvent.Register<EntityType<?>> evt) {
             evt.getRegistry().registerAll(
                 DuckyModEntities.DUCKY,
                 DuckyModEntities.DUCKY_SPAWN_EGG,
@@ -70,7 +70,7 @@ public class DuckyMod {
         }
 
         @SubscribeEvent
-        public static void onSoundRegistry(final RegistryEvent.Register<SoundEvent> evt) {
+        public static void onSoundRegistry(RegistryEvent.Register<SoundEvent> evt) {
             evt.getRegistry().registerAll(
                 DuckyModSounds.duckDeath,
                 DuckyModSounds.duckHurt,
@@ -82,10 +82,10 @@ public class DuckyMod {
     public static class RegistryClient {
         @SubscribeEvent
         public static void onRendererRegistry(FMLClientSetupEvent clientSetupEvent) {
-            RenderingRegistry.registerEntityRenderingHandler(EntityGiantTamedDucky.class, RenderGiantTamedDucky::new);
-            RenderingRegistry.registerEntityRenderingHandler(EntityTamedDucky.class, RenderTamedDucky::new);
-            RenderingRegistry.registerEntityRenderingHandler(EntityDucky.class, RenderDucky::new);
-            RenderingRegistry.registerEntityRenderingHandler(EntityDuckySpawnEgg.class, (EntityRendererManager manager) -> new SpriteRenderer(manager, Minecraft.getInstance().getItemRenderer()));
+            RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.GIANT_TAMED_DUCKY, RenderGiantTamedDucky::new);
+            RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.TAMED_DUCKY, RenderTamedDucky::new);
+            RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.DUCKY, RenderDucky::new);
+            RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.DUCKY_SPAWN_EGG, (EntityRendererManager manager) -> new SpriteRenderer(manager, Minecraft.getInstance().getItemRenderer()));
         }
     }
 

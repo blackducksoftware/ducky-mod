@@ -33,7 +33,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
     private final float minDistance;
     private final float maxDistance;
 
-    public DuckyAIFollowOwnerFlying(final EntityDucky ducky, final float minDistance, final float maxDistance) {
+    public DuckyAIFollowOwnerFlying(EntityDucky ducky, float minDistance, float maxDistance) {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
@@ -45,7 +45,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
      */
     @Override
     public boolean shouldExecute() {
-        final LivingEntity owner = getDucky().getOwner();
+        LivingEntity owner = getDucky().getOwner();
         if (owner == null || !getDucky().canMove() || getDucky().isAttacking()) {
             return false;
         } else if (owner instanceof PlayerEntity && owner.isSpectator()) {
@@ -70,7 +70,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
             return false;
         }
         distanceToTarget = getDucky().getDistanceSq(getTargetToFollow());
-        if (distanceToTarget > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().posY < getTargetToFollow().posY) {
+        if (distanceToTarget > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().getPosition().getY() < getTargetToFollow().getPosition().getY()) {
             return true;
         }
         getDucky().setFlying(false);
@@ -85,10 +85,10 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
         if (!updateCalc(distanceToTarget)) {
             return;
         }
-        final double speedModifier = getSpeedModifier(distanceToTarget);
+        double speedModifier = getSpeedModifier(distanceToTarget);
         getDucky().getNavigator().tryMoveToEntityLiving(getTargetToFollow(), speedModifier);
 
-        final boolean isStuck = isDuckyStuck();
+        boolean isStuck = isDuckyStuck();
         if (distanceToTarget >= TELEPORT_RANGE * TELEPORT_RANGE || (distanceToTarget > minDistance * minDistance && isStuck)) {
             if (relocateDuckyNearTarget()) {
                 getDucky().getNavigator().clearPath();

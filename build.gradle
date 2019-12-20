@@ -14,14 +14,17 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'java'
 
 version = "${version_minecraft}-${mod_version}"
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+project.ext.javaSourceCompatibility = JavaVersion.VERSION_1_8
+project.ext.javaTargetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 minecraft {
@@ -107,7 +110,6 @@ jar {
 }
 
 processResources {
-
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
         expand 'version': project.version, 'mod_id': mod_id, 'mod_name': mod_name, 'mod_url': mod_url, 'mod_author': mod_author, 'mod_description': mod_description, 'mod_icon': mod_icon

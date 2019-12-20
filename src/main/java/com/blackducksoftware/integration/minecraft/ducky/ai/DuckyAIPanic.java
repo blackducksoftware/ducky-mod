@@ -44,7 +44,7 @@ public class DuckyAIPanic extends Goal {
     protected double randPosY;
     protected double randPosZ;
 
-    public DuckyAIPanic(final EntityDucky ducky, final double speedIn) {
+    public DuckyAIPanic(EntityDucky ducky, double speedIn) {
         this.ducky = ducky;
         this.speed = speedIn;
         this.setMutexFlags(EnumSet.of(Flag.MOVE));
@@ -56,7 +56,7 @@ public class DuckyAIPanic extends Goal {
     @Override
     public boolean shouldExecute() {
         if (ducky.isBurning()) {
-            final BlockPos blockpos = this.getRandomWaterPosition(ducky.world, ducky, 15, 6);
+            BlockPos blockpos = this.getRandomWaterPosition(ducky.world, ducky, 15, 6);
             if (blockpos != null) {
                 this.randPosX = blockpos.getX();
                 this.randPosY = blockpos.getY();
@@ -71,7 +71,7 @@ public class DuckyAIPanic extends Goal {
     }
 
     protected boolean findAndSetRandomPosition() {
-        final Vec3d vec3d = RandomPositionGenerator.findRandomTarget(ducky, 5, 4);
+        Vec3d vec3d = RandomPositionGenerator.findRandomTarget(ducky, 5, 4);
 
         if (vec3d == null) {
             return false;
@@ -100,23 +100,23 @@ public class DuckyAIPanic extends Goal {
     }
 
     @Nullable
-    private BlockPos getRandomWaterPosition(final World worldIn, final Entity entityIn, final int horizontalRange, final int verticalRange) {
-        final BlockPos blockpos = new BlockPos(entityIn);
-        final int x = blockpos.getX();
-        final int y = blockpos.getY();
-        final int z = blockpos.getZ();
+    private BlockPos getRandomWaterPosition(World worldIn, Entity entityIn, int horizontalRange, int verticalRange) {
+        BlockPos blockpos = new BlockPos(entityIn);
+        int x = blockpos.getX();
+        int y = blockpos.getY();
+        int z = blockpos.getZ();
         float f = horizontalRange * horizontalRange * verticalRange * 2;
         BlockPos randomPosition = null;
-        final BlockPos.MutableBlockPos mutablePosition = new BlockPos.MutableBlockPos();
+        BlockPos.Mutable mutablePosition = new BlockPos.Mutable();
 
         for (int l = x - horizontalRange; l <= x + horizontalRange; ++l) {
             for (int i1 = y - verticalRange; i1 <= y + verticalRange; ++i1) {
                 for (int j1 = z - horizontalRange; j1 <= z + horizontalRange; ++j1) {
                     mutablePosition.setPos(l, i1, j1);
-                    final BlockState blockstate = worldIn.getBlockState(mutablePosition);
+                    BlockState blockstate = worldIn.getBlockState(mutablePosition);
 
                     if (blockstate.getMaterial() == Material.WATER) {
-                        final float f1 = (l - x) * (l - x) + (i1 - y) * (i1 - y) + (j1 - z) * (j1 - z);
+                        float f1 = (l - x) * (l - x) + (i1 - y) * (i1 - y) + (j1 - z) * (j1 - z);
 
                         if (f1 < f) {
                             f = f1;

@@ -42,15 +42,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class EntityDuckySpawnEgg extends EggEntity {
     public static final String DUCKY_SPAWN_EGG_NAME = "ducky_spawn_egg";
 
-    public EntityDuckySpawnEgg(final World world) {
+    public EntityDuckySpawnEgg(World world) {
         super(EntityType.EGG, world);
     }
 
-    public EntityDuckySpawnEgg(final World world, final LivingEntity entity) {
+    public EntityDuckySpawnEgg(World world, LivingEntity entity) {
         super(world, entity);
     }
 
-    public EntityDuckySpawnEgg(EntityType<? extends EntityDuckySpawnEgg> type, final World worldIn) {
+    public EntityDuckySpawnEgg(EntityType<? extends EntityDuckySpawnEgg> type, World worldIn) {
         super(type, worldIn);
     }
 
@@ -60,7 +60,8 @@ public class EntityDuckySpawnEgg extends EggEntity {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {
                 ItemParticleData particleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(DuckyModItems.DUCKY_SPAWN_EGG));
-                this.world.addParticle(particleData, this.posX, this.posY, this.posZ, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D);
+                this.world.addParticle(particleData, this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D,
+                    (this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
@@ -71,8 +72,8 @@ public class EntityDuckySpawnEgg extends EggEntity {
             ((EntityRayTraceResult) result).getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
         }
         if (!this.world.isRemote) {
-            final EntityDucky entityDucky = new EntityDucky(this.world);
-            entityDucky.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+            EntityDucky entityDucky = new EntityDucky(this.world);
+            entityDucky.setLocationAndAngles(this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), this.rotationYaw, 0.0F);
             this.world.addEntity(entityDucky);
 
             this.remove();

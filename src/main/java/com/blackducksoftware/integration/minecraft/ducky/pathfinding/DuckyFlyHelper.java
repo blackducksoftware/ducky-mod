@@ -29,8 +29,8 @@ import net.minecraft.entity.ai.controller.FlyingMovementController;
 import net.minecraft.util.math.Vec3d;
 
 public class DuckyFlyHelper extends FlyingMovementController {
-    public DuckyFlyHelper(final EntityDucky ducky) {
-        super(ducky);
+    public DuckyFlyHelper(EntityDucky ducky) {
+        super(ducky, 20, true);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DuckyFlyHelper extends FlyingMovementController {
         this.mob.setAIMoveSpeed(moveSpeed);
         if (this.action == FlyingMovementController.Action.MOVE_TO) {
             this.action = FlyingMovementController.Action.WAIT;
-            final Vec3d targetPosition = new Vec3d(posX, posY, posZ);
+            Vec3d targetPosition = new Vec3d(posX, posY, posZ);
             Vec3d vector = targetPosition.subtract(this.mob.getPositionVector());
             vector = vector.normalize().scale(moveSpeed);
             vector.add(0, 0.1F, 0);

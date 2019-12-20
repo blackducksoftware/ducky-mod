@@ -26,10 +26,11 @@ import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathFinder;
+import net.minecraft.world.Region;
 import net.minecraft.world.World;
 
 public class DuckyPathNavigateFlying extends FlyingPathNavigator {
-    public DuckyPathNavigateFlying(final EntityDucky ducky, final World world) {
+    public DuckyPathNavigateFlying(EntityDucky ducky, World world) {
         super(ducky, world);
     }
 
@@ -38,7 +39,11 @@ public class DuckyPathNavigateFlying extends FlyingPathNavigator {
         this.nodeProcessor = new DuckyFlyingNodeProcessor();
         this.nodeProcessor.setCanEnterDoors(true);
         this.nodeProcessor.setCanSwim(true);
-        this.nodeProcessor.init(this.world, this.entity);
+
+        Region region = new Region(this.world, this.entity.getPosition().add(-32, -32, -32), this.entity.getPosition().add(32, 32, 32));
+
+        //func_225578_a_ == init
+        this.nodeProcessor.func_225578_a_(region, this.entity);
         return new PathFinder(this.nodeProcessor, var);
     }
 

@@ -116,11 +116,11 @@ public class EntityDucky extends TameableEntity {
     protected final MovementController groundMoveHelper;
     protected final DuckyFlyHelper flyingMoveHelper;
 
-    public EntityDucky(final World worldIn) {
+    public EntityDucky(World worldIn) {
         this(DuckyModEntities.DUCKY, worldIn);
     }
 
-    public EntityDucky(EntityType<? extends EntityDucky> type, final World worldIn) {
+    public EntityDucky(EntityType<? extends EntityDucky> type, World worldIn) {
         super(type, worldIn);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
 
@@ -178,7 +178,7 @@ public class EntityDucky extends TameableEntity {
      * Returns true if this entity can attack entities of the specified class.
      */
     @Override
-    public boolean canAttack(final EntityType cls) {
+    public boolean canAttack(EntityType cls) {
         return true;
     }
 
@@ -205,11 +205,11 @@ public class EntityDucky extends TameableEntity {
 
     public boolean isTooHigh() {
         BlockPos loc = null;
-        final double y = this.getPosition().getY();
+        double y = this.getPosition().getY();
         boolean isTooHigh = true;
         for (double i = y; i >= y - 3; i--) {
             loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
-            final BlockState blockstate = this.world.getBlockState(loc);
+            BlockState blockstate = this.world.getBlockState(loc);
             if (blockstate.getMaterial() != Material.AIR || blockstate.func_215682_a(this.world, loc, this)) {
                 isTooHigh = false;
             }
@@ -218,8 +218,8 @@ public class EntityDucky extends TameableEntity {
     }
 
     @Override
-    public boolean attackEntityAsMob(final Entity entityIn) {
-        final boolean canAttackFrom = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue()));
+    public boolean attackEntityAsMob(Entity entityIn) {
+        boolean canAttackFrom = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue()));
         if (canAttackFrom) {
             this.applyEnchantments(this, entityIn);
         }
@@ -230,14 +230,14 @@ public class EntityDucky extends TameableEntity {
      * Return true if you want to skip processing the other hand
      */
     @Override
-    public boolean processInteract(final PlayerEntity player, final Hand hand) {
-        final ItemStack itemstack = player.getHeldItem(hand);
+    public boolean processInteract(PlayerEntity player, Hand hand) {
+        ItemStack itemstack = player.getHeldItem(hand);
         if (isBreedingItem(itemstack)) {
             if (!player.abilities.isCreativeMode) {
                 itemstack.shrink(1);
             }
             if (!this.world.isRemote) {
-                final EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
+                EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
                 entityTamedDucky.setOwnerId(player.getUniqueID());
                 entityTamedDucky.setTamed(true);
                 spawnTamedDucky(player, entityTamedDucky);
@@ -248,7 +248,7 @@ public class EntityDucky extends TameableEntity {
         return false;
     }
 
-    public void setAttributesFromOriginal(final EntityDucky originalDucky, final UUID ownerId) {
+    public void setAttributesFromOriginal(EntityDucky originalDucky, UUID ownerId) {
         this.setSitting(originalDucky.isSitting());
         this.moveToBlockPosAndAngles(originalDucky.getPosition(), 0.0F, 0.0F);
         this.getNavigator().clearPath();
@@ -259,7 +259,7 @@ public class EntityDucky extends TameableEntity {
         }
     }
 
-    protected void spawnTamedDucky(final PlayerEntity player, final EntityTamedDucky entityTamedDucky) {
+    protected void spawnTamedDucky(PlayerEntity player, EntityTamedDucky entityTamedDucky) {
         if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(entityTamedDucky, player)) {
             entityTamedDucky.setAttributesFromOriginal(this, player.getUniqueID());
             entityTamedDucky.onInitialSpawn(entityTamedDucky.world, entityTamedDucky.world.getDifficultyForLocation(this.getPosition()), SpawnReason.SPAWN_EGG, (ILivingEntityData) null, null);
@@ -272,7 +272,7 @@ public class EntityDucky extends TameableEntity {
      * Called when the entity is attacked.
      */
     @Override
-    public boolean attackEntityFrom(final DamageSource source, final float amount) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
@@ -291,17 +291,13 @@ public class EntityDucky extends TameableEntity {
      * Checks if the parameter is an item which this animal can be fed to breed it (wheat, carrots or seeds depending on the animal type)
      */
     @Override
-    public boolean isBreedingItem(final ItemStack stack) {
+    public boolean isBreedingItem(ItemStack stack) {
         return stack.getItem() == Items.BREAD;
     }
 
     @Override
-    public boolean canMateWith(final AnimalEntity otherAnimal) {
+    public boolean canMateWith(AnimalEntity otherAnimal) {
         return false;
-    }
-
-    @Override
-    public void fall(final float distance, final float damageMultiplier) {
     }
 
     @Override
@@ -310,7 +306,7 @@ public class EntityDucky extends TameableEntity {
     }
 
     @Override
-    protected SoundEvent getHurtSound(final DamageSource source) {
+    protected SoundEvent getHurtSound(DamageSource source) {
         return DuckyModSounds.duckHurt;
     }
 
@@ -332,16 +328,16 @@ public class EntityDucky extends TameableEntity {
 
     @Override
     public boolean isSitting() {
-        final byte tamedByte = this.dataManager.get(TAMED).byteValue();
-        final boolean sitting = (tamedByte & 1) != 0;
+        byte tamedByte = this.dataManager.get(TAMED).byteValue();
+        boolean sitting = (tamedByte & 1) != 0;
         return sitting;
     }
 
     @Override
-    public void setSitting(final boolean sitting) {
+    public void setSitting(boolean sitting) {
         if (this.getAISit() != null) {
             this.getAISit().setSitting(sitting);
-            final byte tamedByte = this.dataManager.get(TAMED).byteValue();
+            byte tamedByte = this.dataManager.get(TAMED).byteValue();
             if (sitting) {
                 this.dataManager.set(TAMED, Byte.valueOf((byte) (tamedByte | 1)));
             } else {
@@ -350,14 +346,14 @@ public class EntityDucky extends TameableEntity {
         }
     }
 
-    private boolean getManagedByteBoolean(final DataParameter<Byte> dataParameter) {
-        final byte managedByte = this.dataManager.get(dataParameter).byteValue();
-        final boolean value = (managedByte & 1) != 0;
+    private boolean getManagedByteBoolean(DataParameter<Byte> dataParameter) {
+        byte managedByte = this.dataManager.get(dataParameter).byteValue();
+        boolean value = (managedByte & 1) != 0;
         return value;
     }
 
-    private void setManagedByteBoolean(final DataParameter<Byte> dataParameter, final boolean value) {
-        final byte managedByte = this.dataManager.get(dataParameter).byteValue();
+    private void setManagedByteBoolean(DataParameter<Byte> dataParameter, boolean value) {
+        byte managedByte = this.dataManager.get(dataParameter).byteValue();
         if (value) {
             this.dataManager.set(dataParameter, Byte.valueOf((byte) (managedByte | 1)));
         } else {
@@ -372,7 +368,7 @@ public class EntityDucky extends TameableEntity {
         return isFireProof;
     }
 
-    public void setFireProof(final boolean fireProof) {
+    public void setFireProof(boolean fireProof) {
         setManagedByteBoolean(IS_FIRE_PROOF, fireProof);
         isFireProof = fireProof;
     }
@@ -420,7 +416,7 @@ public class EntityDucky extends TameableEntity {
         return getManagedByteBoolean(CAN_FLY);
     }
 
-    public void setCanFly(final boolean canFly) {
+    public void setCanFly(boolean canFly) {
         setManagedByteBoolean(CAN_FLY, canFly);
         if (canFly) {
             this.goalSelector.addGoal(4, duckyAIFlyTowardsTargetAndAttack);
@@ -435,7 +431,7 @@ public class EntityDucky extends TameableEntity {
         return getManagedByteBoolean(STRENGTH);
     }
 
-    public void setStrong(final boolean strong) {
+    public void setStrong(boolean strong) {
         setManagedByteBoolean(STRENGTH, strong);
         if (strong) {
             this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(INCREASED_DAMAGE);
@@ -448,7 +444,7 @@ public class EntityDucky extends TameableEntity {
         return getManagedByteBoolean(SPEED);
     }
 
-    public void setFast(final boolean fast) {
+    public void setFast(boolean fast) {
         setManagedByteBoolean(SPEED, fast);
         if (fast) {
             this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(FAST_SPEED);
@@ -463,7 +459,7 @@ public class EntityDucky extends TameableEntity {
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
     @Override
-    public void writeAdditional(final CompoundNBT compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.putBoolean("FireProof", this.isFireProof());
         compound.putBoolean("CanFly", this.isCanFly());
@@ -475,7 +471,7 @@ public class EntityDucky extends TameableEntity {
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-    public void readAdditional(final CompoundNBT compound) {
+    public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         this.setFireProof(compound.getBoolean("FireProof"));
         this.setCanFly(compound.getBoolean("CanFly"));
@@ -487,7 +483,7 @@ public class EntityDucky extends TameableEntity {
      * Get the experience points the entity currently has.
      */
     @Override
-    protected int getExperiencePoints(final PlayerEntity player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return 10;
     }
 
@@ -500,7 +496,7 @@ public class EntityDucky extends TameableEntity {
     }
 
     @Override
-    public AgeableEntity createChild(final AgeableEntity ageable) {
+    public AgeableEntity createChild(AgeableEntity ageable) {
         return null;
     }
 
@@ -508,7 +504,7 @@ public class EntityDucky extends TameableEntity {
         return isFlying;
     }
 
-    public void setFlying(final boolean isFlying) {
+    public void setFlying(boolean isFlying) {
         this.isFlying = isFlying;
         if (isFlying) {
             this.navigator = flyingNavigator;
@@ -523,7 +519,7 @@ public class EntityDucky extends TameableEntity {
         return isAttacking;
     }
 
-    public void setAttacking(final boolean isAttacking) {
+    public void setAttacking(boolean isAttacking) {
         this.isAttacking = isAttacking;
     }
 

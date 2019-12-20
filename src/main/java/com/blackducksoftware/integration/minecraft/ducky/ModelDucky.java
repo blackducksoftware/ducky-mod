@@ -22,18 +22,22 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelDucky extends AbstractCommonModel<EntityDucky> {
-    public RendererModel head;
-    public RendererModel body;
-    public RendererModel rightLeg;
-    public RendererModel leftLeg;
-    public RendererModel rightWing;
-    public RendererModel leftWing;
-    public RendererModel bill;
-    public RendererModel tail;
+    public ModelRenderer head;
+    public ModelRenderer body;
+    public ModelRenderer rightLeg;
+    public ModelRenderer leftLeg;
+    public ModelRenderer rightWing;
+    public ModelRenderer leftWing;
+    public ModelRenderer bill;
+    public ModelRenderer tail;
 
     public ModelDucky() {
         super(64, 32);
@@ -49,22 +53,43 @@ public class ModelDucky extends AbstractCommonModel<EntityDucky> {
         this.leftLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
     }
 
-    /**
-     * Sets the models various rotation angles then renders the model.
-     */
     @Override
-    public void render(final EntityDucky entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
-        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
-        this.head.render(scale);
-        this.bill.render(scale);
-        this.body.render(scale);
-        this.tail.render(scale);
-        this.rightLeg.render(scale);
-        this.leftLeg.render(scale);
-        this.rightWing.render(scale);
-        this.leftWing.render(scale);
+    public Iterable<ModelRenderer> func_225601_a_() {
+        return ImmutableList.of(this.head, this.body, this.rightLeg, this.leftLeg, this.rightWing, this.leftWing, this.bill, this.tail);
     }
+
+    @Override
+    public void func_225597_a_(final EntityDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.head.rotateAngleX = headPitch * 0.017453292F;
+        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+        duplicateModelRotationAngles(head, bill);
+
+        this.body.rotateAngleX = ((float) Math.PI / 2F);
+        duplicateModelRotationAngles(body, tail);
+
+        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.rightWing.rotateAngleZ = ageInTicks;
+        this.leftWing.rotateAngleZ = -ageInTicks;
+
+    }
+
+    //    /**
+    //     * Sets the models various rotation angles then renders the model.
+    //     */
+    //    @Override
+    //    public void render(final EntityDucky entityIn, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scale) {
+    //        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    //
+    //        this.head.render(scale);
+    //        this.bill.render(scale);
+    //        this.body.render(scale);
+    //        this.tail.render(scale);
+    //        this.rightLeg.render(scale);
+    //        this.leftLeg.render(scale);
+    //        this.rightWing.render(scale);
+    //        this.leftWing.render(scale);
+    //    }
 
     /**
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
@@ -92,22 +117,22 @@ public class ModelDucky extends AbstractCommonModel<EntityDucky> {
         }
     }
 
-    /**
-     * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how "far" arms
-     * and legs can swing at most.
-     */
-    @Override
-    public void setRotationAngles(final EntityDucky entityDucky, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor) {
-        this.head.rotateAngleX = headPitch * 0.017453292F;
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
-        duplicateModelRotationAngles(head, bill);
-
-        this.body.rotateAngleX = ((float) Math.PI / 2F);
-        duplicateModelRotationAngles(body, tail);
-
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.rightWing.rotateAngleZ = ageInTicks;
-        this.leftWing.rotateAngleZ = -ageInTicks;
-    }
+    //    /**
+    //     * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how "far" arms
+    //     * and legs can swing at most.
+    //     */
+    //    @Override
+    //    public void setRotationAngles(final EntityDucky entityDucky, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float scaleFactor) {
+    //        this.head.rotateAngleX = headPitch * 0.017453292F;
+    //        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+    //        duplicateModelRotationAngles(head, bill);
+    //
+    //        this.body.rotateAngleX = ((float) Math.PI / 2F);
+    //        duplicateModelRotationAngles(body, tail);
+    //
+    //        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    //        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+    //        this.rightWing.rotateAngleZ = ageInTicks;
+    //        this.leftWing.rotateAngleZ = -ageInTicks;
+    //    }
 }

@@ -41,7 +41,7 @@ public class RenderTamedDucky extends MobRenderer<EntityTamedDucky, ModelTamedDu
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(final EntityTamedDucky entity) {
+    public ResourceLocation getEntityTexture(final EntityTamedDucky entity) {
         return new ResourceLocation(DuckyMod.MODID, "textures/entity/" + EntityTamedDucky.TAMED_DUCKY_NAME + ".png");
     }
 
