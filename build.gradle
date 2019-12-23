@@ -16,8 +16,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'java'
 
-// version = "${version_minecraft}-${mod_version}"
-version = '1.15.1-0.5.1-SNAPSHOT'
+version = "${version_minecraft}-${mod_version}"
+// Can not use the variables in the version when releasing
+// version = '1.15.1-0.5.1-SNAPSHOT'
 
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
@@ -125,4 +126,4 @@ license {
     includes(["**/*.groovy", "**/*.java"])
     excludes(["/src/test/*.groovy",
               "src/test/*.java"])
-}
+}
