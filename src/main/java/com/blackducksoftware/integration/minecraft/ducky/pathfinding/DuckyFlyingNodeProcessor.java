@@ -31,8 +31,15 @@ import net.minecraft.pathfinding.PathPoint;
 public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
 
     @Override
-    public int func_222859_a(final PathPoint[] pathOptions, final PathPoint targetPoint) {
+    public int func_222859_a(PathPoint[] pathOptions, PathPoint providedTargetPoint) {
         Map<PathPoint, Double> closePathDistances = new HashMap<>();
+
+        int additionalVertical = 0;
+        if (this.entity.getPosition().getY() < providedTargetPoint.y) {
+            additionalVertical = 1;
+        }
+        PathPoint targetPoint = providedTargetPoint.cloneMove(providedTargetPoint.x, providedTargetPoint.y + additionalVertical, providedTargetPoint.z);
+
         PathPoint pathpoint = this.openPoint(targetPoint.x, targetPoint.y, targetPoint.z + 1);
         PathPoint pathpoint1 = this.openPoint(targetPoint.x - 1, targetPoint.y, targetPoint.z);
         PathPoint pathpoint2 = this.openPoint(targetPoint.x + 1, targetPoint.y, targetPoint.z);
@@ -47,7 +54,7 @@ public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
         addPathPoint(pathpoint4, targetPoint, closePathDistances);
         addPathPoint(pathpoint5, targetPoint, closePathDistances);
 
-        final Double shortestDistance = closePathDistances.values().stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
+        Double shortestDistance = closePathDistances.values().stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
         for (PathPoint pathPoint : closePathDistances.keySet()) {
             Double distance = closePathDistances.get(pathPoint);
             if (distance > shortestDistance) {
@@ -122,7 +129,7 @@ public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
             addPathPoint(pathpoint17, targetPoint, nextPathDistances);
         }
 
-        final Double nextShortestDistance = nextPathDistances.values().stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
+        Double nextShortestDistance = nextPathDistances.values().stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
         for (PathPoint pathPoint : nextPathDistances.keySet()) {
             Double distance = nextPathDistances.get(pathPoint);
             if (distance > nextShortestDistance) {
@@ -152,10 +159,10 @@ public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
     }
 
     private double distanceToTargetSquared(double x, double y, double z, double targetX, double targetY, double targetZ) {
-        final double xDifference = targetX - x;
-        final double yDifference = targetY - y;
-        final double zDifference = targetZ - z;
-        final double distanceToTargetSquared = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
+        double xDifference = targetX - x;
+        double yDifference = targetY - y;
+        double zDifference = targetZ - z;
+        double distanceToTargetSquared = xDifference * xDifference + yDifference * yDifference + zDifference * zDifference;
         return distanceToTargetSquared;
     }
 
