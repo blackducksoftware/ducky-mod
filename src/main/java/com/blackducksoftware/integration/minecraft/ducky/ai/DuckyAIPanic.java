@@ -56,7 +56,7 @@ public class DuckyAIPanic extends Goal {
     @Override
     public boolean shouldExecute() {
         if (ducky.isBurning()) {
-            BlockPos blockpos = this.getRandomWaterPosition(ducky.world, ducky, 15, 6);
+            BlockPos blockpos = this.getRandomWaterPosition(ducky.world, ducky, 20, 6);
             if (blockpos != null) {
                 this.randPosX = blockpos.getX();
                 this.randPosY = blockpos.getY();
