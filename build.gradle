@@ -1,20 +1,16 @@
 buildscript {
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+
     repositories {
         maven { url = "https://files.minecraftforge.net/maven" }
-        jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
-plugins {
-    id 'com.github.hierynomus.license' version '0.14.0'
-}
-
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'java'
 
 version = "${version_minecraft}-${mod_version}"
 // Can not use the variables in the version when releasing
@@ -23,12 +19,7 @@ version = "${version_minecraft}-${mod_version}"
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
-project.ext.javaSourceCompatibility = JavaVersion.VERSION_1_8
-project.ext.javaTargetCompatibility = JavaVersion.VERSION_1_8
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-}
+apply plugin: 'com.synopsys.integration.solution'
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -92,6 +83,7 @@ minecraft {
         }
     }
 }
+
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
@@ -117,13 +109,4 @@ processResources {
         include 'META-INF/mods.toml'
         expand 'version': project.version, 'mod_id': mod_id, 'mod_name': mod_name, 'mod_url': mod_url, 'mod_author': mod_author, 'mod_description': mod_description, 'mod_icon': mod_icon
     }
-}
-
-license {
-    header = file('HEADER')
-    ext.year = Calendar.getInstance().get(Calendar.YEAR)
-    ignoreFailures = true
-    includes(["**/*.groovy", "**/*.java"])
-    excludes(["/src/test/*.groovy",
-              "src/test/*.java"])
 }
