@@ -111,7 +111,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
 
         boolean shouldFly = false;
         if (path == null) {
-            path = navigator.getPathToEntityLiving(target, 0);
+            path = navigator.getPathToEntity(target, 0);
         }
         if (path != null) {
             PathPoint pathpoint = path.getFinalPathPoint();
@@ -170,7 +170,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
             for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
                 if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
                     BlockPos pos = new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment);
-                    boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).func_215682_a(getDucky().world, pos, getDucky());
+                    boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isTopSolid(getDucky().world, pos, getDucky());
                     boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
                     boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {
@@ -191,7 +191,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
             for (double i = getTargetToFollow().getPosition().getY(); i > 0.0D; i = i - 1.0D) {
                 BlockPos currentLocation = new BlockPos(getTargetToFollow().getPosition().getX(), i, getTargetToFollow().getPosition().getZ());
                 BlockState blockstate = getDucky().world.getBlockState(currentLocation);
-                if (blockstate.getMaterial() != Material.AIR || blockstate.func_215682_a(getDucky().world, currentLocation, getDucky())) {
+                if (blockstate.getMaterial() != Material.AIR || blockstate.isTopSolid(getDucky().world, currentLocation, getDucky())) {
                     location = currentLocation;
                     break;
                 }

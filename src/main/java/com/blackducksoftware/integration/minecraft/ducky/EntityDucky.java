@@ -197,24 +197,10 @@ public class EntityDucky extends TameableEntity {
         }
         this.wingRotDelta = (float) ((double) this.wingRotDelta * 0.9D);
         Vec3d vec3d = this.getMotion();
-        if (!this.onGround && vec3d.getY() < 0.0D && !isFlying() && isTooHigh()) {
+        if (!this.onGround && vec3d.getY() < 0.0D) {
             this.setMotion(vec3d.mul(1.0D, 0.6D, 1.0D));
         }
         this.wingRotation += this.wingRotDelta * 2.0F;
-    }
-
-    public boolean isTooHigh() {
-        BlockPos loc = null;
-        double y = this.getPosition().getY();
-        boolean isTooHigh = true;
-        for (double i = y; i >= y - 3; i--) {
-            loc = new BlockPos(this.getPosition().getX(), i, this.getPosition().getZ());
-            BlockState blockstate = this.world.getBlockState(loc);
-            if (blockstate.getMaterial() != Material.AIR || blockstate.func_215682_a(this.world, loc, this)) {
-                isTooHigh = false;
-            }
-        }
-        return isTooHigh;
     }
 
     @Override
@@ -383,13 +369,17 @@ public class EntityDucky extends TameableEntity {
         }
     }
 
+    /**
+     * Returns whether this Entity is invulnerable to the given DamageSource.
+     */
     @Override
-    protected void damageEntity(DamageSource damageSrc, float damageAmount) {
-        if (isFireProof() && damageSrc.isFireDamage()) {
-            //ignore
-        } else {
-            super.damageEntity(damageSrc, damageAmount);
+    public boolean isInvulnerableTo(DamageSource damageSrc) {
+        if (isCanFly() && DamageSource.FALL.getDamageType().equals(damageSrc.getDamageType())) {
+            return true;
+        } else if (isFireProof() && damageSrc.isFireDamage()) {
+            return true;
         }
+        return super.isInvulnerableTo(damageSrc);
     }
 
     /**

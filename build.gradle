@@ -14,12 +14,14 @@ apply plugin: 'net.minecraftforge.gradle'
 
 version = "${version_minecraft}-${mod_version}"
 // Can not use the variables in the version when releasing
-// version = '1.15.1-0.5.1-SNAPSHOT'
+// version = '1.15.2-0.6.0-SNAPSHOT'
 
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
 apply plugin: 'com.synopsys.integration.solution'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -96,9 +98,9 @@ jar {
     manifest {
         attributes(["Specification-Title"     : "${mod_name}",
                     "Specification-Vendor"    : "${mod_author}",
-                    "Specification-Version"   : "${version}",
+                    "Specification-Version"   : "${project.version}",
                     "Implementation-Title"    : "${mod_name}",
-                    "Implementation-Version"  : "${version}",
+                    "Implementation-Version"  : "${project.version}",
                     "Implementation-Vendor"   : "${mod_author}",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }

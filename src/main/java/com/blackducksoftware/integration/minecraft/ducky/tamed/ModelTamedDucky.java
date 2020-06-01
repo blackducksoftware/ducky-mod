@@ -88,14 +88,14 @@ public class ModelTamedDucky extends AbstractCommonModel<EntityTamedDucky> {
     }
 
     @Override
-    public Iterable<ModelRenderer> func_225601_a_() {
+    public Iterable<ModelRenderer> getParts() {
         return ImmutableList
                    .of(this.head, this.hatTop, this.hatBottom, this.fireProofHatTop, this.fireProofHatBottom, this.body, this.rightLeg, this.leftLeg, this.fastRightLeg, this.fastLeftLeg, this.rightWing, this.leftWing, this.flyingRightWing,
                        this.flyingLeftWing, this.bill, this.strongBill, this.tail);
     }
 
     @Override
-    public void func_225597_a_(EntityTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(EntityTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityDucky.isFireProof()) {
             showModelRenderers(fireProofHatTop, fireProofHatBottom);
             hideModelRenderers(hatTop, hatBottom);
@@ -146,71 +146,6 @@ public class ModelTamedDucky extends AbstractCommonModel<EntityTamedDucky> {
         duplicateModelRotationAngles(leftWing, flyingLeftWing);
     }
 
-    //    /**
-    //     * Sets the models various rotation angles then renders the model.
-    //     */
-    //    @Override
-    //    public void render(EntityTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-    //        if (entityDucky.isFireProof()) {
-    //            showModelRenderers(fireProofHatTop, fireProofHatBottom);
-    //            hideModelRenderers(hatTop, hatBottom);
-    //        } else {
-    //            showModelRenderers(hatTop, hatBottom);
-    //            hideModelRenderers(fireProofHatTop, fireProofHatBottom);
-    //        }
-    //
-    //        if (entityDucky.isCanFly()) {
-    //            showModelRenderers(flyingLeftWing, flyingRightWing);
-    //            hideModelRenderers(rightWing, leftWing);
-    //        } else {
-    //            showModelRenderers(rightWing, leftWing);
-    //            hideModelRenderers(flyingLeftWing, flyingRightWing);
-    //        }
-    //
-    //        if (entityDucky.isStrong()) {
-    //            showModelRenderers(strongBill);
-    //            hideModelRenderers(bill);
-    //        } else {
-    //            showModelRenderers(bill);
-    //            hideModelRenderers(strongBill);
-    //        }
-    //
-    //        if (entityDucky.isFast()) {
-    //            showModelRenderers(fastLeftLeg, fastRightLeg);
-    //            hideModelRenderers(rightLeg, leftLeg);
-    //        } else {
-    //            showModelRenderers(rightLeg, leftLeg);
-    //            hideModelRenderers(fastLeftLeg, fastRightLeg);
-    //        }
-    //
-    //        setRotationAngles(entityDucky, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-    //
-    //        head.render(scale);
-    //        hatTop.render(scale);
-    //        hatBottom.render(scale);
-    //
-    //        fireProofHatTop.render(scale);
-    //        fireProofHatBottom.render(scale);
-    //
-    //        bill.render(scale);
-    //
-    //        strongBill.render(scale);
-    //
-    //        body.render(scale);
-    //        tail.render(scale);
-    //        rightLeg.render(scale);
-    //        leftLeg.render(scale);
-    //
-    //        fastLeftLeg.render(scale);
-    //        fastRightLeg.render(scale);
-    //
-    //        rightWing.render(scale);
-    //        leftWing.render(scale);
-    //
-    //        flyingLeftWing.render(scale);
-    //        flyingRightWing.render(scale);
-    //    }
-
     /**
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
@@ -239,27 +174,4 @@ public class ModelTamedDucky extends AbstractCommonModel<EntityTamedDucky> {
         }
     }
 
-    //    /**
-    //     * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how "far" arms
-    //     * and legs can swing at most.
-    //     */
-    //    @Override
-    //    public void setRotationAngles(EntityTamedDucky entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
-    //        head.rotateAngleX = headPitch * 0.017453292F;
-    //        head.rotateAngleY = netHeadYaw * 0.017453292F;
-    //
-    //        duplicateModelRotationAngles(head, hatTop, hatBottom, bill, strongBill, fireProofHatBottom, fireProofHatTop);
-    //
-    //        body.rotateAngleX = ((float) Math.PI / 2F);
-    //        duplicateModelRotationAngles(body, tail);
-    //
-    //        rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-    //        leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-    //        duplicateModelRotationAngles(rightLeg, fastRightLeg);
-    //        duplicateModelRotationAngles(leftLeg, fastLeftLeg);
-    //        rightWing.rotateAngleZ = ageInTicks;
-    //        leftWing.rotateAngleZ = -ageInTicks;
-    //        duplicateModelRotationAngles(rightWing, flyingRightWing);
-    //        duplicateModelRotationAngles(leftWing, flyingLeftWing);
-    //    }
 }

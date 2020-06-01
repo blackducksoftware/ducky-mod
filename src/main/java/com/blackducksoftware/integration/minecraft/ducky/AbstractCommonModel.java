@@ -39,8 +39,7 @@ public abstract class AbstractCommonModel<T extends Entity> extends SegmentedMod
     public ModelRenderer createNewModelRenderer(int textureOffsetX, int textureOffsetY, float boxOffsetX, float boxOffsetY, float boxOffsetZ, int boxWidth, int boxHeight, int boxDepth,
         float rotationPointX, float rotationPointY, float rotationPointZ) {
         ModelRenderer renderer = new ModelRenderer(this, textureOffsetX, textureOffsetY).setTextureSize(textureWidth, textureHeight);
-        //func_228301_a_ == addBox
-        renderer.func_228301_a_(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth, 0.0F);
+        renderer.addBox(boxOffsetX, boxOffsetY, boxOffsetZ, boxWidth, boxHeight, boxDepth, 0.0F);
         renderer.setRotationPoint(rotationPointX, rotationPointY, rotationPointZ);
         return renderer;
     }

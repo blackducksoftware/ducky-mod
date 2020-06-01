@@ -103,14 +103,14 @@ public class ModelGiantTamedDucky extends AbstractCommonModel<EntityGiantTamedDu
     }
 
     @Override
-    public Iterable<ModelRenderer> func_225601_a_() {
+    public Iterable<ModelRenderer> getParts() {
         return ImmutableList
                    .of(this.head, this.hatTop, this.hatBottom, this.fireProofHatTop, this.fireProofHatBottom, this.billBase, this.billFront, this.strongBillBase, this.strongBillFront,
                        this.body, this.flyingBody, this.rightLeg, this.leftLeg, this.rightFoot, this.leftFoot, this.fastRightFoot, this.fastLeftFoot, this.rightWing, this.leftWing, this.tailBase, this.tailTop);
     }
 
     @Override
-    public void func_225597_a_(EntityGiantTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(EntityGiantTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityDucky.isFireProof()) {
             showModelRenderers(fireProofHatTop, fireProofHatBottom);
             hideModelRenderers(hatTop, hatBottom);
@@ -161,76 +161,6 @@ public class ModelGiantTamedDucky extends AbstractCommonModel<EntityGiantTamedDu
         leftWing.rotateAngleZ = -ageInTicks;
     }
 
-    //    /**
-    //     * Sets the models various rotation angles then renders the model.
-    //     */
-    //    @Override
-    //    public void render(EntityGiantTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-    //        if (entityDucky.isFireProof()) {
-    //            showModelRenderers(fireProofHatTop, fireProofHatBottom);
-    //            hideModelRenderers(hatTop, hatBottom);
-    //        } else {
-    //            showModelRenderers(hatTop, hatBottom);
-    //            hideModelRenderers(fireProofHatTop, fireProofHatBottom);
-    //        }
-    //
-    //        if (entityDucky.isCanFly()) {
-    //            showModelRenderers(flyingBody);
-    //            hideModelRenderers(body);
-    //        } else {
-    //            showModelRenderers(body);
-    //            hideModelRenderers(flyingBody);
-    //        }
-    //
-    //        if (entityDucky.isStrong()) {
-    //            showModelRenderers(strongBillBase, strongBillFront);
-    //            hideModelRenderers(billBase, billFront);
-    //        } else {
-    //            showModelRenderers(billBase, billFront);
-    //            hideModelRenderers(strongBillBase, strongBillFront);
-    //        }
-    //
-    //        if (entityDucky.isFast()) {
-    //            showModelRenderers(fastRightFoot, fastLeftFoot);
-    //            hideModelRenderers(rightFoot, leftFoot);
-    //        } else {
-    //            showModelRenderers(rightFoot, leftFoot);
-    //            hideModelRenderers(fastRightFoot, fastLeftFoot);
-    //        }
-    //
-    //        setRotationAngles(entityDucky, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-    //
-    //        head.render(scale);
-    //        hatTop.render(scale);
-    //        hatBottom.render(scale);
-    //
-    //        fireProofHatTop.render(scale);
-    //        fireProofHatBottom.render(scale);
-    //
-    //        billBase.render(scale);
-    //        billFront.render(scale);
-    //
-    //        strongBillBase.render(scale);
-    //        strongBillFront.render(scale);
-    //
-    //        body.render(scale);
-    //
-    //        flyingBody.render(scale);
-    //
-    //        tailBase.render(scale);
-    //        tailTop.render(scale);
-    //        rightLeg.render(scale);
-    //        leftLeg.render(scale);
-    //        rightFoot.render(scale);
-    //        leftFoot.render(scale);
-    //
-    //        fastLeftFoot.render(scale);
-    //        fastRightFoot.render(scale);
-    //
-    //        rightWing.render(scale);
-    //        leftWing.render(scale);
-    //    }
-
     /**
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
      */
@@ -270,27 +200,4 @@ public class ModelGiantTamedDucky extends AbstractCommonModel<EntityGiantTamedDu
         }
     }
 
-    //    /**
-    //     * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how "far" arms
-    //     * and legs can swing at most.
-    //     */
-    //    @Override
-    //    public void setRotationAngles(EntityGiantTamedDucky entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
-    //        head.rotateAngleX = headPitch * 0.017453292F;
-    //        head.rotateAngleY = netHeadYaw * 0.017453292F;
-    //
-    //        duplicateModelRotationAngles(head, hatTop, hatBottom, billBase, billFront, strongBillBase, strongBillFront, fireProofHatBottom, fireProofHatTop);
-    //
-    //        body.rotateAngleX = ((float) Math.PI / 2F);
-    //        duplicateModelRotationAngles(body, tailBase, tailTop, flyingBody);
-    //
-    //        rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-    //        leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-    //
-    //        duplicateModelRotationAngles(rightLeg, rightFoot, fastRightFoot);
-    //        duplicateModelRotationAngles(leftLeg, leftFoot, fastLeftFoot);
-    //
-    //        rightWing.rotateAngleZ = ageInTicks;
-    //        leftWing.rotateAngleZ = -ageInTicks;
-    //    }
 }
