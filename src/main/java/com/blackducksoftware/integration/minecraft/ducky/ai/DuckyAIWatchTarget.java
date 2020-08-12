@@ -121,7 +121,7 @@ public class DuckyAIWatchTarget extends TargetGoal {
     @Override
     public void tick() {
         this.theWatcher.getLookController()
-            .setLookPosition(this.closestEntity.getPosition().getX(), this.closestEntity.getPosition().getY() + this.closestEntity.getEyeHeight(), this.closestEntity.getPosition().getZ(), this.theWatcher.getHorizontalFaceSpeed(),
+            .setLookPosition(this.closestEntity.getPosX(), this.closestEntity.getPosY() + this.closestEntity.getEyeHeight(), this.closestEntity.getPosZ(), this.theWatcher.getHorizontalFaceSpeed(),
                 this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }

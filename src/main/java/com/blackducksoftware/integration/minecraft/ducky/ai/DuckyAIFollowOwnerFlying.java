@@ -70,7 +70,7 @@ public class DuckyAIFollowOwnerFlying extends AbstractDuckyMoveAttack {
             return false;
         }
         distanceToTarget = getDucky().getDistanceSq(getTargetToFollow());
-        if (distanceToTarget > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().getPosition().getY() < getTargetToFollow().getPosition().getY()) {
+        if (distanceToTarget > minDistance * minDistance && needToFly(getTargetToFollow()) && getDucky().getPosY() < getTargetToFollow().getPosY()) {
             return true;
         }
         getDucky().setFlying(false);

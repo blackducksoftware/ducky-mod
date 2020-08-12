@@ -32,10 +32,11 @@ import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public abstract class AbstractDuckyMoveAttack extends Goal {
     protected final static double TELEPORT_RANGE = 24.0D;
@@ -47,7 +48,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
     protected double distanceToTarget;
     protected double attackReach;
     protected int stuckTick;
-    protected Vec3d lastPostion = null;
+    protected Vector3d lastPostion = null;
 
     public AbstractDuckyMoveAttack(EntityDucky ducky) {
         this.ducky = ducky;
@@ -118,8 +119,9 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
             if (pathpoint == null) {
                 shouldFly = true;
             } else {
-                int i = MathHelper.floor(target.getPosition().getY()) - pathpoint.y;
-                shouldFly = !target.onGround || (i > 1.5D);
+                int i = MathHelper.floor(target.getPosY()) - pathpoint.y;
+                // onGround() == func_233570_aj_()
+                shouldFly = !target.func_233570_aj_() || (i > 1.5D);
             }
         } else {
             shouldFly = true;
@@ -149,20 +151,20 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
 
     protected boolean isDuckyStuck() {
         if (lastPostion == null) {
-            lastPostion = getDucky().getPositionVector();
+            lastPostion = getDucky().getPositionVec();
         } else if (stuckTick > 20) {
             stuckTick = 0;
-            if (lastPostion.squareDistanceTo(getDucky().getPositionVector()) < 2.25D) {
+            if (lastPostion.squareDistanceTo(getDucky().getPositionVec()) < 2.25D) {
                 return true;
             }
-            lastPostion = getDucky().getPositionVector();
+            lastPostion = getDucky().getPositionVec();
         }
         return false;
     }
 
     protected boolean relocateDuckyNearTarget() {
-        int startingX = MathHelper.floor(getTargetToFollow().getPosition().getX()) - 2;
-        int startingZ = MathHelper.floor(getTargetToFollow().getPosition().getZ()) - 2;
+        int startingX = MathHelper.floor(getTargetToFollow().getPosX()) - 2;
+        int startingZ = MathHelper.floor(getTargetToFollow().getPosZ()) - 2;
         int startingY = MathHelper.floor(getTargetToFollow().getBoundingBox().minY);
 
         // Search a 4x4 area around the target (at least 2 blocks away from the target) for a 2 high empty spot on a solid block to put Ducky
@@ -170,7 +172,7 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
             for (int zAdjustment = 0; zAdjustment <= 4; ++zAdjustment) {
                 if (xAdjustment < 1 || zAdjustment < 1 || xAdjustment > 3 || zAdjustment > 3) {
                     BlockPos pos = new BlockPos(startingX + xAdjustment, startingY - 1, startingZ + zAdjustment);
-                    boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isTopSolid(getDucky().world, pos, getDucky());
+                    boolean isBlockBelowSolid = getDucky().world.getBlockState(pos).isTopSolid(getDucky().world, pos, getDucky(), Direction.UP);
                     boolean isBlockEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY, startingZ + zAdjustment));
                     boolean isBlockAboveEmpty = this.isEmptyBlock(new BlockPos(startingX + xAdjustment, startingY + 1, startingZ + zAdjustment));
                     if (isBlockBelowSolid && isBlockEmpty && isBlockAboveEmpty) {
@@ -185,13 +187,14 @@ public abstract class AbstractDuckyMoveAttack extends Goal {
 
     public BlockPos getPositionBelowTarget() {
         BlockPos location = null;
-        if (getTargetToFollow().onGround) {
-            location = new BlockPos(getTargetToFollow().getPosition().getX(), getTargetToFollow().getPosition().getY(), getTargetToFollow().getPosition().getZ());
+        // onGround() == func_233570_aj_()
+        if (getTargetToFollow().func_233570_aj_()) {
+            location = new BlockPos(getTargetToFollow().getPosX(), getTargetToFollow().getPosY(), getTargetToFollow().getPosZ());
         } else {
-            for (double i = getTargetToFollow().getPosition().getY(); i > 0.0D; i = i - 1.0D) {
-                BlockPos currentLocation = new BlockPos(getTargetToFollow().getPosition().getX(), i, getTargetToFollow().getPosition().getZ());
+            for (double i = getTargetToFollow().getPosY(); i > 0.0D; i = i - 1.0D) {
+                BlockPos currentLocation = new BlockPos(getTargetToFollow().getPosX(), i, getTargetToFollow().getPosZ());
                 BlockState blockstate = getDucky().world.getBlockState(currentLocation);
-                if (blockstate.getMaterial() != Material.AIR || blockstate.isTopSolid(getDucky().world, currentLocation, getDucky())) {
+                if (blockstate.getMaterial() != Material.AIR || blockstate.isTopSolid(getDucky().world, currentLocation, getDucky(), Direction.UP)) {
                     location = currentLocation;
                     break;
                 }

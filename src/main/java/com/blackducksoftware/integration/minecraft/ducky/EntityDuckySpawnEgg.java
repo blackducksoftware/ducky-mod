@@ -60,7 +60,7 @@ public class EntityDuckySpawnEgg extends EggEntity {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {
                 ItemParticleData particleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(DuckyModItems.DUCKY_SPAWN_EGG));
-                this.world.addParticle(particleData, this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D,
+                this.world.addParticle(particleData, this.getPosX(), this.getPosY(), this.getPosZ(), (this.rand.nextFloat() - 0.5D) * 0.08D, (this.rand.nextFloat() - 0.5D) * 0.08D,
                     (this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }
@@ -69,11 +69,12 @@ public class EntityDuckySpawnEgg extends EggEntity {
     @Override
     protected void onImpact(@Nonnull RayTraceResult result) {
         if (result.getType() == RayTraceResult.Type.ENTITY) {
-            ((EntityRayTraceResult) result).getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
+            // this.getThrower == this.func_234616_v_
+            ((EntityRayTraceResult) result).getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 0.0F);
         }
         if (!this.world.isRemote) {
             EntityDucky entityDucky = new EntityDucky(this.world);
-            entityDucky.setLocationAndAngles(this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), this.rotationYaw, 0.0F);
+            entityDucky.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
             this.world.addEntity(entityDucky);
 
             this.remove();

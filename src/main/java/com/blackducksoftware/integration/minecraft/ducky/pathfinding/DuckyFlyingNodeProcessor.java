@@ -35,7 +35,7 @@ public class DuckyFlyingNodeProcessor extends FlyingNodeProcessor {
         Map<PathPoint, Double> closePathDistances = new HashMap<>();
 
         int additionalVertical = 0;
-        if (this.entity.getPosition().getY() < providedTargetPoint.y) {
+        if (this.entity.getPosY() < providedTargetPoint.y) {
             additionalVertical = 1;
         }
         PathPoint targetPoint = providedTargetPoint.cloneMove(providedTargetPoint.x, providedTargetPoint.y + additionalVertical, providedTargetPoint.z);

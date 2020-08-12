@@ -34,7 +34,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class DuckyAIPanic extends Goal {
@@ -71,7 +71,7 @@ public class DuckyAIPanic extends Goal {
     }
 
     protected boolean findAndSetRandomPosition() {
-        Vec3d vec3d = RandomPositionGenerator.findRandomTarget(ducky, 5, 4);
+        Vector3d vec3d = RandomPositionGenerator.findRandomTarget(ducky, 5, 4);
 
         if (vec3d == null) {
             return false;
@@ -101,7 +101,7 @@ public class DuckyAIPanic extends Goal {
 
     @Nullable
     private BlockPos getRandomWaterPosition(World worldIn, Entity entityIn, int horizontalRange, int verticalRange) {
-        BlockPos blockpos = new BlockPos(entityIn);
+        BlockPos blockpos = new BlockPos(entityIn.getPositionVec());
         int x = blockpos.getX();
         int y = blockpos.getY();
         int z = blockpos.getZ();

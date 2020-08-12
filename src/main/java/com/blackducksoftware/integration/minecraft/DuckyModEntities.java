@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiant
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 
 public class DuckyModEntities {
     public static final EntityType<EntityGiantTamedDucky> GIANT_TAMED_DUCKY;
@@ -44,6 +45,7 @@ public class DuckyModEntities {
                                 .setShouldReceiveVelocityUpdates(true)
                                 .build(EntityGiantTamedDucky.TAMED_GIANT_DUCKY_NAME);
         GIANT_TAMED_DUCKY.setRegistryName(DuckyMod.MODID, EntityGiantTamedDucky.TAMED_GIANT_DUCKY_NAME);
+        GlobalEntityTypeAttributes.put(GIANT_TAMED_DUCKY, EntityGiantTamedDucky.registerAttributes().func_233813_a_());
 
         TAMED_DUCKY = EntityType.Builder.<EntityTamedDucky>create(EntityTamedDucky::new, EntityClassification.CREATURE)
                           .size(0.4F, 0.7F)
@@ -52,6 +54,7 @@ public class DuckyModEntities {
                           .setShouldReceiveVelocityUpdates(true)
                           .build(EntityTamedDucky.TAMED_DUCKY_NAME);
         TAMED_DUCKY.setRegistryName(DuckyMod.MODID, EntityTamedDucky.TAMED_DUCKY_NAME);
+        GlobalEntityTypeAttributes.put(TAMED_DUCKY, EntityTamedDucky.registerAttributes().func_233813_a_());
 
         DUCKY = EntityType.Builder.<EntityDucky>create(EntityDucky::new, EntityClassification.CREATURE)
                     .size(0.4F, 0.7F)
@@ -60,6 +63,7 @@ public class DuckyModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(EntityDucky.DUCKY_NAME);
         DUCKY.setRegistryName(DuckyMod.MODID, EntityDucky.DUCKY_NAME);
+        GlobalEntityTypeAttributes.put(DUCKY, EntityDucky.registerAttributes().func_233813_a_());
 
         DUCKY_SPAWN_EGG = EntityType.Builder.<EntityDuckySpawnEgg>create(EntityDuckySpawnEgg::new, EntityClassification.MISC)
                               .setTrackingRange(64)

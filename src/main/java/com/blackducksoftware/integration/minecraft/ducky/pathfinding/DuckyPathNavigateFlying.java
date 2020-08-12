@@ -26,6 +26,7 @@ import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathFinder;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Region;
 import net.minecraft.world.World;
 
@@ -40,7 +41,9 @@ public class DuckyPathNavigateFlying extends FlyingPathNavigator {
         this.nodeProcessor.setCanEnterDoors(true);
         this.nodeProcessor.setCanSwim(true);
 
-        Region region = new Region(this.world, this.entity.getPosition().add(-32, -32, -32), this.entity.getPosition().add(32, 32, 32));
+        BlockPos blockPosCorner = new BlockPos(this.entity.getPositionVec()).add(-32, -32, -32);
+        BlockPos blockPosOppositeCorner = new BlockPos(this.entity.getPositionVec().add(32, 32, 32));
+        Region region = new Region(this.world, blockPosCorner, blockPosOppositeCorner);
 
         //func_225578_a_ == init
         this.nodeProcessor.func_225578_a_(region, this.entity);
