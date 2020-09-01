@@ -1,5 +1,5 @@
 /**
- * 1.16.1-0.6.0
+ * ducky-mod
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
