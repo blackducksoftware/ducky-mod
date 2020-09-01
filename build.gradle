@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 //version = "${version_minecraft}-${mod_version}"
 // Can not use the variables in the version when releasing
-version = '1.16.1-0.6.1'
+version = '1.16.2-0.6.1-SNAPSHOT'
 
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
