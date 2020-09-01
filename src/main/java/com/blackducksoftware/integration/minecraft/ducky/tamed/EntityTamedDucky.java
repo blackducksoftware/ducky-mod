@@ -1,5 +1,5 @@
 /**
- * 1.16.1-0.6.0
+ * ducky-mod
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -105,22 +105,25 @@ public class EntityTamedDucky extends EntityDucky {
                     itemstack.shrink(1);
                 }
                 this.heal(itemfood.getHealing());
-                this.playTameEffect(true);
+                if (!this.world.isRemote) {
+                    this.world.setEntityState(this, (byte) 7);
+                    //this.playTameEffect(true);
+                }
             }
-            return getSuccessResultType();
+            return getSuccessResult();
         } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isFireProof() || this.isStrong() || this.isFast() || this.isCanFly())) {
             if (!player.abilities.isCreativeMode) {
                 itemstack.shrink(1);
             }
             if (!this.world.isRemote) {
                 EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
-                entityTamedDucky.setFireProof(false);
                 spawnTamedDucky(player, entityTamedDucky);
+                entityTamedDucky.setFireProof(false);
                 entityTamedDucky.setCanFly(false);
                 entityTamedDucky.setStrong(false);
                 entityTamedDucky.setFast(false);
             }
-            return getSuccessResultType();
+            return getSuccessResult();
         } else if (Items.POTION == itemstack.getItem()) {
             PotionItem potion = (PotionItem) itemstack.getItem();
             if (potion.hasEffect(itemstack)) {
@@ -138,7 +141,7 @@ public class EntityTamedDucky extends EntityDucky {
                         entityTamedDucky.setStrong(this.isStrong());
                         entityTamedDucky.setFast(this.isFast());
                     }
-                    return getSuccessResultType();
+                    return getSuccessResult();
                 } else if ("weakness".equalsIgnoreCase(potionType.getNamePrefixed("")) && (this instanceof EntityGiantTamedDucky)) {
                     if (!player.abilities.isCreativeMode) {
                         itemstack.shrink(1);
@@ -151,31 +154,31 @@ public class EntityTamedDucky extends EntityDucky {
                         entityTamedDucky.setStrong(this.isStrong());
                         entityTamedDucky.setFast(this.isFast());
                     }
-                    return getSuccessResultType();
+                    return getSuccessResult();
                 } else if ("fire_resistance".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
                     if (!player.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                     }
                     this.setFireProof(true);
-                    return getSuccessResultType();
+                    return getSuccessResult();
                 } else if ("swiftness".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
                     if (!player.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                     }
                     this.setFast(true);
-                    return getSuccessResultType();
+                    return getSuccessResult();
                 } else if ("strength".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
                     if (!player.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                     }
                     this.setStrong(true);
-                    return getSuccessResultType();
+                    return getSuccessResult();
                 } else if ("leaping".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
                     if (!player.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                     }
                     this.setCanFly(true);
-                    return getSuccessResultType();
+                    return getSuccessResult();
                 }
 
             }
@@ -191,11 +194,8 @@ public class EntityTamedDucky extends EntityDucky {
         return ActionResultType.FAIL;
     }
 
-    private ActionResultType getSuccessResultType() {
-        if (!this.world.isRemote) {
-            return ActionResultType.SUCCESS;
-        }
-        return ActionResultType.CONSUME;
+    private ActionResultType getSuccessResult() {
+        return ActionResultType.func_233537_a_(this.world.isRemote());
     }
 
     /**

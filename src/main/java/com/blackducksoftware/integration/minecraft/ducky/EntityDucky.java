@@ -1,5 +1,5 @@
 /**
- * 1.16.1-0.6.0
+ * ducky-mod
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -262,14 +262,9 @@ public class EntityDucky extends TameableEntity {
         if (this.isBreedingItem(itemstack)) {
             if (!this.world.isRemote) {
                 EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
-                entityTamedDucky.setOwnerId(player.getUniqueID());
-                entityTamedDucky.setTamed(true);
                 spawnTamedDucky(player, entityTamedDucky);
-                entityTamedDucky.playTameEffect(true);
-                return ActionResultType.SUCCESS;
-            } else if (this.world.isRemote) {
-                return ActionResultType.CONSUME;
             }
+            return ActionResultType.func_233537_a_(this.world.isRemote);
         }
 
         return super.func_230254_b_(player, hand);
@@ -293,9 +288,12 @@ public class EntityDucky extends TameableEntity {
     protected void spawnTamedDucky(PlayerEntity player, EntityTamedDucky entityTamedDucky) {
         if (!net.minecraftforge.event.ForgeEventFactory.onAnimalTame(entityTamedDucky, player)) {
             entityTamedDucky.setAttributesFromOriginal(this, player.getUniqueID());
-            entityTamedDucky.onInitialSpawn(entityTamedDucky.world, entityTamedDucky.world.getDifficultyForLocation(this.getPositionUnderneath()), SpawnReason.SPAWN_EGG, (ILivingEntityData) null, null);
             this.remove();
+            entityTamedDucky.onInitialSpawn(entityTamedDucky.world, entityTamedDucky.world.getDifficultyForLocation(this.getPositionUnderneath()), SpawnReason.SPAWN_EGG, (ILivingEntityData) null, null);
             entityTamedDucky.world.addEntity(entityTamedDucky);
+            entityTamedDucky.setTamedBy(player);
+            this.world.setEntityState(entityTamedDucky, (byte) 7);
+            //entityTamedDucky.playTameEffect(true);
         }
     }
 

@@ -1,5 +1,5 @@
 /**
- * 1.16.1-0.6.0
+ * ducky-mod
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -59,6 +59,6 @@ public class ItemDuckySpawnEgg extends Item {
             worldIn.addEntity(entityegg);
         }
         player.addStat(Stats.ITEM_USED.get(this));
-        return new ActionResult<>(ActionResultType.SUCCESS.SUCCESS, itemStack);
+        return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
     }
 }
