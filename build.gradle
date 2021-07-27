@@ -3,10 +3,10 @@ buildscript {
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
 
     repositories {
-        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = 'https://maven.minecraftforge.net' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
@@ -14,14 +14,16 @@ apply plugin: 'net.minecraftforge.gradle'
 
 version = "${version_minecraft}-${mod_version}"
 // Can not use the variables in the version when releasing
-//version = '1.16.1-0.6.2-SNAPSHOT'
+//version = '1.17.1-0.7.0-SNAPSHOT'
 
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
 apply plugin: 'com.synopsys.integration.solution'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '16'
+
+//java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -29,7 +31,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: "${version_mcp}"
+    mappings channel: 'official', version: "${version_mcp}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
