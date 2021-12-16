@@ -11,33 +11,34 @@ import java.util.EnumSet;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.player.Player;
 
 public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
     private final float minDistance;
     private final float maxDistance;
 
-    public DuckyAIFollowOwner(final EntityDucky ducky, final float minDistance, final float maxDistance) {
+    public DuckyAIFollowOwner(EntityDucky ducky, float minDistance, float maxDistance) {
         super(ducky);
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.setMutexFlags(EnumSet.of(Flag.TARGET, Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.TARGET, Flag.MOVE));
     }
 
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
     @Override
-    public boolean shouldExecute() {
-        final LivingEntity owner = getDucky().getOwner();
+    public boolean canUse() {
+        LivingEntity owner = getDucky().getOwner();
         if (owner == null || !getDucky().canMove() || getDucky().isAttacking()) {
             return false;
-        } else if (owner instanceof PlayerEntity && owner.isSpectator()) {
+        } else if (owner instanceof Player && owner.isSpectator()) {
             return false;
         }
-        distanceToTarget = getDucky().getDistanceSq(owner);
+        distanceToTarget = getDucky().distanceToSqr(owner);
         if (distanceToTarget > maxDistance * maxDistance) {
             if (needToFly(owner)) {
                 if (!getDucky().isCanFly()) {
@@ -52,16 +53,22 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
         return false;
     }
 
+    private boolean ableToFollow() {
+        PathNavigation navigation = getDucky().getNavigation();
+        boolean hasRemainingPath = navigation.isDone() || navigation.isStuck() || navigation.getPath() == null;
+        return getDucky().canMove() && hasRemainingPath;
+    }
+
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean shouldContinueExecuting() {
-        if (!getDucky().canMove() || getDucky().isAttacking() || getDucky().getNavigator().noPath()) {
-            getDucky().getNavigator().clearPath();
+    public boolean canContinueToUse() {
+        if (!ableToFollow() || getDucky().isAttacking()) {
+            getDucky().getNavigation().stop();
             return false;
         }
-        distanceToTarget = getDucky().getDistanceSq(getTargetToFollow());
+        distanceToTarget = getDucky().distanceToSqr(getTargetToFollow());
         if (distanceToTarget > minDistance * minDistance) {
             if (needToFly(getTargetToFollow())) {
                 if (!getDucky().isCanFly()) {
@@ -71,7 +78,7 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
                 return true;
             }
         }
-        getDucky().getNavigator().clearPath();
+        getDucky().getNavigation().stop();
         return false;
     }
 
@@ -80,17 +87,17 @@ public class DuckyAIFollowOwner extends AbstractDuckyMoveAttack {
         if (!updateCalc(distanceToTarget)) {
             return;
         }
-        final double speedModifier = getSpeedModifier(distanceToTarget);
-        final BlockPos location = getPositionBelowTarget();
-        getDucky().getNavigator().tryMoveToXYZ(location.getX(), location.getY(), location.getZ(), speedModifier);
+        double speedModifier = getSpeedModifier(distanceToTarget);
+        BlockPos location = getPositionBelowTarget();
+        getDucky().getNavigation().moveTo(location.getX(), location.getY(), location.getZ(), speedModifier);
 
-        if ((getDucky().getNavigator().getPath() != null && distanceToTarget >= TELEPORT_RANGE * TELEPORT_RANGE) || (distanceToTarget > minDistance * minDistance && isDuckyStuck())) {
+        if ((getDucky().getNavigation().getPath() != null && distanceToTarget >= TELEPORT_RANGE * TELEPORT_RANGE) || (distanceToTarget > minDistance * minDistance && isDuckyStuck())) {
             if (relocateDuckyNearTarget()) {
-                getDucky().getNavigator().clearPath();
+                getDucky().getNavigation().stop();
             }
         }
-        getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-        getDucky().getLookController().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        //        getDucky().faceEntity(getTargetToFollow(), getDucky().getMaxHeadXRot(), getDucky().getMaxHeadYRot());
+        getDucky().getLookControl().setLookAt(getTargetToFollow(), getDucky().getMaxHeadXRot(), getDucky().getMaxHeadYRot());
     }
 
 }

@@ -9,11 +9,11 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.FlyingMovementController;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.Vec3;
 
-public class DuckyFlyHelper extends FlyingMovementController {
+public class DuckyFlyHelper extends FlyingMoveControl {
     public DuckyFlyHelper(EntityDucky ducky) {
         super(ducky, 20, true);
     }
@@ -21,21 +21,18 @@ public class DuckyFlyHelper extends FlyingMovementController {
     @Override
     public void tick() {
         float moveSpeed;
-        // MOVEMENT_SPEED Attributes.field_233821_d_
-        // FLYING_SPEED Attributes.field_233822_e_
-        // onGround() == func_233570_aj_()
-        if (this.mob.func_233570_aj_()) {
-            moveSpeed = (float) (this.mob.getAttribute(Attributes.field_233821_d_).getValue() * speed);
+        if (this.mob.isOnGround()) {
+            moveSpeed = (float) (this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getSpeedModifier());
         } else {
-            moveSpeed = (float) (this.mob.getAttribute(Attributes.field_233822_e_).getValue() * speed);
+            moveSpeed = (float) (this.mob.getAttribute(Attributes.FLYING_SPEED).getValue() * getSpeedModifier());
         }
-        this.mob.setAIMoveSpeed(moveSpeed);
-        if (this.action == FlyingMovementController.Action.MOVE_TO) {
-            this.action = FlyingMovementController.Action.WAIT;
-            Vector3d targetPosition = new Vector3d(posX, posY, posZ);
-            Vector3d vector = targetPosition.subtract(this.mob.getPositionVec());
+        this.mob.setSpeed(moveSpeed);
+        if (this.operation == Operation.MOVE_TO) {
+            this.operation = Operation.WAIT;
+            Vec3 targetPosition = new Vec3(getWantedX(), getWantedY(), getWantedZ());
+            Vec3 vector = targetPosition.subtract(this.mob.position());
             vector = vector.normalize().scale(moveSpeed);
-            this.mob.setMotion(vector);
+            this.mob.setDeltaMovement(vector);
         }
     }
 }

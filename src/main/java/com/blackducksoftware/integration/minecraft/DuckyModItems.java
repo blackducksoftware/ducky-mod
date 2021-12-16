@@ -9,7 +9,7 @@ package com.blackducksoftware.integration.minecraft;
 
 import com.blackducksoftware.integration.minecraft.ducky.ItemDuckySpawnEgg;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class DuckyModItems {
     public static Item DUCKY_SPAWN_EGG = new ItemDuckySpawnEgg();

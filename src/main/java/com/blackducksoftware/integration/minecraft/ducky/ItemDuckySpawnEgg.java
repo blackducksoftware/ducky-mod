@@ -7,43 +7,45 @@
  */
 package com.blackducksoftware.integration.minecraft.ducky;
 
+import java.util.Random;
+
 import com.blackducksoftware.integration.minecraft.DuckyMod;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ItemDuckySpawnEgg extends Item {
     public static final String DUCKY_EGG_NAME = "ducky_spawn_egg";
 
     public ItemDuckySpawnEgg() {
-        super(new Item.Properties().maxStackSize(16).group(ItemGroup.MISC));
+        super(new Item.Properties().stacksTo(16).tab(CreativeModeTab.TAB_MISC));
         this.setRegistryName(DuckyMod.MODID, DUCKY_EGG_NAME);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand hand) {
-        ItemStack itemStack = player.getHeldItem(hand);
-        if (!player.abilities.isCreativeMode) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (!player.getAbilities().instabuild) {
             itemStack.shrink(1);
         }
-        worldIn.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_EGG_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+        Random random = new Random();
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EGG_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
-        if (!worldIn.isRemote) {
-            EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(worldIn, player);
-            // entityegg.shoot == entityegg.func_234612_a_
-            entityegg.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
-            worldIn.addEntity(entityegg);
+        if (level.isClientSide()) {
+            EntityDuckySpawnEgg entityegg = new EntityDuckySpawnEgg(level, player);
+            entityegg.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+            level.addFreshEntity(entityegg);
         }
-        player.addStat(Stats.ITEM_USED.get(this));
-        return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
+        //        player.addStat(Stats.ITEM_USED.get(this));
+        return InteractionResultHolder.success(itemStack);
     }
 }

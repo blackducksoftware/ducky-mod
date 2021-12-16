@@ -7,8 +7,8 @@
  */
 package com.blackducksoftware.integration.minecraft;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 public class DuckyModSounds {
     private static final String DUCK_QUACK_NAME = "duckquack";
@@ -20,15 +20,15 @@ public class DuckyModSounds {
     public static SoundEvent duckDeath;
 
     static {
-        final ResourceLocation duckQuackResource = new ResourceLocation(DuckyMod.MODID, DUCK_QUACK_NAME);
+        ResourceLocation duckQuackResource = new ResourceLocation(DuckyMod.MODID, DUCK_QUACK_NAME);
         duckQuack = new SoundEvent(duckQuackResource);
         duckQuack.setRegistryName(DuckyMod.MODID, DUCK_QUACK_NAME);
 
-        final ResourceLocation duckHurtResource = new ResourceLocation(DuckyMod.MODID, DUCK_HURT_NAME);
+        ResourceLocation duckHurtResource = new ResourceLocation(DuckyMod.MODID, DUCK_HURT_NAME);
         duckHurt = new SoundEvent(duckHurtResource);
         duckHurt.setRegistryName(DuckyMod.MODID, DUCK_HURT_NAME);
 
-        final ResourceLocation duckDeathResource = new ResourceLocation(DuckyMod.MODID, DUCK_DEATH_NAME);
+        ResourceLocation duckDeathResource = new ResourceLocation(DuckyMod.MODID, DUCK_DEATH_NAME);
         duckDeath = new SoundEvent(duckDeathResource);
         duckDeath.setRegistryName(DuckyMod.MODID, DUCK_DEATH_NAME);
     }

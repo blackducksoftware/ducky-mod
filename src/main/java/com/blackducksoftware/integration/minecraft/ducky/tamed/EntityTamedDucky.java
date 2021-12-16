@@ -12,32 +12,32 @@ import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.blackducksoftware.integration.minecraft.ducky.ai.DuckyAIFollowOwner;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.OwnerHurtByTargetGoal;
-import net.minecraft.entity.ai.goal.OwnerHurtTargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Food;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 
 public class EntityTamedDucky extends EntityDucky {
     public static final String TAMED_DUCKY_NAME = "tamed_bd_ducky";
 
-    public EntityTamedDucky(World worldIn) {
-        this(DuckyModEntities.TAMED_DUCKY, worldIn);
+    public EntityTamedDucky(Level level) {
+        this(DuckyModEntities.TAMED_DUCKY, level);
     }
 
-    public EntityTamedDucky(EntityType<? extends EntityTamedDucky> type, World worldIn) {
-        super(type, worldIn);
+    public EntityTamedDucky(EntityType<? extends EntityTamedDucky> type, Level level) {
+        super(type, level);
     }
 
     @Override
@@ -49,59 +49,49 @@ public class EntityTamedDucky extends EntityDucky {
     }
 
     // registerAttributes
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MobEntity.func_233666_p_()
-                   .func_233815_a_(Attributes.field_233818_a_, TAMED_HEALTH)
-                   .func_233815_a_(Attributes.field_233821_d_, BASE_SPEED)
-                   .func_233815_a_(Attributes.field_233822_e_, BASE_SPEED)
-                   .func_233815_a_(Attributes.field_233819_b_, 64.0D)
-                   .func_233815_a_(Attributes.field_233823_f_, TAMED_DAMAGE);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
+                   .add(Attributes.MOVEMENT_SPEED, BASE_SPEED)
+                   .add(Attributes.FLYING_SPEED, BASE_SPEED)
+                   .add(Attributes.FOLLOW_RANGE, 64.0D)
+                   .add(Attributes.MAX_HEALTH, TAMED_HEALTH)
+                   .add(Attributes.ATTACK_DAMAGE, TAMED_DAMAGE);
     }
 
-    //    @Override
-    //    protected void registerAttributes() {
-    //        super.registerAttributes();
-    //        // MAX_HEALTH Attributes.field_233818_a_
-    //        // ATTACK_DAMAGE Attributes.field_233823_f_
-    //        this.getAttribute(Attributes.field_233818_a_).setBaseValue(TAMED_HEALTH);
-    //        this.getAttribute(Attributes.field_233823_f_).setBaseValue(TAMED_DAMAGE);
-    //    }
-
     @Override
-    public void setTamed(boolean tamed) {
-        super.setTamed(tamed);
+    public void setTame(boolean tamed) {
+        super.setTame(tamed);
         if (tamed) {
-            // MAX_HEALTH Attributes.field_233818_a_
-            // ATTACK_DAMAGE Attributes.field_233823_f_
-            this.getAttribute(Attributes.field_233818_a_).setBaseValue(TAMED_HEALTH);
-            this.getAttribute(Attributes.field_233823_f_).setBaseValue(TAMED_DAMAGE);
+            this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(TAMED_HEALTH);
+            this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(TAMED_DAMAGE);
             this.setHealth((float) TAMED_HEALTH);
         }
     }
 
     //processInteract
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
-        ItemStack itemstack = player.getHeldItem(hand);
-        if (isBreedingItem(itemstack) && itemstack.getItem().isFood()) {
-            Food itemfood = itemstack.getItem().getFood();
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack itemstack = player.getItemInHand(hand);
+        if (isFood(itemstack)) {
+            Item itemfood = itemstack.getItem();
             if (this.getHealth() < TAMED_HEALTH) {
-                if (!player.abilities.isCreativeMode) {
+                if (!player.isCreative()) {
                     itemstack.shrink(1);
                 }
-                this.heal(itemfood.getHealing());
-                if (!this.world.isRemote) {
-                    this.world.setEntityState(this, (byte) 7);
+                this.heal(itemfood.getFoodProperties().getNutrition());
+                if (this.level.isClientSide()) {
+                    this.setTame(true);
+                    //                    this.level.setEntityState(this, (byte) 7);
                     //this.playTameEffect(true);
                 }
             }
             return getSuccessResult();
         } else if (Items.MILK_BUCKET == itemstack.getItem() && (this instanceof EntityGiantTamedDucky || this.isFireProof() || this.isStrong() || this.isFast() || this.isCanFly())) {
-            if (!player.abilities.isCreativeMode) {
+            if (!player.isCreative()) {
                 itemstack.shrink(1);
             }
-            if (!this.world.isRemote) {
-                EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
+            if (this.level.isClientSide()) {
+                EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.level);
                 spawnTamedDucky(player, entityTamedDucky);
                 entityTamedDucky.setFireProof(false);
                 entityTamedDucky.setCanFly(false);
@@ -111,15 +101,15 @@ public class EntityTamedDucky extends EntityDucky {
             return getSuccessResult();
         } else if (Items.POTION == itemstack.getItem()) {
             PotionItem potion = (PotionItem) itemstack.getItem();
-            if (potion.hasEffect(itemstack)) {
-                Potion potionType = PotionUtils.getPotionFromItem(itemstack);
+            if (potion.isFoil(itemstack)) {
+                Potion potionType = PotionUtils.getPotion(itemstack);
                 // player.addChatMessage(new TextComponentString(potionType.getNamePrefixed("")));
-                if ("healing".equalsIgnoreCase(potionType.getNamePrefixed("")) && !(this instanceof EntityGiantTamedDucky)) {
-                    if (!player.abilities.isCreativeMode) {
+                if ("healing".equalsIgnoreCase(potionType.getName("")) && !(this instanceof EntityGiantTamedDucky)) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                     }
-                    if (!this.world.isRemote) {
-                        EntityTamedDucky entityTamedDucky = new EntityGiantTamedDucky(this.world);
+                    if (this.level.isClientSide()) {
+                        EntityTamedDucky entityTamedDucky = new EntityGiantTamedDucky(this.level);
                         entityTamedDucky.setFireProof(this.isFireProof());
                         spawnTamedDucky(player, entityTamedDucky);
                         entityTamedDucky.setCanFly(this.isCanFly());
@@ -127,12 +117,12 @@ public class EntityTamedDucky extends EntityDucky {
                         entityTamedDucky.setFast(this.isFast());
                     }
                     return getSuccessResult();
-                } else if ("weakness".equalsIgnoreCase(potionType.getNamePrefixed("")) && (this instanceof EntityGiantTamedDucky)) {
-                    if (!player.abilities.isCreativeMode) {
+                } else if ("weakness".equalsIgnoreCase(potionType.getName("")) && (this instanceof EntityGiantTamedDucky)) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                     }
-                    if (!this.world.isRemote) {
-                        EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.world);
+                    if (this.level.isClientSide()) {
+                        EntityTamedDucky entityTamedDucky = new EntityTamedDucky(this.level);
                         entityTamedDucky.setFireProof(this.isFireProof());
                         spawnTamedDucky(player, entityTamedDucky);
                         entityTamedDucky.setCanFly(this.isCanFly());
@@ -140,26 +130,26 @@ public class EntityTamedDucky extends EntityDucky {
                         entityTamedDucky.setFast(this.isFast());
                     }
                     return getSuccessResult();
-                } else if ("fire_resistance".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
-                    if (!player.abilities.isCreativeMode) {
+                } else if ("fire_resistance".equalsIgnoreCase(potionType.getName(""))) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                     }
                     this.setFireProof(true);
                     return getSuccessResult();
-                } else if ("swiftness".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
-                    if (!player.abilities.isCreativeMode) {
+                } else if ("swiftness".equalsIgnoreCase(potionType.getName(""))) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                     }
                     this.setFast(true);
                     return getSuccessResult();
-                } else if ("strength".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
-                    if (!player.abilities.isCreativeMode) {
+                } else if ("strength".equalsIgnoreCase(potionType.getName(""))) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                     }
                     this.setStrong(true);
                     return getSuccessResult();
-                } else if ("leaping".equalsIgnoreCase(potionType.getNamePrefixed(""))) {
-                    if (!player.abilities.isCreativeMode) {
+                } else if ("leaping".equalsIgnoreCase(potionType.getName(""))) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                     }
                     this.setCanFly(true);
@@ -168,26 +158,26 @@ public class EntityTamedDucky extends EntityDucky {
 
             }
         } else {
-            if (this.isOwner(player) && !this.world.isRemote) {
-                setSitting(!this.isSitting());
-                this.isJumping = false;
-                this.getNavigator().clearPath();
-                this.setAttackTarget(null);
+            if (this.getOwnerUUID().equals(player.getUUID()) && this.level.isClientSide()) {
+                setOrderedToSit(!this.isInSittingPose() && !this.isOrderedToSit());
+                this.setJumping(false);
+                this.getNavigation().stop();
+                this.setTarget(null);
             }
-            return ActionResultType.SUCCESS;
+            return getSuccessResult();
         }
-        return ActionResultType.FAIL;
+        return InteractionResult.FAIL;
     }
 
-    private ActionResultType getSuccessResult() {
-        return ActionResultType.func_233537_a_(this.world.isRemote());
+    private InteractionResult getSuccessResult() {
+        return InteractionResult.sidedSuccess(!this.level.isClientSide);
     }
 
     /**
      * Get the experience points the entity currently has.
      */
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
+    protected int getExperienceReward(Player player) {
         return 15;
     }
 

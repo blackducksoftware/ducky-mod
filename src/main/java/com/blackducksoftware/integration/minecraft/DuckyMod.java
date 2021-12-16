@@ -7,24 +7,18 @@
  */
 package com.blackducksoftware.integration.minecraft;
 
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
-import com.blackducksoftware.integration.minecraft.ducky.EntityDuckySpawnEgg;
 import com.blackducksoftware.integration.minecraft.ducky.RenderDucky;
-import com.blackducksoftware.integration.minecraft.ducky.tamed.EntityTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.RenderTamedDucky;
-import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.EntityGiantTamedDucky;
 import com.blackducksoftware.integration.minecraft.ducky.tamed.giant.RenderGiantTamedDucky;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.SpriteRenderer;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -71,6 +65,13 @@ public class DuckyMod {
             RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.TAMED_DUCKY, RenderTamedDucky::new);
             RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.DUCKY, RenderDucky::new);
             RenderingRegistry.registerEntityRenderingHandler(DuckyModEntities.DUCKY_SPAWN_EGG, (EntityRendererManager manager) -> new SpriteRenderer(manager, Minecraft.getInstance().getItemRenderer()));
+
+            EntityRenderers.register(DuckyModEntities.TAMED_DUCKY, RenderTamedDucky::new);
+            EntityRenderers.register(DuckyModEntities.GIANT_TAMED_DUCKY, RenderGiantTamedDucky::new);
+            EntityRenderers.register(DuckyModEntities.DUCKY, RenderDucky::new);
+
+            //            RenderingRegistry.registerLayerDefinition(PENGUIN_LAYER, PenguinModel::createBodyLayer);
+
         }
     }
 

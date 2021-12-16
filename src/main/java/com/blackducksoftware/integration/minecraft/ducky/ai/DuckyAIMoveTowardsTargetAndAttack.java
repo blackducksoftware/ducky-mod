@@ -11,8 +11,8 @@ import java.util.EnumSet;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
 
 public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
     /**
@@ -20,23 +20,23 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      */
     private final float maxTargetDistance;
 
-    public DuckyAIMoveTowardsTargetAndAttack(final EntityDucky creature, final float targetMaxDistance) {
+    public DuckyAIMoveTowardsTargetAndAttack(EntityDucky creature, float targetMaxDistance) {
         super(creature);
         this.maxTargetDistance = targetMaxDistance;
-        this.setMutexFlags(EnumSet.of(Flag.TARGET, Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.TARGET, Flag.MOVE));
     }
 
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
     @Override
-    public boolean shouldExecute() {
-        final Entity target = getDucky().getAttackTarget();
+    public boolean canUse() {
+        LivingEntity target = getDucky().getTarget();
         if (target == null || !getDucky().canMove()) {
             return false;
         }
         setTargetToFollow(target);
-        distanceToTarget = getDucky().getDistanceSq(target);
+        distanceToTarget = getDucky().distanceToSqr(target);
         attackReach = getAttackReachSqr(target);
         checkAndPerformAttack(target, distanceToTarget);
         if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance && !needToFly(target)) {
@@ -57,12 +57,12 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         if (!getTargetToFollow().isAlive() || !getDucky().canMove() || isDuckyStuck()) {
             getDucky().setAttacking(false);
             return false;
         }
-        distanceToTarget = getDucky().getDistanceSq(getTargetToFollow());
+        distanceToTarget = getDucky().distanceToSqr(getTargetToFollow());
         checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
         if (distanceToTarget < this.maxTargetDistance * this.maxTargetDistance) {
             if (needToFly(getTargetToFollow())) {
@@ -85,12 +85,12 @@ public class DuckyAIMoveTowardsTargetAndAttack extends AbstractDuckyMoveAttack {
         if (!updateCalc(distanceToTarget)) {
             return;
         }
-        final double speedModifier = getSpeedModifier(distanceToTarget);
-        final BlockPos location = getPositionBelowTarget();
-        getDucky().getNavigator().tryMoveToXYZ(location.getX(), location.getY(), location.getZ(), speedModifier);
+        double speedModifier = getSpeedModifier(distanceToTarget);
+        BlockPos location = getPositionBelowTarget();
+        getDucky().getNavigation().moveTo(location.getX(), location.getY(), location.getZ(), speedModifier);
 
-        getDucky().faceEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
-        getDucky().getLookController().setLookPositionWithEntity(getTargetToFollow(), getDucky().getHorizontalFaceSpeed(), getDucky().getVerticalFaceSpeed());
+        //getDucky().faceEntity(getTargetToFollow(), getDucky().getMaxHeadXRot(), getDucky().getMaxHeadYRot());
+        getDucky().getLookControl().setLookAt(getTargetToFollow(), getDucky().getMaxHeadXRot(), getDucky().getMaxHeadYRot());
         checkAndPerformAttack(getTargetToFollow(), distanceToTarget);
     }
 

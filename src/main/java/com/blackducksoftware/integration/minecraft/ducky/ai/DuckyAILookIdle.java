@@ -9,32 +9,23 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 
-public class DuckyAILookIdle extends LookRandomlyGoal {
-    /**
-     * The entity that is looking idle.
-     */
+public class DuckyAILookIdle extends RandomLookAroundGoal {
     private final EntityDucky entityDucky;
 
-    public DuckyAILookIdle(final EntityDucky entityDucky) {
+    public DuckyAILookIdle(EntityDucky entityDucky) {
         super(entityDucky);
         this.entityDucky = entityDucky;
     }
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
     @Override
-    public boolean shouldExecute() {
-        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldExecute();
+    public boolean canUse() {
+        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.canUse();
     }
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
     @Override
-    public boolean shouldContinueExecuting() {
-        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldContinueExecuting();
+    public boolean canContinueToUse() {
+        return !entityDucky.isFlying() && !entityDucky.isAttacking() && super.canContinueToUse();
     }
 }

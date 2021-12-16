@@ -9,31 +9,28 @@ package com.blackducksoftware.integration.minecraft.ducky.ai;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 
-public class DuckyAIWander extends RandomWalkingGoal {
+public class DuckyAIWander extends RandomStrollGoal {
     private final EntityDucky entityDucky;
 
-    public DuckyAIWander(final EntityDucky entityDucky, final double speedIn) {
+    public DuckyAIWander(EntityDucky entityDucky, double speedIn) {
         super(entityDucky, speedIn);
         this.entityDucky = entityDucky;
     }
 
-    public DuckyAIWander(final EntityDucky entityDucky, final double speedIn, final int chance) {
+    public DuckyAIWander(EntityDucky entityDucky, double speedIn, int chance) {
         super(entityDucky, speedIn, chance);
         this.entityDucky = entityDucky;
     }
 
     @Override
-    public boolean shouldExecute() {
-        return entityDucky.canMove() && !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldExecute();
+    public boolean canUse() {
+        return entityDucky.canMove() && !entityDucky.isFlying() && !entityDucky.isAttacking() && super.canUse();
     }
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
     @Override
-    public boolean shouldContinueExecuting() {
-        return entityDucky.canMove() && !entityDucky.isFlying() && !entityDucky.isAttacking() && super.shouldContinueExecuting();
+    public boolean canContinueToUse() {
+        return entityDucky.canMove() && !entityDucky.isFlying() && !entityDucky.isAttacking() && super.canContinueToUse();
     }
 }

@@ -8,80 +8,108 @@
 package com.blackducksoftware.integration.minecraft.ducky;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.AgeableListModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 
-public class ModelDucky extends AbstractCommonModel<EntityDucky> {
-    public ModelRenderer head;
-    public ModelRenderer body;
-    public ModelRenderer rightLeg;
-    public ModelRenderer leftLeg;
-    public ModelRenderer rightWing;
-    public ModelRenderer leftWing;
-    public ModelRenderer bill;
-    public ModelRenderer tail;
+public class ModelDucky extends AgeableListModel<EntityDucky> {
+    public ModelPart head;
+    public ModelPart body;
+    public ModelPart rightLeg;
+    public ModelPart leftLeg;
+    public ModelPart rightWing;
+    public ModelPart leftWing;
+    public ModelPart bill;
+    public ModelPart tail;
 
-    public ModelDucky() {
-        super(64, 32);
-        this.head = createNewModelRenderer(0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
-        this.bill = createNewModelRenderer(14, 0, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
+    public ModelDucky(ModelPart part) {
+        super(false, 64, 32);
+        this.head = part.getChild("head");
+        this.bill = part.getChild("bill");
+        this.body = part.getChild("body");
+        this.leftWing = part.getChild("left_wing");
+        this.rightWing = part.getChild("right_wing");
+        this.leftLeg = part.getChild("left_leg");
+        this.rightLeg = part.getChild("right_leg");
+        this.tail = part.getChild("tail");
+    }
 
-        this.body = createNewModelRenderer(0, 9, -3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F, 16.0F, 0.0F);
-        this.tail = createNewModelRenderer(14, 4, -1.0F, 3.0F, 2.5F, 2, 2, 2, 0.0F, 16.0F, 0.0F);
-        this.rightWing = createNewModelRenderer(24, 13, 0.0F, 0.0F, -3.0F, 1, 4, 6, -4.0F, 13.0F, 0.0F);
-        this.leftWing = createNewModelRenderer(24, 13, -1.0F, 0.0F, -3.0F, 1, 4, 6, 4.0F, 13.0F, 0.0F);
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition modelDefinition = new MeshDefinition();
+        PartDefinition def = modelDefinition.getRoot();
+        def.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3), PartPose.offset(0.0F, 15.0F, -4.0F));
+        def.addOrReplaceChild("bill", CubeListBuilder.create().texOffs(14, 0).addBox(-2.0F, -4.0F, -4.0F, 4, 2, 2), PartPose.offset(0.0F, 15.0F, -4.0F));
+        def.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 9).addBox(-3.0F, -4.0F, -3.0F, 6, 8, 6), PartPose.offset(0.0F, 16.0F, 0.0F));
+        def.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(14, 4).addBox(-1.0F, 3.0F, 2.5F, 2, 2, 2), PartPose.offset(0.0F, 16.0F, 0.0F));
 
-        this.rightLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, -2.0F, 19.0F, 1.0F);
-        this.leftLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
+        def.addOrReplaceChild("right_wing", CubeListBuilder.create().texOffs(24, 13).addBox(01.0F, 0.0F, -3.0F, 1, 4, 6), PartPose.offset(-4.0F, 13.0F, 0.0F));
+        def.addOrReplaceChild("left_wing", CubeListBuilder.create().texOffs(24, 13).addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6), PartPose.offset(4.0F, 13.0F, 0.0F));
+
+        def.addOrReplaceChild("feet_right", CubeListBuilder.create().texOffs(26, 0).addBox(-1.0F, 0.0F, -3.0F, 3, 5, 3), PartPose.offset(-2.0F, 19.0F, 1.0F));
+        def.addOrReplaceChild("feet_left", CubeListBuilder.create().texOffs(26, 0).addBox(-1.0F, 0.0F, -3.0F, 3, 5, 3), PartPose.offset(1.0F, 19.0F, 1.0F));
+
+        return LayerDefinition.create(modelDefinition, 64, 32);
     }
 
     @Override
-    public Iterable<ModelRenderer> getParts() {
-        return ImmutableList.of(this.head, this.body, this.rightLeg, this.leftLeg, this.rightWing, this.leftWing, this.bill, this.tail);
-    }
-
-    /**
-     * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
-     */
-    @Override
-    public void setLivingAnimations(EntityDucky entityDucky, float limbSwingAmount, float ageInTicks, float partialTickTime) {
-        if (entityDucky.isSitting()) {
-            setRotationPoint(0.0F, 20.0F, -4.0F, head, bill);
-            setRotationPoint(0.0F, 21.0F, 0.0F, tail, body);
-
-            this.rightWing.setRotationPoint(-4.0F, 18.0F, 0.0F);
-            this.leftWing.setRotationPoint(4.0F, 18.0F, 0.0F);
-
-            this.rightLeg.setRotationPoint(-2.0F, 18.9F, 1.0F);
-            this.leftLeg.setRotationPoint(1.0F, 18.9F, 1.0F);
-        } else {
-            setRotationPoint(0.0F, 15.0F, -4.0F, head, bill);
-            setRotationPoint(0.0F, 16.0F, 0.0F, tail, body);
-
-            this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
-            this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
-
-            this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
-            this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
-        }
+    public Iterable<ModelPart> headParts() {
+        return ImmutableList.of(this.head, this.bill);
     }
 
     @Override
-    public void setRotationAngles(EntityDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head.rotateAngleX = headPitch * 0.017453292F;
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
-        duplicateModelRotationAngles(head, bill);
+    public Iterable<ModelPart> bodyParts() {
+        return ImmutableList.of(this.body, this.rightLeg, this.leftLeg, this.rightWing, this.leftWing, this.tail);
+    }
 
-        this.body.rotateAngleX = ((float) Math.PI / 2F);
-        duplicateModelRotationAngles(body, tail);
+    //    /**
+    //     * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
+    //     */
+    //    @Override
+    //    public void setLivingAnimations(EntityDucky entityDucky, float limbSwingAmount, float ageInTicks, float partialTickTime) {
+    //        if (entityDucky.isSitting()) {
+    //            setRotationPoint(0.0F, 20.0F, -4.0F, head, bill);
+    //            setRotationPoint(0.0F, 21.0F, 0.0F, tail, body);
+    //
+    //            this.rightWing.setRotationPoint(-4.0F, 18.0F, 0.0F);
+    //            this.leftWing.setRotationPoint(4.0F, 18.0F, 0.0F);
+    //
+    //            this.rightLeg.setRotationPoint(-2.0F, 18.9F, 1.0F);
+    //            this.leftLeg.setRotationPoint(1.0F, 18.9F, 1.0F);
+    //        } else {
+    //            setRotationPoint(0.0F, 15.0F, -4.0F, head, bill);
+    //            setRotationPoint(0.0F, 16.0F, 0.0F, tail, body);
+    //
+    //            this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
+    //            this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
+    //
+    //            this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
+    //            this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
+    //        }
+    //    }
 
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.rightWing.rotateAngleZ = ageInTicks;
-        this.leftWing.rotateAngleZ = -ageInTicks;
+    @Override
+    public void setupAnim(EntityDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.head.xRot = headPitch * 0.017453292F;
+        this.head.yRot = netHeadYaw * 0.017453292F;
+        //this.head.zRot = (Mth.cos(limbSwing * 1.3324F) * 1.4F * limbSwingAmount) / 6;
+
+        this.bill.xRot = this.head.xRot;
+        this.bill.yRot = this.head.yRot;
+        //this.bill.zRot = this.head.zRot;
+
+        this.body.xRot = ((float) Math.PI / 2F);
+        this.tail.xRot = this.body.xRot;
+
+        this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.rightWing.zRot = ageInTicks;
+        this.leftWing.zRot = -ageInTicks;
 
     }
 

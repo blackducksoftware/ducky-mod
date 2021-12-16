@@ -13,53 +13,53 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.phys.AABB;
 
 public class DuckyAIWatchTarget extends TargetGoal {
-    protected MobEntity theWatcher;
+    protected Mob theWatcher;
     /**
      * The closest entity which is being watched by this one.
      */
-    protected Entity closestEntity;
+    protected LivingEntity closestEntity;
     /**
      * This is the Maximum distance that the AI will look for the Entity
      */
     protected float maxDistance;
     private int lookTime;
     private final float chance;
-    protected Predicate<LivingEntity> watchedClassSelector;
+    private TargetingConditions targetingConditions;
 
-    public DuckyAIWatchTarget(MobEntity theWatcher, @Nullable Predicate<LivingEntity> watchedClassSelector, float maxDistance, int lookTime) {
+    public DuckyAIWatchTarget(Mob theWatcher, @Nullable Predicate<LivingEntity> watchedClassSelector, float maxDistance, int lookTime) {
         this(theWatcher, watchedClassSelector, maxDistance, lookTime, 0.02F);
     }
 
-    public DuckyAIWatchTarget(MobEntity theWatcher, @Nullable Predicate<LivingEntity> watchedClassSelector, float maxDistance, int lookTime, float chanceIn) {
+    public DuckyAIWatchTarget(Mob theWatcher, @Nullable Predicate<LivingEntity> watchedClassSelector, float maxDistance, int lookTime, float chanceIn) {
         super(theWatcher, false);
         this.theWatcher = theWatcher;
-        this.watchedClassSelector = watchedClassSelector;
         this.maxDistance = maxDistance;
         this.chance = chanceIn;
-        this.setMutexFlags(EnumSet.of(Flag.TARGET));
+        this.setFlags(EnumSet.of(Flag.TARGET));
         this.lookTime = lookTime;
+        targetingConditions = TargetingConditions.forNonCombat().range(maxDistance).selector(watchedClassSelector);
     }
 
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
     @Override
-    public boolean shouldExecute() {
-        if (this.theWatcher.getRNG().nextFloat() >= this.chance) {
+    public boolean canUse() {
+        if (this.theWatcher.getRandom().nextFloat() >= this.chance) {
             return false;
         } else {
-            if (this.theWatcher.getAttackTarget() != null) {
-                this.closestEntity = this.theWatcher.getAttackTarget();
+            if (this.theWatcher.getTarget() != null) {
+                this.closestEntity = this.theWatcher.getTarget();
             }
 
-            List<LivingEntity> list = theWatcher.world.getEntitiesWithinAABB(LivingEntity.class, this.getTargetableArea(maxDistance), watchedClassSelector);
+            List<LivingEntity> list = theWatcher.level.getNearbyEntities(LivingEntity.class, targetingConditions, this.theWatcher, this.getTargetableArea(maxDistance));
 
             if (list.isEmpty()) {
                 return false;
@@ -70,34 +70,36 @@ public class DuckyAIWatchTarget extends TargetGoal {
         }
     }
 
-    protected AxisAlignedBB getTargetableArea(double targetDistance) {
-        return this.theWatcher.getBoundingBox().expand(targetDistance, 4.0D, targetDistance);
+    protected AABB getTargetableArea(double targetDistance) {
+        return this.theWatcher.getBoundingBox().expandTowards(targetDistance, 4.0D, targetDistance);
     }
 
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     @Override
-    public boolean shouldContinueExecuting() {
-        return !this.closestEntity.isAlive() ? false : (this.theWatcher.getDistanceSq(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
+    public boolean canContinueToUse() {
+        return !this.closestEntity.isAlive() ? false : (this.theWatcher.distanceToSqr(this.closestEntity) > this.maxDistance * this.maxDistance ? false : this.lookTime > 0);
     }
 
     /**
      * Execute a one shot task or start executing a continuous task
      */
     @Override
-    public void startExecuting() {
+    public void start() {
         if (lookTime == 0) {
-            this.lookTime = 40 + this.theWatcher.getRNG().nextInt(40);
+            this.lookTime = 40 + this.theWatcher.getRandom().nextInt(40);
         }
+        super.start();
     }
 
     /**
      * Resets the task
      */
     @Override
-    public void resetTask() {
+    public void stop() {
         this.closestEntity = null;
+        super.stop();
     }
 
     /**
@@ -105,9 +107,9 @@ public class DuckyAIWatchTarget extends TargetGoal {
      */
     @Override
     public void tick() {
-        this.theWatcher.getLookController()
-            .setLookPosition(this.closestEntity.getPosX(), this.closestEntity.getPosY() + this.closestEntity.getEyeHeight(), this.closestEntity.getPosZ(), this.theWatcher.getHorizontalFaceSpeed(),
-                this.theWatcher.getVerticalFaceSpeed());
+        this.theWatcher.getLookControl()
+            .setLookAt(this.closestEntity.getX(), this.closestEntity.getY() + this.closestEntity.getEyeHeight(),
+                this.closestEntity.getZ(), this.theWatcher.getMaxHeadXRot(), this.theWatcher.getMaxHeadYRot());
         --this.lookTime;
     }
 

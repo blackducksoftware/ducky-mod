@@ -9,30 +9,30 @@ package com.blackducksoftware.integration.minecraft.ducky.pathfinding;
 
 import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Region;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.PathNavigationRegion;
+import net.minecraft.world.level.pathfinder.PathFinder;
 
-public class DuckyPathNavigateFlying extends FlyingPathNavigator {
-    public DuckyPathNavigateFlying(EntityDucky ducky, World world) {
+public class DuckyPathNavigateFlying extends FlyingPathNavigation {
+    public DuckyPathNavigateFlying(EntityDucky ducky, Level world) {
         super(ducky, world);
     }
 
     @Override
-    protected PathFinder getPathFinder(int var) {
-        this.nodeProcessor = new DuckyFlyingNodeProcessor();
-        this.nodeProcessor.setCanEnterDoors(true);
-        this.nodeProcessor.setCanSwim(true);
+    protected PathFinder createPathFinder(int var) {
+        this.nodeEvaluator = new DuckyFlyingNodeEvaluator();
+        this.nodeEvaluator.setCanPassDoors(true);
+        this.nodeEvaluator.setCanFloat(true);
 
-        BlockPos blockPosCorner = new BlockPos(this.entity.getPositionVec()).add(-32, -32, -32);
-        BlockPos blockPosOppositeCorner = new BlockPos(this.entity.getPositionVec().add(32, 32, 32));
-        Region region = new Region(this.world, blockPosCorner, blockPosOppositeCorner);
+        BlockPos currentPosition = this.mob.getOnPos();
+        BlockPos blockPosCorner = new BlockPos(currentPosition).offset(-32, -32, -32);
+        BlockPos blockPosOppositeCorner = new BlockPos(currentPosition).offset(32, 32, 32);
+        PathNavigationRegion region = new PathNavigationRegion(this.level, blockPosCorner, blockPosOppositeCorner);
 
-        //func_225578_a_ == init
-        this.nodeProcessor.func_225578_a_(region, this.entity);
-        return new PathFinder(this.nodeProcessor, var);
+        this.nodeEvaluator.prepare(region, this.mob);
+        return new PathFinder(this.nodeEvaluator, var);
     }
 
 }

@@ -8,155 +8,189 @@
 package com.blackducksoftware.integration.minecraft.ducky.tamed;
 
 import com.blackducksoftware.integration.minecraft.ducky.AbstractCommonModel;
-import com.blackducksoftware.integration.minecraft.ducky.EntityDucky;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 
 public class ModelTamedDucky extends AbstractCommonModel<EntityTamedDucky> {
-    public ModelRenderer head;
-    public ModelRenderer hatTop;
-    public ModelRenderer hatBottom;
+    public ModelPart head;
+    public ModelPart hatTop;
+    public ModelPart hatBottom;
 
-    public ModelRenderer fireProofHatTop;
-    public ModelRenderer fireProofHatBottom;
+    public ModelPart fireProofHatTop;
+    public ModelPart fireProofHatBottom;
 
-    public ModelRenderer body;
-    public ModelRenderer rightLeg;
-    public ModelRenderer leftLeg;
+    public ModelPart body;
+    public ModelPart rightLeg;
+    public ModelPart leftLeg;
 
-    public ModelRenderer fastRightLeg;
-    public ModelRenderer fastLeftLeg;
+    public ModelPart fastRightLeg;
+    public ModelPart fastLeftLeg;
 
-    public ModelRenderer rightWing;
-    public ModelRenderer leftWing;
+    public ModelPart rightWing;
+    public ModelPart leftWing;
 
-    public ModelRenderer flyingRightWing;
-    public ModelRenderer flyingLeftWing;
+    public ModelPart flyingRightWing;
+    public ModelPart flyingLeftWing;
 
-    public ModelRenderer bill;
+    public ModelPart bill;
 
-    public ModelRenderer strongBill;
+    public ModelPart strongBill;
 
-    public ModelRenderer tail;
+    public ModelPart tail;
 
-    public ModelTamedDucky() {
-        super(64, 32);
+    public ModelTamedDucky(ModelPart part) {
+        this.head = part.getChild("head");
+        this.hatTop = part.getChild("hat_top");
+        this.hatBottom = part.getChild("hat_bottom");
+        //        this.fireProofHatTop = part.getChild("fire_proof_hat_top");
+        //        this.fireProofHatBottom = part.getChild("fire_proof_hat_bottom");
+        this.bill = part.getChild("bill");
+        //        this.strongBill = part.getChild("strong_bill");
+        this.body = part.getChild("body");
+        this.leftWing = part.getChild("left_wing");
+        this.rightWing = part.getChild("right_wing");
+        //        this.flyingLeftWing = part.getChild("flying_left_wing");
+        //        this.flyingRightWing = part.getChild("flying_right_wing");
+        this.leftLeg = part.getChild("left_leg");
+        this.rightLeg = part.getChild("right_leg");
+        //        this.fastLeftLeg = part.getChild("fast_left_leg");
+        //        this.fastRightLeg = part.getChild("fast_right_leg");
+        this.tail = part.getChild("tail");
 
-        head = createNewModelRenderer(0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
-        hatTop = createNewModelRenderer(40, 1, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
-        hatBottom = createNewModelRenderer(39, 0, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
+        //  hideModelRenderers(fireProofHatTop, fireProofHatBottom, flyingLeftWing, flyingRightWing, strongBill, fastLeftLeg, fastRightLeg);
+    }
 
-        fireProofHatTop = createNewModelRenderer(40, 8, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
-        fireProofHatBottom = createNewModelRenderer(39, 7, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition modelDefinition = new MeshDefinition();
+        PartDefinition def = modelDefinition.getRoot();
+        addNewBodyPart(def, "head", 0, 0, -2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F, 15.0F, -4.0F);
+        addNewBodyPart(def, "hat_top", 40, 1, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
+        addNewBodyPart(def, "hat_bottom", 39, 0, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
 
-        bill = createNewModelRenderer(14, 0, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
+        //        fireProofHatTop = addNewBodyPart(def, "head", 40, 8, -2.5F, -7.0F, -2.0F, 5, 1, 4, 0.0F, 15.0F, -4.0F);
+        //        fireProofHatBottom = addNewBodyPart(def, "head", 39, 7, -2.5F, -6.0F, -3.0F, 5, 1, 5, 0.0F, 15.0F, -4.0F);
 
-        strongBill = createNewModelRenderer(12, 24, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
+        addNewBodyPart(def, "bill", 14, 0, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
 
-        body = createNewModelRenderer(0, 9, -3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F, 16.0F, 0.0F);
-        tail = createNewModelRenderer(14, 4, -1.0F, 3.0F, 2.5F, 2, 2, 2, 0.0F, 16.0F, 0.0F);
-        rightWing = createNewModelRenderer(24, 13, 0.0F, 0.0F, -3.0F, 1, 4, 6, -4.0F, 13.0F, 0.0F);
-        leftWing = createNewModelRenderer(24, 13, -1.0F, 0.0F, -3.0F, 1, 4, 6, 4.0F, 13.0F, 0.0F);
+        //        strongBill = addNewBodyPart(def, "head", 12, 24, -2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F, 15.0F, -4.0F);
 
-        flyingRightWing = createNewModelRenderer(39, 13, 0.0F, 0.0F, -3.0F, 1, 4, 6, -4.0F, 13.0F, 0.0F);
-        flyingLeftWing = createNewModelRenderer(39, 13, -1.0F, 0.0F, -3.0F, 1, 4, 6, 4.0F, 13.0F, 0.0F);
+        addNewBodyPart(def, "body", 0, 9, -3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F, 16.0F, 0.0F);
+        addNewBodyPart(def, "tail", 14, 4, -1.0F, 3.0F, 2.5F, 2, 2, 2, 0.0F, 16.0F, 0.0F);
+        addNewBodyPart(def, "right_wing", 24, 13, 0.0F, 0.0F, -3.0F, 1, 4, 6, -4.0F, 13.0F, 0.0F);
+        addNewBodyPart(def, "left_wing", 24, 13, -1.0F, 0.0F, -3.0F, 1, 4, 6, 4.0F, 13.0F, 0.0F);
 
-        rightLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, -2.0F, 19.0F, 1.0F);
-        leftLeg = createNewModelRenderer(26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
+        //        flyingRightWing = addNewBodyPart(def, "head", 39, 13, 0.0F, 0.0F, -3.0F, 1, 4, 6, -4.0F, 13.0F, 0.0F);
+        //        flyingLeftWing = addNewBodyPart(def, "head", 39, 13, -1.0F, 0.0F, -3.0F, 1, 4, 6, 4.0F, 13.0F, 0.0F);
 
-        fastRightLeg = createNewModelRenderer(0, 24, -1.0F, 0.0F, -3.0F, 3, 5, 3, -2.0F, 19.0F, 1.0F);
-        fastLeftLeg = createNewModelRenderer(0, 24, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
+        addNewBodyPart(def, "right_leg", 26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, -2.0F, 19.0F, 1.0F);
+        addNewBodyPart(def, "left_leg", 26, 0, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
 
-        hideModelRenderers(fireProofHatTop, fireProofHatBottom, flyingLeftWing, flyingRightWing, strongBill, fastLeftLeg, fastRightLeg);
+        //        fastRightLeg = addNewBodyPart(def, "head", 0, 24, -1.0F, 0.0F, -3.0F, 3, 5, 3, -2.0F, 19.0F, 1.0F);
+        //        fastLeftLeg = addNewBodyPart(def, "head", 0, 24, -1.0F, 0.0F, -3.0F, 3, 5, 3, 1.0F, 19.0F, 1.0F);
+
+        return LayerDefinition.create(modelDefinition, 64, 32);
+    }
+
+    //    @Override
+    //    public Iterable<ModelPart> getParts() {
+    //        return ImmutableList
+    //                   .of(this.head, this.hatTop, this.hatBottom, this.fireProofHatTop, this.fireProofHatBottom, this.body, this.rightLeg, this.leftLeg, this.fastRightLeg, this.fastLeftLeg, this.rightWing, this.leftWing, this.flyingRightWing,
+    //                       this.flyingLeftWing, this.bill, this.strongBill, this.tail);
+    //    }
+
+    @Override
+    public Iterable<ModelPart> headParts() {
+        return ImmutableList.of(this.head, this.bill, this.hatTop, this.hatBottom);
     }
 
     @Override
-    public Iterable<ModelRenderer> getParts() {
-        return ImmutableList
-                   .of(this.head, this.hatTop, this.hatBottom, this.fireProofHatTop, this.fireProofHatBottom, this.body, this.rightLeg, this.leftLeg, this.fastRightLeg, this.fastLeftLeg, this.rightWing, this.leftWing, this.flyingRightWing,
-                       this.flyingLeftWing, this.bill, this.strongBill, this.tail);
+    public Iterable<ModelPart> bodyParts() {
+        return ImmutableList.of(this.body, this.rightLeg, this.leftLeg, this.rightWing, this.leftWing, this.tail);
     }
 
     @Override
-    public void setRotationAngles(EntityTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityDucky.isFireProof()) {
-            showModelRenderers(fireProofHatTop, fireProofHatBottom);
-            hideModelRenderers(hatTop, hatBottom);
-        } else {
-            showModelRenderers(hatTop, hatBottom);
-            hideModelRenderers(fireProofHatTop, fireProofHatBottom);
-        }
+    public void setupAnim(EntityTamedDucky entityDucky, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //        if (entityDucky.isFireProof()) {
+        //            showModelRenderers(fireProofHatTop, fireProofHatBottom);
+        //            hideModelRenderers(hatTop, hatBottom);
+        //        } else {
+        //            showModelRenderers(hatTop, hatBottom);
+        //            hideModelRenderers(fireProofHatTop, fireProofHatBottom);
+        //        }
+        //
+        //        if (entityDucky.isCanFly()) {
+        //            showModelRenderers(flyingLeftWing, flyingRightWing);
+        //            hideModelRenderers(rightWing, leftWing);
+        //        } else {
+        //            showModelRenderers(rightWing, leftWing);
+        //            hideModelRenderers(flyingLeftWing, flyingRightWing);
+        //        }
+        //
+        //        if (entityDucky.isStrong()) {
+        //            showModelRenderers(strongBill);
+        //            hideModelRenderers(bill);
+        //        } else {
+        //            showModelRenderers(bill);
+        //            hideModelRenderers(strongBill);
+        //        }
+        //
+        //        if (entityDucky.isFast()) {
+        //            showModelRenderers(fastLeftLeg, fastRightLeg);
+        //            hideModelRenderers(rightLeg, leftLeg);
+        //        } else {
+        //            showModelRenderers(rightLeg, leftLeg);
+        //            hideModelRenderers(fastLeftLeg, fastRightLeg);
+        //        }
 
-        if (entityDucky.isCanFly()) {
-            showModelRenderers(flyingLeftWing, flyingRightWing);
-            hideModelRenderers(rightWing, leftWing);
-        } else {
-            showModelRenderers(rightWing, leftWing);
-            hideModelRenderers(flyingLeftWing, flyingRightWing);
-        }
+        head.xRot = headPitch * 0.017453292F;
+        head.yRot = netHeadYaw * 0.017453292F;
 
-        if (entityDucky.isStrong()) {
-            showModelRenderers(strongBill);
-            hideModelRenderers(bill);
-        } else {
-            showModelRenderers(bill);
-            hideModelRenderers(strongBill);
-        }
+        // duplicateModelRotationAngles(head, hatTop, hatBottom, bill, strongBill, fireProofHatBottom, fireProofHatTop);
 
-        if (entityDucky.isFast()) {
-            showModelRenderers(fastLeftLeg, fastRightLeg);
-            hideModelRenderers(rightLeg, leftLeg);
-        } else {
-            showModelRenderers(rightLeg, leftLeg);
-            hideModelRenderers(fastLeftLeg, fastRightLeg);
-        }
+        body.xRot = ((float) Math.PI / 2F);
+        //duplicateModelRotationAngles(body, tail);
 
-        head.rotateAngleX = headPitch * 0.017453292F;
-        head.rotateAngleY = netHeadYaw * 0.017453292F;
-
-        duplicateModelRotationAngles(head, hatTop, hatBottom, bill, strongBill, fireProofHatBottom, fireProofHatTop);
-
-        body.rotateAngleX = ((float) Math.PI / 2F);
-        duplicateModelRotationAngles(body, tail);
-
-        rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        duplicateModelRotationAngles(rightLeg, fastRightLeg);
-        duplicateModelRotationAngles(leftLeg, fastLeftLeg);
-        rightWing.rotateAngleZ = ageInTicks;
-        leftWing.rotateAngleZ = -ageInTicks;
-        duplicateModelRotationAngles(rightWing, flyingRightWing);
-        duplicateModelRotationAngles(leftWing, flyingLeftWing);
+        rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        //        duplicateModelRotationAngles(rightLeg, fastRightLeg);
+        //        duplicateModelRotationAngles(leftLeg, fastLeftLeg);
+        rightWing.zRot = ageInTicks;
+        leftWing.zRot = -ageInTicks;
+        //        duplicateModelRotationAngles(rightWing, flyingRightWing);
+        //        duplicateModelRotationAngles(leftWing, flyingLeftWing);
     }
 
-    /**
-     * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
-     */
-    @Override
-    public void setLivingAnimations(EntityTamedDucky entityDucky, float limbSwingAmount, float ageInTicks, float partialTickTime) {
-        if (entityDucky.isSitting()) {
-            setRotationPoint(0.0F, 20.0F, -4.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, bill, strongBill);
-
-            setRotationPoint(0.0F, 21.0F, 0.0F, tail, body);
-
-            setRotationPoint(-4.0F, 18.0F, 0.0F, rightWing, flyingRightWing);
-            setRotationPoint(4.0F, 18.0F, 0.0F, leftWing, flyingLeftWing);
-
-            setRotationPoint(-2.0F, 18.9F, 1.0F, rightLeg, fastRightLeg);
-            setRotationPoint(1.0F, 18.9F, 1.0F, leftLeg, fastLeftLeg);
-        } else {
-            setRotationPoint(0.0F, 15.0F, -4.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, bill, strongBill);
-
-            setRotationPoint(0.0F, 16.0F, 0.0F, tail, body);
-
-            setRotationPoint(-4.0F, 13.0F, 0.0F, rightWing, flyingRightWing);
-            setRotationPoint(4.0F, 13.0F, 0.0F, leftWing, flyingLeftWing);
-
-            setRotationPoint(-2.0F, 19F, 1.0F, rightLeg, fastRightLeg);
-            setRotationPoint(1.0F, 19F, 1.0F, leftLeg, fastLeftLeg);
-        }
-    }
+    //    /**
+    //     * Used for easily adding entity-dependent animations. The second and third float params here are the same second and third as in the setRotationAngles method.
+    //     */
+    //    @Override
+    //    public void setLivingAnimations(EntityTamedDucky entityDucky, float limbSwingAmount, float ageInTicks, float partialTickTime) {
+    //        if (entityDucky.isSitting()) {
+    //            setRotationPoint(0.0F, 20.0F, -4.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, bill, strongBill);
+    //
+    //            setRotationPoint(0.0F, 21.0F, 0.0F, tail, body);
+    //
+    //            setRotationPoint(-4.0F, 18.0F, 0.0F, rightWing, flyingRightWing);
+    //            setRotationPoint(4.0F, 18.0F, 0.0F, leftWing, flyingLeftWing);
+    //
+    //            setRotationPoint(-2.0F, 18.9F, 1.0F, rightLeg, fastRightLeg);
+    //            setRotationPoint(1.0F, 18.9F, 1.0F, leftLeg, fastLeftLeg);
+    //        } else {
+    //            setRotationPoint(0.0F, 15.0F, -4.0F, head, hatTop, hatBottom, fireProofHatTop, fireProofHatBottom, bill, strongBill);
+    //
+    //            setRotationPoint(0.0F, 16.0F, 0.0F, tail, body);
+    //
+    //            setRotationPoint(-4.0F, 13.0F, 0.0F, rightWing, flyingRightWing);
+    //            setRotationPoint(4.0F, 13.0F, 0.0F, leftWing, flyingLeftWing);
+    //
+    //            setRotationPoint(-2.0F, 19F, 1.0F, rightLeg, fastRightLeg);
+    //            setRotationPoint(1.0F, 19F, 1.0F, leftLeg, fastLeftLeg);
+    //        }
+    //    }
 
 }
